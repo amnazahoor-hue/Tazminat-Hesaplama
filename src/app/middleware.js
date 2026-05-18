@@ -1,0 +1,12 @@
+import { NextResponse } from "next/server";
+
+export function middleware(request) {
+  const response = NextResponse.next();
+  response.headers.set("x-app-name", "turkish-compensation-cal");
+  response.headers.set("x-pathname", request.nextUrl.pathname);
+  return response;
+}
+
+export const config = {
+  matcher: "/:path*"
+};
