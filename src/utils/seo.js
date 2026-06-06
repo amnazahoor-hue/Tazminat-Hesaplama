@@ -45,7 +45,7 @@ export function buildOrganizationSchema() {
     "@type": "Organization",
     name: "Tazminat Hesaplama",
     url: SITE_URL,
-    logo: `${SITE_URL}/logo-mark.svg`,
+    logo: `${SITE_URL}/logo.png`,
     sameAs: [
       "https://www.linkedin.com",
       "https://www.facebook.com",

@@ -1,12 +1,5 @@
-import CompensationCalculator from "@/components/CompensationCalculator";
-import { buildOrganizationSchema } from "@/utils/seo";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  const organizationSchema = buildOrganizationSchema();
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-      <CompensationCalculator />
-    </>
-  );
+  redirect("/kidem-tazminati-hesaplamasi");
 }
