@@ -1,6 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ResultPdfTemplate from "@/components/ResultPdfTemplate";
+import ResultShareBar from "@/components/ResultShareBar";
+import { exportResultPdf } from "@/utils/exportPdf";
+import { buildShareReport, getEmailShareUrl, getWhatsAppShareUrl } from "@/utils/shareReport";
 import { calculateCompensation, CONFIG, TR, validateForm } from "@/utils/helpers";
 
 const initialForm = {
@@ -14,117 +19,150 @@ const initialForm = {
   otherReceivables: ""
 };
 
-const reasonNotes = {
-  haksiz_fesih: "Hem kidem hem de ihbar tazminati hak edilir.",
-  istifa_haksiz: "Hakli neden olmaksizin istifa halinde kidem ve ihbar hak edilmez.",
-  istifa_hakli: "Hakli nedenle istifada kidem tazminati hak edilir.",
-  emeklilik: "Emeklilik/askerlik/evlilik durumunda kidem hak edilir.",
-  belirli_sureli: "Belirli sureli sozlesmenin dogal bitisinde tazminat hak edilmez.",
-  anlasma: "Ikale durumunda kidem tutari anlasmaya gore degisir.",
-  olum: "Vefat halinde kidem yasal mirascilara odenir."
-};
-
-const examples = [
-  { title: "3 Yillik Calisan", startDate: "2021-01-01", endDate: "2023-12-31", grossSalary: "20.000,00" },
-  { title: "5 Yil Tavan Altinda", startDate: "2019-01-01", endDate: "2024-01-01", grossSalary: "28.000,00" },
-  { title: "10 Yil Tavan Uzerinde", startDate: "2014-01-01", endDate: "2024-01-01", grossSalary: "50.000,00" },
-  {
-    title: "1 Yil Asgari Ucret",
-    startDate: "2023-01-01",
-    endDate: "2024-01-01",
-    grossSalary: "17.002,12",
-    unusedLeaveDays: "6",
-    overtime: "1.250,00"
-  }
-];
-
 const faqItems = [
   {
     id: "q1",
-    question: "Kidem tazminati nedir?",
+    question: "Kıdem tazminatı ve ihbar tazminatı nasıl hesaplanır?",
     answer:
-      "Kidem tazminati, isten ayrilan ve yasal kosullari saglayan calisana odenen bir tazminattir. Her tam hizmet yili icin 1 aylik brut ucret esas alinir ve Turk Is Hukuku'ndaki en onemli isci haklarindan biridir."
+      "İşten ayrılma tazminatı genellikle çalışanın 30 günlük brüt ücretinin, tamamlanan toplam hizmet yılıyla çarpılmasıyla hesaplanır. İhbar tazminatı ise haftalık maaş ve yasal olarak zorunlu olan 2, 4, 6 veya 8 haftalık ihbar süresi esas alınarak hesaplanır."
   },
   {
     id: "q2",
-    question: "Calisan hangi durumda kidem tazminatina hak kazanir?",
+    question: "2026 yılı için tazminat hesaplamasında tavan değeri nedir?",
     answer:
-      "Calisanin ayni isverene en az 1 yil hizmet etmis olmasi gerekir. Ayrica isverenin haksiz feshi, emeklilik, askerlik, evlilik (kadin calisan icin 1 yil icinde) veya vefat gibi durumlar aranir. Hakli neden olmaksizin istifa eden calisan kidem tazminati alamaz."
+      "2026 kıdem tazminatı tavanı, bu sınırın üzerindeki tazminat hesaplamalarının iş hukuku düzenlemelerine ve Resmî Gazete güncellemelerine göre sınırlandırıldığı anlamına gelir."
   },
   {
     id: "q3",
-    question: "Kidem tazminati tavani nedir?",
+    question: "Net maaştan kıdem tazminatını nasıl hesaplayabilirim?",
     answer:
-      "Kidem tazminatinda her yil icin uygulanabilecek azami tutardir. 2024 yilinin ikinci yarisi icin bu tutar ₺41.828,42'dir. Brut ucret bu tutarin altindaysa tavan uygulanmaz; uzerindeyse her yil icin tavan tutari esas alinir."
+      "Çalışanın net maaşını brüt maaş karşılığına çevirin. Ardından, kıdem tazminatı brüt maaşa dayalı tazminat formülü ve yasal kesintiler kullanılarak hesaplanır."
   },
   {
     id: "q4",
-    question: "Ihbar tazminati nedir, kidem tazminatindan farki nedir?",
-    answer:
-      "Ihbar tazminati, is sozlesmesi yasal bildirim suresine uyulmadan feshedildiginde dogan tazminattir. Kidem tazminati hizmet suresine; ihbar tazminati ise ihbar suresinin ucret karsiligina dayanir. Iki hak birbirinden bagimsizdir."
+    question: "Brüt maaştan kıdem tazminatı nasıl hesaplanır?",
+    answer: "Brüt maaşa dayalı kıdem tazminatı, çalışanın brüt maaşının toplam hizmet yılı ile çarpılmasıyla hesaplanır."
   },
   {
     id: "q5",
-    question: "Istifa edince kidem tazminati alabilir miyim?",
+    question: "Tazminatımdan ne kadar vergi kesilecek?",
     answer:
-      "Hakli neden olmadan istifa eden calisan kidem tazminati alamaz. Ancak hakli nedenle fesihte (or. maas odememesi, mobbing, guvensiz calisma ortami - Is Kanunu Md. 24) kidem tazminati hakki dogar."
+      "Birçok durumda, kıdem tazminatından %0,759 oranında vergi kesilir. Ayrıca ihbar tazminatı ve diğer tazminatlar da gelir vergisi kesintilerinin bir parçasıdır."
   },
   {
     id: "q6",
-    question: "Kidem tazminati vergilendirilir mi?",
-    answer:
-      "Kidem tazminati yasal tavan dahilinde gelir vergisinden muaftir. Tavani asan kisim icin gelir vergisi gundeme gelebilir. Damga vergisi ise 2008 yilindan bu yana kidem tazminatinda uygulanmamaktadir."
+    question: "Seyahat ve yemek ödenekleri maaşıma dahil mi?",
+    answer: "Evet, seyahat ödenekleri, yemek ödemeleri, ikramiyeler ve teşvik ödemeleri genellikle brüt ücrete dahildir."
   },
   {
     id: "q7",
-    question: "Kullanilmayan yillik izinlerime ne olur?",
+    question: "İhbar süresi nedir?",
     answer:
-      "Is sozlesmesi sona erdiginde birikmis ancak kullanilmamis yillik izin gunleri isveren tarafindan ucrete cevrilerek odenmelidir. Bu kural istifa, emeklilik veya isten cikarma dahil tum fesih turlerinde gecerlidir."
+      "İhbar süreleri, çalışanın toplam hizmet yılına bağlı olarak, yasal olarak zorunlu olan işten çıkarma öncesi sürelerdir."
   },
   {
     id: "q8",
-    question: "Hesaplama ne kadar dogru sonuc verir?",
+    question: "Kendi isteğimle ayrılırsam tazminat alabilir miyim?",
     answer:
-      "Hesaplama standart Is Kanunu formullerine ve guncel 2024 tavan tutarlarina dayanir. Ancak prim, ikramiye, yemek/yol yardimi gibi kalemler dahil edilmediginden nihai tutar farkli cikabilir. Baglayici hesap icin bir is hukuku avukati veya ISKUR gorusu alin."
+      "Çalışanlar, emeklilik, askerlik hizmeti veya yasal olarak korunan diğer işten çıkarma durumlarında kıdem tazminatı alabilirler."
+  },
+  {
+    id: "q9",
+    question: "Kıdem tazminatı ve ihbar tazminatı aynı anda alınabilir mi?",
+    answer:
+      "Evet. Çalışanlar, iş kanunları kapsamında hak kazanmaları durumunda hem kıdem tazminatını hem de ihbar tazminatını birlikte alabilirler."
+  },
+  {
+    id: "q10",
+    question: "Tazminat hesaplama aracı ne kadar doğru?",
+    answer:
+      "Bir kıdem tazminatı hesaplayıcısı, sağladığınız doğru iş bilgilerine dayanarak tahmini sonuçlar verir. Ancak nihai tazminat, yasal koşullara bağlı olarak değişebilir."
+  },
+  {
+    id: "q11",
+    question: "Tazminatımı ne zaman almalıyım?",
+    answer:
+      "Tazminat tutarı genellikle çalışana mümkün olan en kısa sürede ödenir ve çalışan yeni bir iş bulana kadar geçerlidir."
+  },
+  {
+    id: "q12",
+    question: "Araçtan elde edilen sonuçlar resmi olarak kabul ediliyor mu?",
+    answer:
+      "Hayır, hesaplayıcı sonuçları yalnızca bilgilendirme amacıyla verilen tahminlerdir. Yasal olarak kabul edilmemelidirler. Çalışanlar nihai ödemelerini İK departmanlarından ve işverenlerinden teyit etmelidir."
   }
 ];
 
+const HERO_CAROUSEL_IMAGES = [
+  "/hero-carousel-lira.png",
+  "/hero-carousel-1.png",
+  "/hero-carousel-2.png",
+  "/hero-carousel-3.png"
+];
+
 function formatDuration(s) {
-  return `${s.yil} yil ${s.ay} ay ${s.gun} gun`;
+  return `${s.yil} yıl ${s.ay} ay ${s.gun} gün`;
+}
+
+function ContentSection({ id, alt, children }) {
+  return (
+    <section className={`section content-section${alt ? " alt" : ""}`} id={id}>
+      <div className="container">{children}</div>
+    </section>
+  );
 }
 
 export default function CompensationCalculator() {
   const [activeTab, setActiveTab] = useState("standart");
-  const [form, setForm] = useState(() => ({
-    ...initialForm,
-    endDate: new Date().toISOString().split("T")[0]
-  }));
+  const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [result, setResult] = useState(null);
   const [openFaq, setOpenFaq] = useState("");
-  const [cardTransform, setCardTransform] = useState("perspective(1100px) rotateX(0deg) rotateY(0deg) translateY(0px)");
-  const cardRef = useRef(null);
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const pdfRef = useRef(null);
+  const resultsRef = useRef(null);
+  const gerekliGirisRef = useRef(null);
+  const pendingScrollToResults = useRef(false);
 
-  const preview = useMemo(() => {
-    if (!result) {
-      return {
-        kidem: "85.250,00",
-        ihbar: "28.416,67",
-        toplam: "113.666,67",
-        sure: "5 yil 3 ay",
-        maas: "28.000,00",
-        tavan: "Hayir"
-      };
-    }
-    return {
-      kidem: TR.money(result.kidemTazminati),
-      ihbar: TR.money(result.ihbarTazminati),
-      toplam: TR.money(result.toplamTazminat),
-      sure: `${result.calismaSuresi.yil} yil ${result.calismaSuresi.ay} ay`,
-      maas: TR.money(result.brutMaas),
-      tavan: result.tavanUygulandi ? "Evet" : "Hayir"
-    };
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveHeroSlide((current) => (current + 1) % HERO_CAROUSEL_IMAGES.length);
+    }, 2000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!result || !pendingScrollToResults.current) return undefined;
+    pendingScrollToResults.current = false;
+    const timer = window.setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => window.clearTimeout(timer);
   }, [result]);
+
+  useEffect(() => {
+    const node = gerekliGirisRef.current;
+    if (!node) return undefined;
+
+    const reveal = () => node.classList.add("is-revealed");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      reveal();
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          reveal();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.14, rootMargin: "0px 0px -6% 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   const faqSchema = useMemo(
     () => ({
@@ -180,46 +218,6 @@ export default function CompensationCalculator() {
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
-  const applyExample = (item) => {
-    setForm((prev) => ({
-      ...prev,
-      startDate: item.startDate,
-      endDate: item.endDate,
-      grossSalary: item.grossSalary,
-      reason: "haksiz_fesih",
-      unusedLeaveDays: item.unusedLeaveDays || "0",
-      overtime: item.overtime || "",
-      otherReceivables: item.otherReceivables || ""
-    }));
-    setErrors({});
-  };
-
-  const runExampleCalculation = (item) => {
-    const shouldUseDetailedTab = Boolean(
-      (item.unusedLeaveDays && parseInt(item.unusedLeaveDays, 10) > 0) ||
-      (item.overtime && TR.parseMoney(item.overtime) > 0) ||
-      (item.otherReceivables && TR.parseMoney(item.otherReceivables) > 0)
-    );
-    setActiveTab(shouldUseDetailedTab ? "detayli" : "standart");
-    applyExample(item);
-    const payload = {
-      startDate: item.startDate,
-      endDate: item.endDate,
-      grossSalary: TR.parseMoney(item.grossSalary),
-      reason: "haksiz_fesih",
-      weeklyDays: 5,
-      unusedLeaveDays: parseInt(item.unusedLeaveDays || "0", 10),
-      overtime: TR.parseMoney(item.overtime || ""),
-      otherReceivables: TR.parseMoney(item.otherReceivables || "")
-    };
-    const v = validateForm(payload);
-    setErrors(v);
-    if (Object.keys(v).length > 0) return;
-    const calc = calculateCompensation(payload);
-    setResult(calc.error ? null : calc);
-    document.getElementById("hesapla")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   const submit = (e) => {
     e.preventDefault();
     const payload = {
@@ -238,13 +236,14 @@ export default function CompensationCalculator() {
     if (
       payload.grossSalary < CONFIG.MIN_WAGE_2024 &&
       !window.confirm(
-        `Girilen maas asgari ucretin (₺${TR.money(CONFIG.MIN_WAGE_2024)}) altinda. Devam edilsin mi?`
+        `Girilen maaş asgari ücretin (₺${TR.money(CONFIG.MIN_WAGE_2024)}) altında. Devam edilsin mi?`
       )
     ) {
       return;
     }
     const calc = calculateCompensation(payload);
     setResult(calc.error ? null : calc);
+    if (!calc.error) pendingScrollToResults.current = true;
   };
 
   const clear = () => {
@@ -255,27 +254,44 @@ export default function CompensationCalculator() {
 
   const copy = async () => {
     if (!result) return;
-    const text = `TAZMINAT HESAPLAMA SONUCLARI\nCalisma Suresi: ${formatDuration(result.calismaSuresi)}\nKidem: ₺${TR.money(result.kidemTazminati)}\nIhbar: ₺${TR.money(result.ihbarTazminati)}\nToplam: ₺${TR.money(result.toplamTazminat)}`;
+    const { text } = buildShareReport({ form, result, activeTab });
     await navigator.clipboard.writeText(text);
-    window.alert("Sonuc kopyalandi.");
+    window.alert("Sonuç kopyalandı.");
   };
 
-  const handleCardMouseMove = (event) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const rotateY = ((x / rect.width) - 0.5) * 10;
-    const rotateX = (0.5 - (y / rect.height)) * 10;
-    setCardTransform(
-      `perspective(1100px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`
-    );
+  const shareWhatsApp = () => {
+    if (!result) return;
+    const { text } = buildShareReport({ form, result, activeTab });
+    window.open(getWhatsAppShareUrl(text), "_blank", "noopener,noreferrer");
   };
 
-  const handleCardMouseLeave = () => {
-    setCardTransform("perspective(1100px) rotateX(0deg) rotateY(0deg) translateY(0px)");
+  const shareEmail = () => {
+    if (!result) return;
+    const { text } = buildShareReport({ form, result, activeTab });
+    window.location.href = getEmailShareUrl({ text });
   };
+
+  const downloadPdf = async () => {
+    if (!result || !pdfRef.current) return;
+    const sheet = pdfRef.current.querySelector(".pdf-report-sheet");
+    if (!sheet) return;
+
+    setPdfLoading(true);
+    try {
+      await exportResultPdf(sheet);
+    } catch {
+      window.alert("PDF oluşturulamadı. Lütfen tekrar deneyin.");
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setForm((prev) => {
+      if (prev.endDate) return prev;
+      return { ...prev, endDate: new Date().toISOString().split("T")[0] };
+    });
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -325,113 +341,94 @@ export default function CompensationCalculator() {
 
   return (
     <>
-      <section className="hero">
-        <div className="container hero-grid">
-          <div className="hero-left">
-            <span className="badge">Ucretsiz Kidem Tazminati Hesaplama</span>
-            <h1>
-              Kidem Tazminatinizi
-              <br />
-              <span className="hero-highlight">Aninda Hesaplayin</span>
-            </h1>
-            <p className="hero-copy">
-              Ise giris tarihi, cikis tarihi ve brut maasinizi girin; 4857 sayili Is Kanunu&apos;na gore
-              kidem ve ihbar tazminatinizi aninda hesaplayin. Ucretsiz, kayit gerektirmez, tarayicinizda
-              calisir.
-            </p>
-            <div className="hero-actions">
-              <a href="/#hesapla" className="hero-btn hero-btn-primary">
-                Hesaplamaya Basla <span aria-hidden="true">→</span>
-              </a>
-              <a href="/#nasil-hesaplanir" className="hero-btn hero-btn-ghost">
-                Nasil Hesaplanir?
-              </a>
+      <section className="hero-shell landing-frame">
+        <div className="landing-frame-inner">
+          <div className="hero-card">
+            <div className="hero-grid">
+              <div className="hero-content">
+                <h1>Kıdem Tazminatı Hesaplayıcısı ve Kıdem Tazminatı Hakkında Kapsamlı Kılavuz</h1>
+                <p className="hero-copy">
+                  İşten ayrılma tazminatını anlamak hem çalışanlar hem de işverenler için çok önemlidir. Hak ettiğiniz
+                  tazminatı doğru bir şekilde tahmin etmek için İşten Ayrılma Tazminatı Hesaplayıcımızı kullanın ve
+                  işten ayrılma tazminatının nasıl hesaplandığını öğrenmek için kapsamlı kılavuzumuzu inceleyin.
+                </p>
+                <span className="hero-divider" aria-hidden="true" />
+                <a
+                  href="#hesapla"
+                  className="hero-cta-lime"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    document.getElementById("hesapla")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                >
+                  Hesapla
+                  <span className="hero-cta-icon" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              </div>
+              <div className="hero-visual" aria-hidden="true">
+                <div className="hero-carousel">
+                  {HERO_CAROUSEL_IMAGES.map((src, index) => (
+                    <div
+                      key={src}
+                      className={`hero-carousel-slide${activeHeroSlide === index ? " is-active" : ""}`}
+                    >
+                      <Image
+                        src={src}
+                        alt=""
+                        fill
+                        sizes="(max-width: 900px) 100vw, 52vw"
+                        priority={index === 0}
+                        className="hero-visual-img"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="hero-stats">
-              <div className="hero-stat-card">
-                <strong>4857</strong>
-                <span>IS KANUNU NO.</span>
-              </div>
-              <div className="hero-stat-card">
-                <strong>100%</strong>
-                <span className="hero-stat-sub hero-stat-subline">FREE UCRETSIZ</span>
-              </div>
-              <div className="hero-stat-card">
-                <strong>2024</strong>
-                <span>GUNCEL TAVAN</span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="preview-card preview-card-animated"
-            ref={cardRef}
-            onMouseMove={handleCardMouseMove}
-            onMouseLeave={handleCardMouseLeave}
-            style={{ transform: cardTransform }}
-          >
-            <span className="preview-live">CANLI ONIZLEME</span>
-            <p className="preview-kicker">TAHMINI SONUC</p>
-            <h3>Kidem ve Ihbar Tazminati</h3>
-            <div className="preview-row">
-              <span>Kidem Tazminati</span>
-              <strong>₺{preview.kidem}</strong>
-            </div>
-            <div className="preview-row">
-              <span>Ihbar Tazminati</span>
-              <strong>₺{preview.ihbar}</strong>
-            </div>
-            <div className="preview-total">
-              <span>Toplam Tazminat</span>
-              <strong>₺{preview.toplam}</strong>
-            </div>
-            <div className="preview-meta">
-              <div>
-                <span>Calisma Suresi</span>
-                <strong>{preview.sure}</strong>
-              </div>
-              <div>
-                <span>Brut Maas</span>
-                <strong>₺{preview.maas}</strong>
-              </div>
-              <div>
-                <span>Tavan Uygulamasi</span>
-                <strong>{preview.tavan}</strong>
-              </div>
-              <div>
-                <span>Son Guncelleme</span>
-                <strong>{CONFIG.CEILING.lastUpdated}</strong>
-              </div>
+            <div className="hero-slider-dots" aria-hidden="true">
+              {HERO_CAROUSEL_IMAGES.map((src, index) => (
+                <span key={src} className={activeHeroSlide === index ? "is-active" : ""} />
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section" id="hesapla">
-        <div className="container">
-          <h2>Tazminat Hesaplama</h2>
-          <div className="tabs">
-            <button
-              type="button"
-              className={activeTab === "standart" ? "active" : ""}
-              onClick={() => setActiveTab("standart")}
-            >
-              Standart
-            </button>
-            <button
-              type="button"
-              className={activeTab === "detayli" ? "active" : ""}
-              onClick={() => setActiveTab("detayli")}
-            >
-              Detayli
-            </button>
-          </div>
+      <section className="section calc-section" id="hesapla">
+        <div className="container calc-wrap">
+          <div className="calc-panel">
+            <div className="calc-panel-top" aria-hidden="true" />
+            <div className="calc-panel-head">
+              <div className="tabs calc-tabs" role="tablist" aria-label="Hesaplama modu">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === "standart"}
+                  className={activeTab === "standart" ? "active" : ""}
+                  onClick={() => setActiveTab("standart")}
+                >
+                  Standart
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === "detayli"}
+                  className={activeTab === "detayli" ? "active" : ""}
+                  onClick={() => setActiveTab("detayli")}
+                >
+                  Detaylı
+                </button>
+              </div>
+            </div>
 
-          <form className="calc-form" onSubmit={submit}>
-            <div className="grid">
+            <form className="calc-form" onSubmit={submit}>
+              <div className="calc-fields grid">
               <label>
-                Ise Giris Tarihi
+                İşe Giriş Tarihi
                 <input
+                  id="giris"
                   type="date"
                   value={form.startDate}
                   onChange={(e) => onChange("startDate", e.target.value)}
@@ -439,14 +436,15 @@ export default function CompensationCalculator() {
                 {errors.giris && <small className="error">{errors.giris}</small>}
               </label>
               <label>
-                Isten Cikis Tarihi
+                İşten Çıkış Tarihi
                 <input type="date" value={form.endDate} onChange={(e) => onChange("endDate", e.target.value)} />
                 {errors.cikis && <small className="error">{errors.cikis}</small>}
               </label>
-              <label className="full">
-                Son Brut Aylik Maas (₺)
+              <label className="full calc-salary-block">
+                Son Brüt Aylık Maaş (₺)
                 <input
                   type="text"
+                  className="calc-salary-input"
                   value={form.grossSalary}
                   onChange={(e) => onChange("grossSalary", e.target.value)}
                   onBlur={(e) => {
@@ -455,9 +453,14 @@ export default function CompensationCalculator() {
                   }}
                   placeholder="28.000,00"
                 />
-                <div className="chips">
+                <div className="chips calc-chips">
                   {["17.002,12", "20.000,00", "25.000,00", "30.000,00", "40.000,00", "50.000,00"].map((m) => (
-                    <button key={m} type="button" className="chip" onClick={() => onChange("grossSalary", m)}>
+                    <button
+                      key={m}
+                      type="button"
+                      className={`chip${form.grossSalary === m ? " is-active" : ""}`}
+                      onClick={() => onChange("grossSalary", m)}
+                    >
                       ₺{m}
                     </button>
                   ))}
@@ -465,29 +468,28 @@ export default function CompensationCalculator() {
                 {errors.maas && <small className="error">{errors.maas}</small>}
               </label>
               <label>
-                Isten Cikis Nedeni
+                İşten Ayrılma Nedeni
                 <select value={form.reason} onChange={(e) => onChange("reason", e.target.value)}>
-                  <option value="haksiz_fesih">Isveren tarafindan haksiz fesih</option>
-                  <option value="istifa_haksiz">Istifa - hakli neden olmaksizin</option>
-                  <option value="istifa_hakli">Istifa - hakli nedenle</option>
+                  <option value="haksiz_fesih">İşveren tarafından haksız fesih</option>
+                  <option value="istifa_haksiz">İstifa - haklı neden olmaksızın</option>
+                  <option value="istifa_hakli">İstifa - haklı nedenle</option>
                   <option value="emeklilik">Emeklilik / Askerlik / Evlilik</option>
-                  <option value="belirli_sureli">Belirli sureli sozlesme sonu</option>
-                  <option value="anlasma">Karsilikli anlasma (ikale)</option>
+                  <option value="belirli_sureli">Belirli süreli sözleşme sonu</option>
+                  <option value="anlasma">Karşılıklı anlaşma (ikale)</option>
                   <option value="olum">Vefat</option>
                 </select>
-                <small>{reasonNotes[form.reason]}</small>
               </label>
               <label>
-                Haftalik Calisma Gunu
+                Haftalık Çalışma Günü
                 <select value={form.weeklyDays} onChange={(e) => onChange("weeklyDays", e.target.value)}>
-                  <option value="5">5 gun</option>
-                  <option value="6">6 gun</option>
+                  <option value="5">5 gün</option>
+                  <option value="6">6 gün</option>
                 </select>
               </label>
               {activeTab === "detayli" && (
                 <>
                   <label>
-                    Kullanilmamis Yillik Izin (gun)
+                    Kullanılmamış Yıllık İzin (gün)
                     <input
                       type="number"
                       min={0}
@@ -496,11 +498,11 @@ export default function CompensationCalculator() {
                     />
                   </label>
                   <label>
-                    Fazla Mesai Alacagi (₺)
+                    Fazla Mesai Alacağı (₺)
                     <input type="text" value={form.overtime} onChange={(e) => onChange("overtime", e.target.value)} />
                   </label>
                   <label className="full">
-                    Diger Alacaklar (₺)
+                    Diğer Alacaklar (₺)
                     <input
                       type="text"
                       value={form.otherReceivables}
@@ -509,38 +511,45 @@ export default function CompensationCalculator() {
                   </label>
                 </>
               )}
-            </div>
-            <div className="actions">
-              <button type="submit">Tazminati Hesapla</button>
-              <button type="button" onClick={clear}>
-                Temizle
-              </button>
-              <button type="button" onClick={() => window.print()}>
-                Yazdir
-              </button>
-              <button type="button" onClick={copy} disabled={!result}>
-                Sonucu Kopyala
-              </button>
-            </div>
-          </form>
+              </div>
+              <div className="calc-actions actions">
+                <button type="submit" className="calc-submit-btn">
+                  Tazminatı Hesapla
+                  <span className="calc-submit-icon" aria-hidden="true">
+                    →
+                  </span>
+                </button>
+                <div className="calc-secondary-actions">
+                  <button type="button" onClick={clear}>
+                    Temizle
+                  </button>
+                  <button type="button" onClick={() => window.print()}>
+                    Yazdır
+                  </button>
+                  <button type="button" onClick={copy} disabled={!result}>
+                    Sonucu Kopyala
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
 
           {result && (
-            <div className="results">
-              <h3>Hesaplama Sonuclari</h3>
-              <p>
-                {result.iseGirisTarihi} - {result.istenCikisTarihi} / {formatDuration(result.calismaSuresi)}
-              </p>
-              <p className="result-disclaimer" role="note" aria-label="Yasal bilgilendirme">
-                Bu sonuc yalnizca bilgilendirme amaclidir. Toplu is sozlesmesi, mahkeme karari veya ozel
-                sozlesme sartlari nihai tutari degistirebilir.
-              </p>
+            <div id="calc-results" className="calc-results results" ref={resultsRef}>
+              <div className="result-results-top" aria-hidden="true" />
+              <div className="result-results-head">
+                <h3>Hesaplama Sonuçları</h3>
+                <p className="result-period">
+                  {result.iseGirisTarihi} - {result.istenCikisTarihi} / {formatDuration(result.calismaSuresi)}
+                </p>
+              </div>
               <div className="result-cards">
                 <article>
-                  <h4>Kidem Tazminati</h4>
+                  <h4>Kıdem Tazminatı</h4>
                   <strong>₺{TR.money(result.kidemTazminati)}</strong>
                 </article>
                 <article>
-                  <h4>Ihbar Tazminati</h4>
+                  <h4>İhbar Tazminatı</h4>
                   <strong>₺{TR.money(result.ihbarTazminati)}</strong>
                 </article>
                 <article>
@@ -549,240 +558,636 @@ export default function CompensationCalculator() {
                 </article>
               </div>
 
-              <table>
-                <thead>
-                  <tr>
-                    <th>Kalem</th>
-                    <th>Hesaplama</th>
-                    <th>Tutar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Kidem Tazminati</td>
-                    <td>
-                      ₺{TR.money(Math.min(result.brutMaas, result.tavanTutari))} x {result.totalYears.toFixed(2)} yil
-                    </td>
-                    <td>₺{TR.money(result.kidemTazminati)}</td>
-                  </tr>
-                  <tr>
-                    <td>Ihbar Tazminati</td>
-                    <td>
-                      (₺{TR.money(result.brutMaas)} / 30) x {result.ihbarSuresi} gun
-                    </td>
-                    <td>₺{TR.money(result.ihbarTazminati)}</td>
-                  </tr>
-                  {activeTab === "detayli" && result.unusedLeaveDays > 0 && (
+              <div className="result-table-wrap">
+                <table>
+                  <thead>
                     <tr>
-                      <td>Kullanilmamis Izin</td>
-                      <td>(₺{TR.money(result.brutMaas)} / 30) x {result.unusedLeaveDays} gun</td>
-                      <td>₺{TR.money(result.unusedLeavePay)}</td>
+                      <th>Kalem</th>
+                      <th>Hesaplama</th>
+                      <th>Tutar</th>
                     </tr>
-                  )}
-                  <tr>
-                    <td>Toplam</td>
-                    <td />
-                    <td>₺{TR.money(result.toplamTazminat)}</td>
-                  </tr>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Kıdem Tazminatı</td>
+                      <td>
+                        ₺{TR.money(Math.min(result.brutMaas, result.tavanTutari))} x {result.totalYears.toFixed(2)} yıl
+                      </td>
+                      <td>₺{TR.money(result.kidemTazminati)}</td>
+                    </tr>
+                    <tr>
+                      <td>İhbar Tazminatı</td>
+                      <td>
+                        (₺{TR.money(result.brutMaas)} / 30) x {result.ihbarSuresi} gün
+                      </td>
+                      <td>₺{TR.money(result.ihbarTazminati)}</td>
+                    </tr>
+                    {activeTab === "detayli" && result.unusedLeaveDays > 0 && (
+                      <tr>
+                        <td>Kullanılmamış İzin</td>
+                        <td>
+                          (₺{TR.money(result.brutMaas)} / 30) x {result.unusedLeaveDays} gün
+                        </td>
+                        <td>₺{TR.money(result.unusedLeavePay)}</td>
+                      </tr>
+                    )}
+                    <tr className="result-total-row">
+                      <td>Toplam</td>
+                      <td />
+                      <td>₺{TR.money(result.toplamTazminat)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <ResultShareBar
+                onWhatsApp={shareWhatsApp}
+                onPdf={downloadPdf}
+                onEmail={shareEmail}
+                pdfLoading={pdfLoading}
+              />
+            </div>
+          )}
+
+          {result && (
+            <div ref={pdfRef}>
+              <ResultPdfTemplate form={form} result={result} activeTab={activeTab} />
             </div>
           )}
         </div>
       </section>
 
-      <section className="section alt" id="nasil-hesaplanir">
-        <div className="container how-wrap">
-          <div className="how-head">
-            <span className="how-eyebrow">ADIM ADIM REHBER</span>
-            <h2>
-              Nasil <span>hesaplanir?</span>
-            </h2>
-            <p>Kidem ve ihbar tazminati hesaplamasi 3 basit adimda tamamlanir</p>
-          </div>
-          <div className="how-grid">
-            <article className="how-card">
-              <div className="how-num">01</div>
-              <span className="how-icon">📅</span>
-              <h3>Tarihleri Girin</h3>
+      <ContentSection id="tazminat-turleri">
+        <div className="intro-section">
+          <div className="intro-showcase">
+            <div className="intro-showcase-copy">
+              <h2>İşten Çıkarma Tazminatı Nedir?</h2>
               <p>
-                Ise giris ve cikis tarihlerinizi girin. Sistem calisma suresini yil, ay ve gun bazinda
-                otomatik hesaplar.
+                İşten çıkarma tazminatı, belirli yasal veya sözleşmesel koşullar altında iş ilişkisinin sona ermesi
+                durumunda işveren tarafından çalışana ödenen mali tazminattır. Birçok ülkede, işten çıkarma tazminatı
+                hesaplaması iş kanunları, iş sözleşmeleri, toplu iş sözleşmeleri ve şirket politikaları tarafından
+                düzenlenir.
               </p>
-            </article>
-            <article className="how-card">
-              <div className="how-num">02</div>
-              <span className="how-icon">💲</span>
-              <h3>Maas Bilgisi Girin</h3>
               <p>
-                Son brut maasinizi ve cikis nedeninizi secin. Hizli secim butonlari ile kolayca veri
-                girebilirsiniz.
+                Çalışanlar, işten çıkarma, emeklilik, işten çıkarılma, iş gücü azaltımı, askerlik hizmeti, istifa veya
+                işten ayrılma durumlarında işten çıkarma tazminatı alabilirler. Geçerli yasa ve iş şartlarına bağlı olarak,
+                çalışanlar ayrıca ihbar tazminatı ve diğer çalışan alacaklarına da hak kazanabilirler. Ancak politikalar
+                şirketten şirkete biraz farklılık gösterebilir. Tüm bu ödemeler için hesaplamaları hesaplayıcımızı
+                kullanarak yapabilirsiniz.
               </p>
-            </article>
-            <article className="how-card">
-              <div className="how-num">03</div>
-              <span className="how-icon">📊</span>
-              <h3>Sonucu Gorun</h3>
-              <p>
-                Kidem ve ihbar tazminati Is Kanunu formulune gore aninda hesaplanir. Sonucu yazdirabilir
-                veya kopyalayabilirsiniz.
-              </p>
-            </article>
+            </div>
+            <div className="intro-sticky-board">
+              <ul className="intro-points-list">
+                <li>İşten çıkarma tazminatı hesaplaması</li>
+                <li>İhbar tazminatı hesaplaması</li>
+                <li>İhbar süresi hesaplaması</li>
+                <li>Çalışan ücreti hesaplaması</li>
+                <li>Emeklilik tazminatı hesaplaması</li>
+                <li>İşten ayrılma tazminatı hesaplaması</li>
+                <li>Kıdem hesaplaması</li>
+                <li>Net maaş üzerinden işten çıkarma tazminatı hesaplaması</li>
+                <li>İşten çıkarma ve ihbar tazminatı birleşik hesaplaması</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </section>
+      </ContentSection>
 
-      <section className="section" id="tazminat-turleri">
-        <div className="container types-wrap">
-          <div className="types-head">
-            <span className="types-eyebrow">BILGI MERKEZI</span>
-            <h2>
-              Tazminat <span>Turleri</span>
-            </h2>
-            <p>Turk Is Hukuku&apos;nda one cikan temel tazminat turleri</p>
+      <ContentSection alt id="ucretsiz-hesaplayici">
+        <div className="free-calc-showcase">
+          <div className="free-calc-visual">
+            <Image
+              src="/free-calc-idea.png"
+              alt="Kıdem tazminatı hesaplama fikir görseli"
+              width={600}
+              height={400}
+              className="free-calc-image"
+            />
           </div>
-          <div className="types-grid">
-            <article className="type-card">
-              <span className="type-tag">📜 IS KANUNU MD. 14</span>
-              <h3>Kidem Tazminati</h3>
-              <div className="type-sub">Kidem Tazminati</div>
-              <dl className="type-facts">
-                <div>
-                  <dt>TANIM</dt>
-                  <dd>Hak kazanan isciye, her tam hizmet yili icin 1 aylik brut ucret tutarinda odenen tazminattir.</dd>
-                </div>
-                <div>
-                  <dt>HUKUKI DAYANAK</dt>
-                  <dd>1475 sayili Kanun Md. 14 ve ilgili yargi ictihatlari.</dd>
-                </div>
-                <div>
-                  <dt>KOSUL</dt>
-                  <dd>En az 1 yil kidem ve uygun fesih nedeni.</dd>
-                </div>
-                <div>
-                  <dt>FORMUL</dt>
-                  <dd>Brut Ucret x Kidem Yili (tavan uygulanarak).</dd>
-                </div>
-              </dl>
-            </article>
-            <article className="type-card">
-              <span className="type-tag">📜 IS KANUNU MD. 17</span>
-              <h3>Ihbar Tazminati</h3>
-              <div className="type-sub">Ihbar Tazminati</div>
-              <dl className="type-facts">
-                <div>
-                  <dt>TANIM</dt>
-                  <dd>Bildirim suresine uyulmadan fesih yapildiginda odenen tazminattir.</dd>
-                </div>
-                <div>
-                  <dt>HUKUKI DAYANAK</dt>
-                  <dd>4857 sayili Is Kanunu Md. 17.</dd>
-                </div>
-                <div>
-                  <dt>KOSUL</dt>
-                  <dd>Ihbar surelerine uyulmaksizin fesih.</dd>
-                </div>
-                <div>
-                  <dt>SURE</dt>
-                  <dd>Kideme gore 2 ila 8 hafta arasi.</dd>
-                </div>
-              </dl>
-            </article>
-            <article className="type-card">
-              <span className="type-tag">📜 IS KANUNU MD. 59</span>
-              <h3>Yillik Izin Ucreti</h3>
-              <div className="type-sub">Yillik Izin Alacagi</div>
-              <dl className="type-facts">
-                <div>
-                  <dt>TANIM</dt>
-                  <dd>Kullanilmamis izin gunleri, is sozlesmesi sona erdiginde ucrete donusur.</dd>
-                </div>
-                <div>
-                  <dt>HUKUKI DAYANAK</dt>
-                  <dd>4857 sayili Is Kanunu Md. 59.</dd>
-                </div>
-                <div>
-                  <dt>KOSUL</dt>
-                  <dd>Fesih sekli fark etmeksizin kullanilmamis izin bulunmasi.</dd>
-                </div>
-                <div>
-                  <dt>FORMUL</dt>
-                  <dd>(Brut Maas / 30) x Kullanilmayan Izin Gunu.</dd>
-                </div>
-              </dl>
-            </article>
-            <article className="type-card">
-              <span className="type-tag">📜 IS KANUNU MD. 17/6</span>
-              <h3>Kotu Niyet Tazminati</h3>
-              <div className="type-sub">Kotu Niyet Tazminati</div>
-              <dl className="type-facts">
-                <div>
-                  <dt>TANIM</dt>
-                  <dd>Isverenin kotu niyetli fesihlerinde dogabilen ilave tazminattir.</dd>
-                </div>
-                <div>
-                  <dt>HUKUKI DAYANAK</dt>
-                  <dd>4857 sayili Is Kanunu Md. 17/6.</dd>
-                </div>
-                <div>
-                  <dt>KOSUL</dt>
-                  <dd>Kotu niyet unsurunun hukuki olarak ortaya konmasi.</dd>
-                </div>
-                <div>
-                  <dt>TUTAR</dt>
-                  <dd>Kosullara gore ihbar tazminatinin 3 kati seviyesine ulasabilir.</dd>
-                </div>
-              </dl>
-            </article>
+          <div className="free-calc-copy">
+            <h2>Ücretsiz Kıdem Tazminatı Hesaplayıcısı</h2>
+            <p>
+              Bu çevrimiçi kıdem tazminatı hesaplayıcısı, çalışanların, insan kaynakları uzmanlarının ve işverenlerin
+              maaş, hizmet süresi, yaş, şirket politikası ve diğer önemli faktörlere dayanarak kıdem tazminatını hızlı
+              bir şekilde tahmin etmelerine yardımcı olur. İster işten çıkarılma, ister işten atılma veya gönüllü ayrılma
+              ile karşı karşıya olun, bu araç potansiyel kıdem tazminatı paketinizin anlık bir tahminini sunar.
+            </p>
           </div>
         </div>
-      </section>
+      </ContentSection>
 
-      <section className="section alt" id="ornekler">
-        <div className="container examples-wrap">
-          <div className="examples-head">
-            <span className="examples-eyebrow">PRAKTIK SENARYOLAR</span>
-            <h2>Hesaplama Ornekleri</h2>
-            <p>Farkli calisma sureleri ve brut maaslara gore hazirlanmis hizli ornek senaryolar.</p>
+      <ContentSection id="aninda-hesapla">
+        <div className="instant-calc-showcase">
+          <div className="instant-calc-list-panel">
+            <ul className="instant-calc-points">
+              <li>Toplam kıdem tazminatı tutarı</li>
+              <li>Haftalık ve iki haftalık kıdem tazminatı</li>
+              <li>İşten çıkarma tazminatı tahminleri</li>
+              <li>Kıdem tazminatından vergi kesintileri</li>
+              <li>Ek ödemeler ve yan haklar</li>
+              <li>Maksimum kıdem tazminatı limitleri</li>
+            </ul>
           </div>
-          <div className="examples-grid">
-            {examples.map((item) => (
-              <article className="example-card" key={item.title}>
-                <span className="example-tag">ORNEK SENARYO</span>
-                <h3>{item.title}</h3>
-                <dl className="example-facts">
-                  <div>
-                    <dt>Ise Giris</dt>
-                    <dd>{item.startDate}</dd>
-                  </div>
-                  <div>
-                    <dt>Isten Cikis</dt>
-                    <dd>{item.endDate}</dd>
-                  </div>
-                  <div>
-                    <dt>Brut Maas</dt>
-                    <dd>₺{item.grossSalary}</dd>
-                  </div>
-                </dl>
-                <button type="button" className="example-btn" onClick={() => runExampleCalculation(item)}>
-                  Bu Degerlerle Hesapla →
-                </button>
-              </article>
-            ))}
+          <div className="instant-calc-copy-card">
+            <h2>İşten Çıkarma Tazminatınızı Anında Hesaplayın</h2>
+            <p>
+              Hesap makinesi veya bir araç kullanmadan kıdem tazminatını manuel olarak hesaplamak zordur. Bu yöntemde
+              hatalar ve yanlışlıklar olma olasılığı yüksektir; ayrıca gelişmiş hesaplamalar için nihai formüle ve ödemeye
+              çeşitli terimler ve değişkenler dahil edilir. İşte burada kıdem tazminatı hesaplayıcısının sihri devreye
+              giriyor. Hesaplayıcı aşağıdaki hususları tahmin etmenize yardımcı olabilir:
+            </p>
           </div>
         </div>
-      </section>
+      </ContentSection>
+
+      <ContentSection alt id="gerekli-girisler">
+        <div className="required-inputs-showcase" ref={gerekliGirisRef}>
+          <h2 className="required-inputs-heading">Hesap Makinesi İçin Gerekli Girişler</h2>
+          <p className="required-inputs-intro">
+            İşten çıkarılmanız veya işten atılmanız durumunda alacağınız kıdem tazminatını belirlerken bazı faktörler
+            önemlidir. Daha iyi bir tazminat alabilmeniz için her zaman doğru bilgiler vermeniz çok önemlidir.
+            Hesaplama cihazına girilebilecek yaygın bilgiler şunlardır:
+          </p>
+
+          <div className="required-inputs-diagram">
+            <svg
+              className="required-inputs-connectors"
+              viewBox="0 0 1000 500"
+              preserveAspectRatio="xMidYMid meet"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="req-conn-1" x1="408" y1="250" x2="338" y2="40" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#4f46e5" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-2" x1="408" y1="250" x2="338" y2="145" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-3" x1="408" y1="250" x2="338" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#059669" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-4" x1="408" y1="250" x2="338" y2="355" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#0d9488" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-5" x1="408" y1="250" x2="338" y2="460" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#65a30d" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-6" x1="592" y1="250" x2="662" y2="40" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#4f46e5" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-7" x1="592" y1="250" x2="662" y2="180" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-8" x1="592" y1="250" x2="662" y2="320" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#059669" stopOpacity="0.5" />
+                </linearGradient>
+                <linearGradient id="req-conn-9" x1="592" y1="250" x2="662" y2="460" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                  <stop offset="100%" stopColor="#0d9488" stopOpacity="0.5" />
+                </linearGradient>
+              </defs>
+              <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path className="required-inputs-connector required-inputs-connector--1" d="M408 250 H362 V40 H338" stroke="url(#req-conn-1)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--2" d="M408 250 H362 V145 H338" stroke="url(#req-conn-2)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--3" d="M408 250 H338" stroke="url(#req-conn-3)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--4" d="M408 250 H362 V355 H338" stroke="url(#req-conn-4)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--5" d="M408 250 H362 V460 H338" stroke="url(#req-conn-5)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--6" d="M592 250 H638 V40 H662" stroke="url(#req-conn-6)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--7" d="M592 250 H638 V180 H662" stroke="url(#req-conn-7)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--8" d="M592 250 H638 V320 H662" stroke="url(#req-conn-8)" strokeWidth="2" />
+                <path className="required-inputs-connector required-inputs-connector--9" d="M592 250 H638 V460 H662" stroke="url(#req-conn-9)" strokeWidth="2" />
+              </g>
+            </svg>
+
+            <div className="required-inputs-hub" aria-hidden="true">
+              <svg className="required-inputs-hub-art" viewBox="0 0 280 280" fill="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="req-hub-calc" x1="88" y1="84" x2="192" y2="196" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#4f46e5" />
+                    <stop offset="1" stopColor="#7c3aed" />
+                  </linearGradient>
+                  <linearGradient id="req-hub-screen" x1="108" y1="98" x2="172" y2="126" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#eef2ff" />
+                    <stop offset="1" stopColor="#f8f9ff" />
+                  </linearGradient>
+                  <filter id="req-hub-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#4f46e5" floodOpacity="0.22" />
+                  </filter>
+                </defs>
+                <circle className="required-inputs-hub-glow" cx="140" cy="140" r="126" stroke="rgba(124, 58, 237, 0.12)" strokeWidth="2" />
+                <circle cx="140" cy="140" r="110" stroke="rgba(79, 70, 229, 0.14)" strokeWidth="1.5" />
+                <circle cx="140" cy="140" r="94" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1" />
+                <g filter="url(#req-hub-shadow)">
+                  <rect x="98" y="104" width="84" height="96" rx="12" fill="url(#req-hub-calc)" />
+                  <rect x="108" y="114" width="64" height="22" rx="5" fill="url(#req-hub-screen)" />
+                  <text x="140" y="129" textAnchor="middle" fill="#4f46e5" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">
+                    ₺
+                  </text>
+                  <rect x="112" y="144" width="11" height="11" rx="2.5" fill="rgba(255,255,255,0.3)" />
+                  <rect x="127" y="144" width="11" height="11" rx="2.5" fill="rgba(255,255,255,0.3)" />
+                  <rect x="142" y="144" width="11" height="11" rx="2.5" fill="rgba(255,255,255,0.3)" />
+                  <rect x="157" y="144" width="11" height="11" rx="2.5" fill="rgba(255,255,255,0.3)" />
+                  <rect x="112" y="159" width="11" height="11" rx="2.5" fill="rgba(255,255,255,0.22)" />
+                  <rect x="127" y="159" width="11" height="11" rx="2.5" fill="rgba(255,255,255,0.22)" />
+                  <rect x="142" y="159" width="11" height="11" rx="2.5" fill="rgba(255,255,255,0.22)" />
+                  <rect x="157" y="159" width="11" height="11" rx="2.5" fill="#c6f24e" fillOpacity="0.9" />
+                  <rect x="112" y="174" width="26" height="11" rx="2.5" fill="rgba(255,255,255,0.2)" />
+                  <rect x="142" y="174" width="26" height="11" rx="2.5" fill="rgba(255,255,255,0.2)" />
+                </g>
+                <g className="required-inputs-hub-coin required-inputs-hub-coin--1">
+                  <circle cx="46" cy="56" r="14" fill="#eef2ff" stroke="#4f46e5" strokeWidth="1.4" />
+                  <text x="46" y="60.5" textAnchor="middle" fill="#4f46e5" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">
+                    ₺
+                  </text>
+                </g>
+                <g className="required-inputs-hub-coin required-inputs-hub-coin--2">
+                  <circle cx="234" cy="224" r="14" fill="#f3e8ff" stroke="#7c3aed" strokeWidth="1.4" />
+                  <text x="234" y="228.5" textAnchor="middle" fill="#7c3aed" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">
+                    ₺
+                  </text>
+                </g>
+                <circle className="required-inputs-hub-spark" cx="234" cy="56" r="3.5" fill="#c6f24e" />
+                <circle className="required-inputs-hub-spark required-inputs-hub-spark--delay" cx="46" cy="224" r="3" fill="#c6f24e" fillOpacity="0.88" />
+                <circle cx="140" cy="32" r="2.5" fill="#c6f24e" fillOpacity="0.72" />
+              </svg>
+            </div>
+
+            <ul className="required-inputs-branch required-inputs-branch--left">
+              <li className="required-inputs-item required-inputs-item--1">
+                <span className="required-inputs-item-text">Yıllık maaş veya saatlik ücret</span>
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+              </li>
+              <li className="required-inputs-item required-inputs-item--2">
+                <span className="required-inputs-item-text">Haftalık kazanç</span>
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+              </li>
+              <li className="required-inputs-item required-inputs-item--3">
+                <span className="required-inputs-item-text">Hizmet süresi (yıl ve ay)</span>
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+              </li>
+              <li className="required-inputs-item required-inputs-item--4">
+                <span className="required-inputs-item-text">Çalışanın yaşı</span>
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+              </li>
+              <li className="required-inputs-item required-inputs-item--5">
+                <span className="required-inputs-item-text">İstihdam türü ve pozisyonu</span>
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+              </li>
+            </ul>
+
+            <ul className="required-inputs-branch required-inputs-branch--right">
+              <li className="required-inputs-item required-inputs-item--6">
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+                <span className="required-inputs-item-text">Şirketin kıdem tazminatı politikası</span>
+              </li>
+              <li className="required-inputs-item required-inputs-item--7">
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+                <span className="required-inputs-item-text">İhbar süresi detayları</span>
+              </li>
+              <li className="required-inputs-item required-inputs-item--8">
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+                <span className="required-inputs-item-text">Bonuslar veya kullanılmayan yıllık izin ödemeleri</span>
+              </li>
+              <li className="required-inputs-item required-inputs-item--9">
+                <span className="required-inputs-item-icon" aria-hidden="true" />
+                <span className="required-inputs-item-text">Kıdem tazminatı paketine dahil olan ek haklar</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </ContentSection>
+
+      <ContentSection id="nasil-hesaplanir">
+        <div className="how-steps-showcase">
+          <header className="how-steps-head">
+            <h2 className="how-steps-title">Kıdem Tazminatı Hesaplayıcısı Nasıl Kullanılır?</h2>
+            <p className="how-steps-lead">
+              Bu kıdem tazminatı hesaplayıcısını kolayca kullanabilirsiniz ve sadece birkaç adım gerektirir. Araç,
+              finansal veya hukuki uzmanlığa ihtiyaç duymadan kullanıcılara hızlı sonuçlar vermek üzere tasarlanmıştır.
+            </p>
+            <p className="how-steps-sub">İşten ayrılma tazminatınızı hesaplamak için şu adımları izleyin:</p>
+          </header>
+
+          <ol className="how-steps-grid">
+            <li className="how-steps-card how-steps-card--1">
+              <span className="how-steps-badge">1</span>
+              <span className="how-steps-icon" aria-hidden="true" />
+              <p className="how-steps-card-text">Yıllık maaşınızı veya haftalık ücretinizi girin.</p>
+            </li>
+            <li className="how-steps-card how-steps-card--2">
+              <span className="how-steps-badge">2</span>
+              <span className="how-steps-icon" aria-hidden="true" />
+              <p className="how-steps-card-text">Şirketteki toplam hizmet sürenizi ekleyin.</p>
+            </li>
+            <li className="how-steps-card how-steps-card--3">
+              <span className="how-steps-badge">3</span>
+              <span className="how-steps-icon" aria-hidden="true" />
+              <p className="how-steps-card-text">Yaşa bağlı düzenlemeler uygulanıyorsa, yaşınızı girin.</p>
+            </li>
+            <li className="how-steps-card how-steps-card--4">
+              <span className="how-steps-badge">4</span>
+              <span className="how-steps-icon" aria-hidden="true" />
+              <p className="how-steps-card-text">Bonuslar veya kullanılmamış izinler gibi ek tazminatları ekleyin.</p>
+            </li>
+            <li className="how-steps-card how-steps-card--5">
+              <span className="how-steps-badge">5</span>
+              <span className="how-steps-icon" aria-hidden="true" />
+              <p className="how-steps-card-text">Biliniyorsa, şirketinizin kıdem tazminatı politikasını seçin.</p>
+            </li>
+            <li className="how-steps-card how-steps-card--6">
+              <span className="how-steps-badge">6</span>
+              <span className="how-steps-icon" aria-hidden="true" />
+              <p className="how-steps-card-text">Tahmini tutarınızı anında oluşturmak için hesapla düğmesine tıklayın.</p>
+            </li>
+          </ol>
+
+          <p className="how-steps-outro">
+            Tüm adımları tamamladıktan sonra, hesap makinesi tahmini kıdem tazminatınız, toplam çalışma süreniz,
+            nihai ödemeniz ve vergi kesintileriniz gibi tüm verilerinizi gösterir.
+          </p>
+        </div>
+      </ContentSection>
+
+      <ContentSection alt>
+        <h2>İşten Çıkarma Tazminatınızın Sonuçlarını Anlamak</h2>
+        <p>
+          Hesaplamadan sonra, her sonucun ne anlama geldiğini anlamak önemlidir. Kıdem tazminatı paketleri genellikle
+          nihai ödeme tutarınızı etkileyebilecek çeşitli tazminat bileşenlerini içerir. Sonuçlarınız şunları
+          içerebilir:
+        </p>
+        <ul>
+          <li>Maaş ve hizmet süresine göre hesaplanan temel kıdem tazminatı</li>
+          <li>Yaş faktörleri dikkate alınarak hesaplanan ayarlanmış kıdem tazminatı</li>
+          <li>Tahmini işten çıkarma tazminatı</li>
+          <li>Haftalık veya iki haftalık ödeme tutarları</li>
+          <li>Maksimum ödeme limitleri</li>
+          <li>Toplam kıdem tazminatı haftası sayısı</li>
+          <li>Ek haklar veya birikmiş ödemeler</li>
+        </ul>
+        <p>
+          Haklarınızı doğru bir şekilde anladığınızda, rollerinizi ve sorumluluklarınızı, ayrıca kıdem tazminatı
+          paketlerinizi daha verimli bir şekilde öğrenebilirsiniz.
+        </p>
+      </ContentSection>
+
+      <ContentSection>
+        <h2>Vergi Tahmini ve Nihai Ödeme</h2>
+        <p>
+          Kıdem tazminatı birçok ülkede genellikle vergilendirilebilir gelir olarak kabul edilir; bu da kesintilerin
+          aslında alacağınız tutarı azaltabileceği anlamına gelir. Hesaplayıcımız vergileri tahmin etmenize ve
+          kesintilerden sonra beklenen nihai ödemeniz hakkında daha net bir tablo sunmanıza yardımcı olur.
+        </p>
+        <p>Vergi tahminleri şunları içerebilir:</p>
+        <ul>
+          <li>Federal gelir vergisi stopajı</li>
+          <li>Eyalet veya yerel vergiler</li>
+          <li>Sosyal güvenlik veya maaş kesintileri</li>
+          <li>Emeklilik katkı paylarının etkileri</li>
+          <li>İşten çıkarma tazminatlarının vergi uygulaması</li>
+        </ul>
+      </ContentSection>
+
+      <ContentSection alt>
+        <h2>İşverenler Neden Kıdem Tazminatı Öder?</h2>
+        <p>
+          İşverenler, iş kanunlarına uymak, yasal anlaşmazlıkları azaltmak ve çalışanları iş değiştirme süreçlerinde
+          desteklemek için kıdem tazminatı öderler. Birçok durumda, kıdem tazminatı çalışanlar için isteğe bağlı bir
+          hak olmaktan ziyade yasal bir yükümlülüktür.
+        </p>
+        <p>Kıdem tazminatı paketleri işverenlere şu konularda yardımcı olur:</p>
+        <ul>
+          <li>İş mahkemesi uyuşmazlıklarını azaltın</li>
+          <li>Şirketin itibarını koruyun</li>
+          <li>Yasal uyumluluğu sağlayın</li>
+          <li>İş gücü yeniden yapılandırmasını destekleyin</li>
+          <li>Çalışanların daha sorunsuz ayrılmasını kolaylaştırın</li>
+          <li>İşten çıkarma taleplerini verimli bir şekilde çözün</li>
+        </ul>
+        <p>
+          Çalışanlar için kıdem tazminatı, yeni iş fırsatları ararken geçici mali destek sağlar. Ayrıca, ilgili
+          kuruluşa uzun süre hizmet eden çalışanları da telafi edebilir. Bu nedenle, onlara yönelik bir tür takdir
+          göstergesidir. Birçok şirket artık aşağıdaki işlemleri gerçekleştirmek için otomatik çalışan tazminatı
+          hesaplama sistemleri ve e-devlet tazminat araçları kullanmaktadır:
+        </p>
+        <ul>
+          <li>İşten çıkarma tazminatı + ihbar süresi hesaplamaları</li>
+          <li>İhbar süresi hesaplamaları</li>
+          <li>Hizmet süresi hesaplamaları</li>
+          <li>Çalışma süresi hesaplamaları</li>
+          <li>Çalışan alacakları hesaplamaları</li>
+        </ul>
+      </ContentSection>
+
+      <ContentSection>
+        <h2>Kıdem Tazminatı ile İşten Çıkarma Tazminatı Arasındaki Fark</h2>
+        <p>
+          İki terim de yaklaşık olarak aynı kabul edilir, ancak bu doğru değildir. Kıdem tazminatı genellikle kıdem,
+          hizmet süresi ve fesih koşullarına dayalı tazminatı ifade eder. İşten çıkarma tazminatı ise özellikle bir
+          çalışanın yeniden yapılanma, iş pozisyonunun ortadan kaldırılması veya operasyonel değişiklikler nedeniyle
+          işini kaybetmesi durumunda geçerlidir.
+        </p>
+        <p>Temel farklılıklar şunlardır:</p>
+        <table className="comparison-table">
+          <thead>
+            <tr>
+              <th>Kıdem tazminatı</th>
+              <th>İşten Çıkarma Ücreti</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hizmet yılına göre</td>
+              <td>İşin ortadan kaldırılmasına dayalı</td>
+            </tr>
+            <tr>
+              <td>Birden fazla fesih senaryosu için geçerlidir.</td>
+              <td>Esas olarak iş gücü azaltımları için geçerlidir.</td>
+            </tr>
+            <tr>
+              <td>İhbar tazminatı içerebilir</td>
+              <td>Çoğunlukla işten çıkarılma tazminatlarını içerir.</td>
+            </tr>
+            <tr>
+              <td>İş kanunları ve sözleşmeleriyle yönetilir.</td>
+              <td>Temelde yeniden yapılandırma politikalarıyla ilgili.</td>
+            </tr>
+          </tbody>
+        </table>
+      </ContentSection>
+
+      <ContentSection alt>
+        <h2>İşten Çıkarma Tazminat Paketine Neler Dahildir?</h2>
+        <p>
+          İşten ayrılma tazminatı paketi, kıdem tazminatının ötesinde birden fazla finansal bileşeni içerebilir. Nihai
+          paket, iş kanunlarına, şirket politikasına, iş sözleşmelerine ve fesih nedenine bağlıdır.
+        </p>
+        <p>Tipik bir işten ayrılma tazminatı paketi şunları içerebilir:</p>
+        <ul>
+          <li>İşten ayrılma tazminatı</li>
+          <li>İhbar tazminatı</li>
+          <li>Kullanılmayan yıllık izin tazminatı</li>
+          <li>Bonus ödemeleri</li>
+          <li>Teşvik ödemeleri</li>
+          <li>Emeklilik tazminatı</li>
+          <li>Ek çalışan alacakları</li>
+        </ul>
+        <p>
+          Tavan tutarları genellikle Resmî Gazete güncellemelerinden ve hükümetin işgücü düzenlemelerinden alınır.
+          Güvenilir kıdem tazminatı hesaplayıcımız, tazminat tahmininizin güncel yasal standartları ve çalışma
+          kurallarını yansıtmasını sağlamaya yardımcı olur.
+        </p>
+      </ContentSection>
+
+      <ContentSection>
+        <h2>Kıdem Tazminatı Nasıl Hesaplanır?</h2>
+        <p>
+          İşten ayrılma tazminatı hesaplaması, hizmet süresi, brüt maaş, ihbar süresi hakları, ek haklar ve geçerli
+          yasal tavanlar dahil olmak üzere birçok önemli faktöre dayanmaktadır. İşverenler genellikle tazminatı, iş
+          kanunları, iş sözleşmeleri ve şirket politikaları kapsamında belirlenen formülleri kullanarak
+          hesaplarlar.
+        </p>
+        <p>Gelişmiş işten ayrılma tazminatı hesaplayıcımız aşağıdaki işlemleri otomatik olarak gerçekleştirir:</p>
+        <ul>
+          <li>İşten ayrılma tazminatı hesaplaması</li>
+          <li>İhbar tazminatı hesaplaması</li>
+          <li>İhbar süresi hesaplaması</li>
+          <li>Kıdem hesaplaması</li>
+          <li>Emeklilik tazminatı hesaplaması</li>
+          <li>Net maaş tazminatı hesaplaması</li>
+          <li>İşten ayrılma tazminatı hesaplaması</li>
+          <li>Çalışan alacakları hesaplaması</li>
+        </ul>
+        <p>
+          Bu araç, çalışanların doğru tazminat tutarlarını anında tahmin etmelerine yardımcı olmak için güncellenmiş
+          kıdem tazminatı hesaplama 2025 ve kıdem tazminatı hesaplama 2026 kurallarını desteklemektedir.
+        </p>
+      </ContentSection>
+
+      <ContentSection alt>
+        <h2>Standart Kıdem Tazminatı Formülü</h2>
+        <p>
+          Standart kıdem tazminatı formülü genellikle çalışanın brüt aylık maaşı ve toplam hizmet yılı kullanılarak
+          hesaplanır. En yaygın kıdem tazminatı formülü şöyledir:
+        </p>
+        <p className="formula-text">Kıdem Tazminatı = 30 Günlük Brüt Ücret × Tam Hizmet Yılı</p>
+        <p>
+          Çalışanlar genellikle çalıştıkları her tamamlanmış yıl için 30 günlük brüt maaşa eşit tazminat kazanırlar.
+          Bazı sistemlerde, tazminat hesaplamalarında şunlar kullanılabilir:
+        </p>
+        <ul>
+          <li>İşten Çıkarma Tazminatı Hesaplaması (Mod 1)</li>
+          <li>İşten Çıkarma Tazminatı Hesaplaması (Mod 2)</li>
+          <li>Kıdem + İhbar Süresi Birleşik Hesaplaması (Mod 3)</li>
+          <li>Net Maaş Tazminatı Hesaplaması (Mod 4)</li>
+          <li>Brüt Maaş Tazminatı Hesaplaması (Mod 5)</li>
+        </ul>
+      </ContentSection>
+
+      <ContentSection>
+        <h2>Haftalık Maaş ve Günlük Ücret Hesaplamaları</h2>
+        <p>
+          İşten ayrılma tazminatı ve ihbar tazminatını doğru hesaplamak için, çalışanın aylık maaşı öncelikle haftalık
+          ve günlük ücret değerlerine dönüştürülmelidir. Günlük ücret hesaplamaları, ihbar tazminatı hesaplamaları,
+          kısmi hizmet süreleri, çıkış ücreti hesaplamaları, tazminat faizi hesaplamaları ve çalışma süresi
+          hesaplamaları için önemlidir. Standart günlük ücret formülü şöyledir:
+        </p>
+        <p className="formula-text">Günlük Ücret = Aylık Brüt Maaş / 30</p>
+        <p>Haftalık ücret hesaplamaları genellikle ihbar süresi hesaplamalarında kullanılır:</p>
+        <p className="formula-text">Haftalık Ücret = Aylık Brüt Maaş × 12 / 52</p>
+        <p>Bu değerler şunların belirlenmesine yardımcı olur:</p>
+        <ul>
+          <li>İhbar süresi</li>
+          <li>Çalışan ihbar süreleri</li>
+          <li>İhbar günü hesaplamaları</li>
+          <li>İstifa ihbarı hesaplamaları</li>
+          <li>İşten çıkarma sırasında tazminat</li>
+        </ul>
+      </ContentSection>
+
+      <ContentSection alt>
+        <h2>Temel Kıdem Tazminatı Hesaplaması</h2>
+        <p>
+          İşten ayrılma tazminatı, çalışanın brüt kazanç maaşı üzerinden hesaplanır. Bu, işveren tarafından sağlanan
+          düzenli ücret ve tekrarlayan yan hakları içerir. İşten ayrılma tazminatı, aylık maaş ve seyahat ödenekleri,
+          yemek ödemeleri, ikramiyeler, primler, teşvik ödemeleri ve düzenli sosyal haklar kapsar.
+        </p>
+        <p>
+          Toplam hizmet süresi daha sonra düzeltilmiş brüt ücretle çarpılarak temel tazminat tutarı belirlenir. Doğru
+          sonuçları belirleyebilmek için her zaman maaşınız ve diğer iş detaylarınızla ilgili doğru verileri kullanın.
+        </p>
+      </ContentSection>
+
+      <ContentSection>
+        <h2>Bildirim süresi</h2>
+        <p>
+          Uygun ihbar yapılmadan işten çıkarılan çalışanlar, yasal ihbar sürelerine göre ihbar tazminatına hak
+          kazanabilirler. İş Kanunu&apos;nun 17. maddesi uyarınca ihbar süreleri genellikle şunlardır:
+        </p>
+        <ul>
+          <li>2 hafta</li>
+          <li>4 hafta</li>
+          <li>6 hafta</li>
+          <li>8 hafta</li>
+        </ul>
+        <p>
+          Bu ihbar süreleri, toplam çalışma süresine bağlıdır ve doğru ihbar süresi hesaplaması ve ihbar tazminatı
+          hesaplaması için gereklidir.
+        </p>
+      </ContentSection>
+
+      <ContentSection alt>
+        <h2>Kıdem Tazminatını Etkileyen Faktörler</h2>
+        <p>İşte kıdem tazminatının hesaplanmasında önemli rol oynayan bazı faktörler.</p>
+        <ul>
+          <li>İşten ayrılma tazminatı hesaplaması</li>
+          <li>İhbar tazminatı hesaplaması</li>
+          <li>Kıdem hesaplaması</li>
+          <li>Çalışan alacakları hesaplaması</li>
+          <li>Emeklilik tazminatı hesaplaması</li>
+          <li>İşten çıkarma tazminatı</li>
+          <li>İhbar süresi hesaplaması</li>
+        </ul>
+        <p>
+          Bu değişkenler, çalışanların mevcut 2025 ve 2026 kıdem tazminatı düzenlemeleri kapsamında alacakları
+          tazminatı doğru bir şekilde tahmin etmelerine yardımcı olur.
+        </p>
+      </ContentSection>
+
+      <ContentSection>
+        <h2>İşten ayrılma tazminatı hesaplayıcımızı kullanmanın faydaları nelerdir?</h2>
+        <p>Dönüştürücümüzü kullanmanız için bazı nedenler şunlardır:</p>
+        <ul>
+          <li>Doğru ve Anında</li>
+          <li>Kullanımı Kolay</li>
+          <li>Çalışanlar ve İK Ekipleri için Uygun</li>
+          <li>Ücretsiz Çevrimiçi Kıdem Tazminatı Tahmin Aracı</li>
+          <li>Hızlı ve Güvenilir bir araç</li>
+        </ul>
+      </ContentSection>
+
+      <ContentSection alt>
+        <h2>Özet</h2>
+        <p>
+          Çalışanlar, kıdem tazminatı paketini kabul etmeden önce kıdem tazminatı hesaplamalarını, vergi kesintilerini,
+          tazminat haklarını ve ihbar tazminatını dikkatlice incelemelidir. Adil bir tazminat almak ve kıdem
+          tazminatından sonraki mali adımları (işsizlik ödeneği, emeklilik planlaması ve gelecekteki iş fırsatları
+          dahil) planlamak için yasal veya mali danışmanlık almalıdır.
+        </p>
+      </ContentSection>
 
       <section className="section alt" id="sss">
         <div className="container faq-wrap">
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-          />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
           <div className="faq-head">
-            <span className="faq-eyebrow">SSS</span>
-            <h2>Sikca Sorulan Sorular</h2>
-            <p>Kidem, ihbar ve izin alacaklari hakkinda en cok merak edilen sorular.</p>
+            <h2>Sıkça Sorulan Sorular</h2>
           </div>
 
           <div className="faq-list">

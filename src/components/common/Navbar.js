@@ -1,14 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
   { id: "hesapla", label: "Hesapla" },
-  { id: "nasil-hesaplanir", label: "Nasıl Hesaplanır" },
+  { id: "nasil-hesaplanir", label: "Nasıl Hesaplanır?" },
   { id: "tazminat-turleri", label: "Tazminat Türleri" },
-  { id: "ornekler", label: "Örnekler" },
   { id: "sss", label: "SSS" }
 ];
 
@@ -16,24 +16,28 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hesapla");
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const pathname = usePathname();
   const router = useRouter();
-  const isHome = pathname === "/";
+  const isHome = pathname === "/" || pathname === "/kidem-tazminati-hesaplamasi";
 
   const navItems = useMemo(() => NAV_ITEMS, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 6);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? Math.min(100, (y / docHeight) * 100) : 0);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isHome]);
 
   useEffect(() => {
     if (!isHome) return undefined;
-    const sections = navItems
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean);
+    const sections = navItems.map((item) => document.getElementById(item.id)).filter(Boolean);
     if (sections.length === 0) return undefined;
 
     const observer = new IntersectionObserver(
@@ -49,6 +53,13 @@ export default function Navbar() {
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, [isHome, navItems]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   const scrollToSection = (sectionId, shouldFocusStartDate = false) => {
     const target = document.getElementById(sectionId);
@@ -85,96 +96,152 @@ export default function Navbar() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const navigateTo = (event, href, sectionId) => {
+    if (isHome && sectionId) {
+      handleNavClick(event, sectionId);
+      return;
+    }
+    event.preventDefault();
+    setOpen(false);
+    router.push(href);
+  };
+
+  const handleCalcClick = (event) => {
+    if (isHome) {
+      handleCtaClick(event);
+      return;
+    }
+    event.preventDefault();
+    router.push("/kidem-tazminati-hesaplamasi#hesapla");
+  };
+
   return (
-    <header className={`site-header${scrolled ? " is-scrolled" : ""}`}>
-      <div className="container header-inner">
-        <Link href="/" className="brand" aria-label="Anasayfa" onClick={handleLogoClick}>
-          <span className="brand-mark">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 5v14M7 8h10M5 11.5c2.1 0 3.5-1.4 5-3.5 1.5 2.1 2.9 3.5 5 3.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-              <path d="M5.5 11.5c0 2 1.6 3.5 3.5 3.5s3.5-1.5 3.5-3.5M12.5 11.5c0 2 1.6 3.5 3.5 3.5s3.5-1.5 3.5-3.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </span>
-          <span className="brand-text">
-            <span className="brand-title">Tazminat Hesaplama</span>
-            <span className="brand-sub">İŞ KANUNU 4857</span>
-          </span>
-        </Link>
-        <nav className="nav-links">
-          {navItems.map((item) => (
-            <a
-              key={item.id}
-              href={`/#${item.id}`}
-              onClick={(event) => handleNavClick(event, item.id)}
-              className={isHome && activeSection === item.id ? "active" : ""}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-        <a
-          href={isHome ? "/#hesapla" : "/#hesapla"}
-          className="header-calc-btn"
-          onClick={(event) => {
-            if (isHome) {
-              handleCtaClick(event);
-              return;
-            }
-            event.preventDefault();
-            router.push("/#hesapla");
-          }}
-        >
-          Hesapla <span aria-hidden="true">→</span>
-        </a>
-        <button className={`menu-btn${open ? " is-open" : ""}`} onClick={() => setOpen((v) => !v)} aria-label="Menü">
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-        </button>
+    <header
+      className={`site-header${isHome ? " is-home" : ""}${scrolled ? " is-scrolled" : ""}${open ? " is-menu-open" : ""}`}
+    >
+      <div className="header-progress" aria-hidden="true">
+        <span className="header-progress-bar" style={{ width: `${scrollProgress}%` }} />
       </div>
-      {open && (
-        <div className="mobile-menu container">
-          {navItems.map((item) => (
-            <a
-              key={item.id}
-              href={`/#${item.id}`}
-              onClick={(event) => {
-                if (isHome) handleNavClick(event, item.id);
-                else {
-                  event.preventDefault();
-                  setOpen(false);
-                  router.push(`/#${item.id}`);
-                }
-              }}
+
+      <div className="header-shell">
+        <div className="container header-inner">
+          <Link href="/" className="brand" aria-label="Anasayfa" onClick={handleLogoClick}>
+            <span className="brand-mark">
+              <Image src="/logo.png" alt="" width={88} height={88} priority />
+            </span>
+            <span className="brand-text">
+              <span className="brand-title">Tazminat Hesaplama</span>
+              <span className="brand-sub">
+                <span className="brand-dot" aria-hidden="true" />
+                İş Kanunu 4857
+              </span>
+            </span>
+          </Link>
+
+          <nav className="nav-pill" aria-label="Sayfa bölümleri">
+            <div className="nav-pill-track">
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={`/kidem-tazminati-hesaplamasi#${item.id}`}
+                  onClick={(event) => handleNavClick(event, item.id)}
+                  className={`nav-pill-link${isHome && activeSection === item.id ? " active" : ""}`}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+
+          <div className="header-actions">
+            {isHome ? (
+              <a
+                href="/kidem-tazminati-hesaplamasi#hesapla"
+                className="header-calc-btn header-calc-btn--nav"
+                onClick={handleCalcClick}
+              >
+                Şimdi Hesapla
+                <span className="header-calc-icon" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            ) : (
+              <>
+                <span className="header-trust-badge">
+                  <span className="header-trust-dot" aria-hidden="true" />
+                  Ücretsiz
+                </span>
+                <a
+                  href="/kidem-tazminati-hesaplamasi#hesapla"
+                  className="header-calc-btn"
+                  onClick={handleCalcClick}
+                >
+                  Hesapla
+                  <span className="header-calc-arrow" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              </>
+            )}
+            <button
+              type="button"
+              className={`menu-btn${open ? " is-open" : ""}`}
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
+              aria-expanded={open}
             >
-              {item.label}
-            </a>
-          ))}
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className={`mobile-drawer${open ? " is-open" : ""}`} aria-hidden={!open}>
+        <button type="button" className="mobile-drawer-backdrop" aria-label="Menüyü kapat" onClick={() => setOpen(false)} />
+        <div className="mobile-drawer-panel" role="dialog" aria-modal="true" aria-label="Navigasyon menüsü">
+          <div className="mobile-drawer-head">
+            <span className="mobile-drawer-title">Menü</span>
+            <button type="button" className="mobile-drawer-close" aria-label="Kapat" onClick={() => setOpen(false)}>
+              ×
+            </button>
+          </div>
+          <nav className="mobile-drawer-nav">
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={`/kidem-tazminati-hesaplamasi#${item.id}`}
+                className={isHome && activeSection === item.id ? "active" : ""}
+                onClick={(event) => navigateTo(event, `/kidem-tazminati-hesaplamasi#${item.id}`, item.id)}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
           <a
-            href="/#hesapla"
+            href="/kidem-tazminati-hesaplamasi#hesapla"
             className="mobile-cta"
             onClick={(event) => {
               if (isHome) handleCtaClick(event);
-              else {
-                event.preventDefault();
-                setOpen(false);
-                router.push("/#hesapla");
-              }
+              else navigateTo(event, "/kidem-tazminati-hesaplamasi#hesapla", null);
             }}
           >
-            Hesapla
+            Tazminatı Hesapla
           </a>
-          <Link href="/gizlilik-politikasi" onClick={() => setOpen(false)}>
-            Gizlilik
-          </Link>
-          <Link href="/kullanim-sartlari" onClick={() => setOpen(false)}>
-            Sartlar
-          </Link>
-          <Link href="/yasal-uyari" onClick={() => setOpen(false)}>
-            Yasal Uyari
-          </Link>
+          <div className="mobile-drawer-footer">
+            <Link href="/gizlilik-politikasi" onClick={() => setOpen(false)}>
+              Gizlilik
+            </Link>
+            <Link href="/kullanim-sartlari" onClick={() => setOpen(false)}>
+              Şartlar
+            </Link>
+            <Link href="/yasal-uyari" onClick={() => setOpen(false)}>
+              Yasal Uyarı
+            </Link>
+          </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

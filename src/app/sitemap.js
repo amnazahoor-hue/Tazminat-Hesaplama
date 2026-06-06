@@ -2,7 +2,7 @@ const baseUrl = "https://tazminathesaplama.com";
 
 export default function sitemap() {
   const routes = [
-    "",
+    "/kidem-tazminati-hesaplamasi",
     "/ihbar-tazminati-hesaplama",
     "/yillik-izin-ucreti-hesaplama",
     "/kidem-tazminati-nedir",
@@ -24,6 +24,6 @@ export default function sitemap() {
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
-    priority: route === "" ? 1 : 0.8
+    priority: route === "/kidem-tazminati-hesaplamasi" ? 1 : 0.8
   }));
 }

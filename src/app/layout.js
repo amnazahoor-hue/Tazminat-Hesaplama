@@ -10,23 +10,23 @@ const inter = Inter({
   variable: "--font-inter"
 });
 
-export const metadata = buildPageMetadata({
-  title: "Kidem Tazminati Hesaplama 2024 | Ucretsiz Ihbar ve Kidem Hesaplama",
-  description:
-    "Ucretsiz kidem tazminati ve ihbar tazminati hesaplama araci. 4857 sayili Is Kanunu'na gore guncel tavan ile hesaplayin.",
-  path: "/",
-  keywords: [
-    "kidem tazminati hesaplama",
-    "ihbar tazminati hesaplama",
-    "tazminat hesaplama",
-    "kidem tazminati tavani 2024"
-  ]
-});
+export const metadata = {
+  ...buildPageMetadata({
+    title: "Tazminat Hesaplama",
+    description: "Kıdem tazminatı, ihbar tazminatı ve yıllık izin ücreti hesaplama araçları.",
+    path: "/",
+    keywords: ["tazminat hesaplama", "kıdem tazminatı hesaplaması"]
+  }),
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png"
+  }
+};
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="tr" data-scroll-behavior="smooth">
-      <body className={inter.variable}>
+    <html lang="tr" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body className={inter.variable} suppressHydrationWarning>
         <Navbar />
         <main>{children}</main>
         <Footer />

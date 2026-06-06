@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -8,10 +9,7 @@ export default function Footer() {
         <div className="footer-brand">
           <Link href="/" className="footer-logo" aria-label="Anasayfa">
             <span className="footer-logo-mark">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 5v14M7 8h10M5 11.5c2.1 0 3.5-1.4 5-3.5 1.5 2.1 2.9 3.5 5 3.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M5.5 11.5c0 2 1.6 3.5 3.5 3.5s3.5-1.5 3.5-3.5M12.5 11.5c0 2 1.6 3.5 3.5 3.5s3.5-1.5 3.5-3.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
+              <Image src="/logo.png" alt="" width={38} height={38} />
             </span>
             <span className="footer-logo-text">
               <strong>Tazminat Hesaplama</strong>
