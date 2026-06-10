@@ -19,7 +19,7 @@ export default function NoticePeriodsPage() {
         <p>4857 sayili Is Kanunu Md. 17 kapsaminda kideme gore uygulanacak ihbar sureleri asagidadir.</p>
       </header>
 
-      <table className="mini-table">
+      <table className="mini-table" id="tablo">
         <thead>
           <tr>
             <th>Hizmet Suresi</th>

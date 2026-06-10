@@ -24,7 +24,9 @@ export default function LeavePayPage() {
         <h1>Yillik Izin Ucreti Hesaplama</h1>
         <p>Kullanilmayan izin gunlerinizi ve brut maas bilgilerinizi girerek tahmini izin alacagini bulun.</p>
       </header>
-      <MiniLeaveCalculator />
+      <div id="hesapla">
+        <MiniLeaveCalculator />
+      </div>
       <div className="legal-actions">
         <Link href="/#hesapla">Anasayfa Tam Hesaplama</Link>
         <Link href="/is-kanunu">Is Kanunu Ozeti</Link>

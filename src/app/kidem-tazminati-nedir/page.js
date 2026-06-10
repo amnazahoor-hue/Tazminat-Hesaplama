@@ -28,7 +28,7 @@ export default function SeveranceGuidePage() {
       </header>
 
       <div className="legal-grid">
-        <article className="legal-card">
+        <article className="legal-card" id="tanim">
           <h2>Tanim</h2>
           <p>Isciye gecen hizmet suresi karsiliginda taninan yasal bir haktir.</p>
         </article>
@@ -43,12 +43,12 @@ export default function SeveranceGuidePage() {
           <p>Genel kural olarak en az 1 yil kidem ve uygun fesih nedeni aranir.</p>
         </article>
 
-        <article className="legal-card">
+        <article className="legal-card" id="formul">
           <h2>Hesaplama Formulu</h2>
           <p>Brut Ucret x Hizmet Yili (kidem tavani uygulanarak).</p>
         </article>
 
-        <article className="legal-card">
+        <article className="legal-card" id="vergi">
           <h2>Tavan Uygulamasi</h2>
           <p>Kidem tutari, donemsel olarak aciklanan kidem tazminati tavanini asamaz.</p>
         </article>

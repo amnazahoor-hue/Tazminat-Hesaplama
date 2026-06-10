@@ -4,24 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-
-const NAV_ITEMS = [
-  { id: "hesapla", label: "Hesapla" },
-  { id: "nasil-hesaplanir", label: "Nasıl Hesaplanır?" },
-  { id: "tazminat-turleri", label: "Tazminat Türleri" },
-  { id: "sss", label: "SSS" }
-];
+import CalcCta from "@/components/common/CalcCta";
+import { buildSectionHref, getPageNav, HOME_PATH, resolvePagePath } from "@/config/pageNav";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("hesapla");
+  const [activeSection, setActiveSection] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const pathname = usePathname();
   const router = useRouter();
-  const isHome = pathname === "/" || pathname === "/kidem-tazminati-hesaplamasi";
-
-  const navItems = useMemo(() => NAV_ITEMS, []);
+  const pagePath = resolvePagePath(pathname);
+  const pageNav = useMemo(() => getPageNav(pathname), [pathname]);
+  const navItems = pageNav?.items ?? [];
+  const hasSectionNav = navItems.length > 0;
+  const isHome = pagePath === HOME_PATH;
+  const ctaTarget = pageNav?.cta ?? { path: HOME_PATH, section: "hesapla", focusInput: "giris" };
+  const ctaHref = buildSectionHref(ctaTarget.path, ctaTarget.section);
 
   useEffect(() => {
     const onScroll = () => {
@@ -33,10 +32,15 @@ export default function Navbar() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
+  }, [pagePath]);
 
   useEffect(() => {
-    if (!isHome) return undefined;
+    setActiveSection(navItems[0]?.id ?? "");
+  }, [navItems]);
+
+  useEffect(() => {
+    if (!hasSectionNav) return undefined;
+
     const sections = navItems.map((item) => document.getElementById(item.id)).filter(Boolean);
     if (sections.length === 0) return undefined;
 
@@ -52,7 +56,21 @@ export default function Navbar() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, [isHome, navItems]);
+  }, [hasSectionNav, navItems, pagePath]);
+
+  useEffect(() => {
+    if (!hasSectionNav) return undefined;
+
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      scrollToSection(hash, false);
+      setActiveSection(hash);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [hasSectionNav, pagePath]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -61,58 +79,70 @@ export default function Navbar() {
     };
   }, [open]);
 
-  const scrollToSection = (sectionId, shouldFocusStartDate = false) => {
+  const scrollToSection = (sectionId, shouldFocusStartDate = false, focusInputId = ctaTarget.focusInput) => {
     const target = document.getElementById(sectionId);
     if (!target) return;
     target.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (shouldFocusStartDate) {
+    if (shouldFocusStartDate && focusInputId) {
       window.setTimeout(() => {
-        const input = document.getElementById("giris");
+        const input = document.getElementById(focusInputId);
         if (input) input.focus();
       }, 550);
     }
   };
 
+  const goToSection = (sectionId, options = {}) => {
+    const { focusCalc = false } = options;
+    const onCurrentPage = pagePath === resolvePagePath(window.location.pathname);
+
+    if (onCurrentPage && hasSectionNav) {
+      setActiveSection(sectionId);
+      scrollToSection(sectionId, focusCalc, focusCalc ? ctaTarget.focusInput : undefined);
+      return;
+    }
+
+    router.push(buildSectionHref(pagePath, sectionId));
+  };
+
   const handleNavClick = (event, sectionId) => {
-    if (!isHome) return;
+    if (!hasSectionNav) return;
     event.preventDefault();
     setOpen(false);
-    setActiveSection(sectionId);
-    scrollToSection(sectionId, false);
+    goToSection(sectionId);
   };
 
   const handleCtaClick = (event) => {
-    if (!isHome) return;
     event.preventDefault();
     setOpen(false);
-    scrollToSection("hesapla", true);
+
+    if (pagePath === ctaTarget.path && ctaTarget.section) {
+      goToSection(ctaTarget.section, { focusCalc: Boolean(ctaTarget.focusInput) });
+      return;
+    }
+
+    router.push(ctaHref);
   };
 
   const handleLogoClick = (event) => {
     setOpen(false);
-    if (!isHome) return;
-    event.preventDefault();
-    setActiveSection("hesapla");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (isHome) {
+      event.preventDefault();
+      setActiveSection(navItems[0]?.id ?? "hesapla");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
   };
 
   const navigateTo = (event, href, sectionId) => {
-    if (isHome && sectionId) {
-      handleNavClick(event, sectionId);
-      return;
-    }
     event.preventDefault();
     setOpen(false);
-    router.push(href);
-  };
 
-  const handleCalcClick = (event) => {
-    if (isHome) {
-      handleCtaClick(event);
+    if (pagePath === resolvePagePath(href.split("#")[0]) && sectionId) {
+      goToSection(sectionId);
       return;
     }
-    event.preventDefault();
-    router.push("/kidem-tazminati-hesaplamasi#hesapla");
+
+    router.push(href);
   };
 
   return (
@@ -125,9 +155,9 @@ export default function Navbar() {
 
       <div className="header-shell">
         <div className="container header-inner">
-          <Link href="/" className="brand" aria-label="Anasayfa" onClick={handleLogoClick}>
+          <Link href={HOME_PATH} className="brand" aria-label="Anasayfaya dön" onClick={handleLogoClick}>
             <span className="brand-mark">
-              <Image src="/logo.png" alt="" width={88} height={88} priority />
+              <Image src="/logo.png" alt="Tazminat Hesaplama logosu" width={88} height={88} priority />
             </span>
             <span className="brand-text">
               <span className="brand-title">Tazminat Hesaplama</span>
@@ -138,51 +168,34 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <nav className="nav-pill" aria-label="Sayfa bölümleri">
-            <div className="nav-pill-track">
-              {navItems.map((item) => (
-                <a
-                  key={item.id}
-                  href={`/kidem-tazminati-hesaplamasi#${item.id}`}
-                  onClick={(event) => handleNavClick(event, item.id)}
-                  className={`nav-pill-link${isHome && activeSection === item.id ? " active" : ""}`}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </nav>
+          {hasSectionNav ? (
+            <nav className="nav-pill" aria-label="Sayfa bölümleri">
+              <div className="nav-pill-track">
+                {navItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={buildSectionHref(pagePath, item.id)}
+                    onClick={(event) => handleNavClick(event, item.id)}
+                    className={`nav-pill-link${item.long ? " nav-pill-link--long" : ""}${activeSection === item.id ? " active" : ""}`}
+                    title={item.long ? item.label : undefined}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          ) : null}
 
           <div className="header-actions">
-            {isHome ? (
-              <a
-                href="/kidem-tazminati-hesaplamasi#hesapla"
-                className="header-calc-btn header-calc-btn--nav"
-                onClick={handleCalcClick}
-              >
-                Şimdi Hesapla
-                <span className="header-calc-icon" aria-hidden="true">
-                  ↗
-                </span>
-              </a>
-            ) : (
-              <>
-                <span className="header-trust-badge">
-                  <span className="header-trust-dot" aria-hidden="true" />
-                  Ücretsiz
-                </span>
-                <a
-                  href="/kidem-tazminati-hesaplamasi#hesapla"
-                  className="header-calc-btn"
-                  onClick={handleCalcClick}
-                >
-                  Hesapla
-                  <span className="header-calc-arrow" aria-hidden="true">
-                    →
-                  </span>
-                </a>
-              </>
+            {!isHome && (
+              <span className="header-trust-badge">
+                <span className="header-trust-dot" aria-hidden="true" />
+                Ücretsiz
+              </span>
             )}
+            <CalcCta href={ctaHref} className="header-calc-cta" onClick={handleCtaClick}>
+              Şimdi Hesapla
+            </CalcCta>
             <button
               type="button"
               className={`menu-btn${open ? " is-open" : ""}`}
@@ -207,28 +220,26 @@ export default function Navbar() {
               ×
             </button>
           </div>
-          <nav className="mobile-drawer-nav">
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={`/kidem-tazminati-hesaplamasi#${item.id}`}
-                className={isHome && activeSection === item.id ? "active" : ""}
-                onClick={(event) => navigateTo(event, `/kidem-tazminati-hesaplamasi#${item.id}`, item.id)}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <a
-            href="/kidem-tazminati-hesaplamasi#hesapla"
-            className="mobile-cta"
-            onClick={(event) => {
-              if (isHome) handleCtaClick(event);
-              else navigateTo(event, "/kidem-tazminati-hesaplamasi#hesapla", null);
-            }}
-          >
-            Tazminatı Hesapla
-          </a>
+          {hasSectionNav ? (
+            <nav className="mobile-drawer-nav">
+              {navItems.map((item) => {
+                const href = buildSectionHref(pagePath, item.id);
+                return (
+                  <a
+                    key={item.id}
+                    href={href}
+                    className={activeSection === item.id ? "active" : ""}
+                    onClick={(event) => navigateTo(event, href, item.id)}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
+            </nav>
+          ) : null}
+          <CalcCta href={ctaHref} className="mobile-calc-cta" onClick={handleCtaClick}>
+            Şimdi Hesapla
+          </CalcCta>
           <div className="mobile-drawer-footer">
             <Link href="/gizlilik-politikasi" onClick={() => setOpen(false)}>
               Gizlilik

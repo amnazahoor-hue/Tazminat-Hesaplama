@@ -1,25 +1,85 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, ChevronRight, ShieldCheck, Sparkles } from "lucide-react";
+
+const HOME_PATH = "/kidem-tazminati-hesaplamasi";
+
+const FOOTER_LINKS = {
+  tools: [
+    { href: `${HOME_PATH}#hesapla`, label: "Kıdem Tazminatı Hesaplama" },
+    { href: "/ihbar-tazminati-hesaplama", label: "İhbar Tazminatı Hesaplama" },
+    { href: "/yillik-izin-ucreti-hesaplama", label: "Yıllık İzin Ücreti Hesaplama" }
+  ],
+  guides: [
+    { href: "/toplam-tazminat-hesaplama-kilavuzu", label: "Toplam Tazminat Kılavuzu" },
+    { href: "/ihbar-tazminati-nedir", label: "İhbar Tazminatı Nedir?" },
+    { href: "/kidem-tazminati-tavani-turkiye-2026", label: "Kıdem Tazminatı Tavanı 2026" },
+    { href: "/kidem-tazminati-nedir", label: "Kıdem Tazminatı Nedir?" }
+  ],
+  info: [
+    { href: "/ihbar-sureleri", label: "İhbar Süreleri" },
+    { href: "/is-kanunu", label: "İş Kanunu Özeti" }
+  ],
+  legal: [
+    { href: "/gizlilik-politikasi", label: "Gizlilik Politikası" },
+    { href: "/kullanim-sartlari", label: "Kullanım Şartları" },
+    { href: "/yasal-uyari", label: "Yasal Uyarı" },
+    { href: "/contact", label: "İletişim" }
+  ]
+};
 
 export default function Footer() {
   const year = new Date().getFullYear();
+
   return (
     <footer className="site-footer">
-      <div className="container footer-main">
-        <div className="footer-brand">
-          <Link href="/" className="footer-logo" aria-label="Anasayfa">
+      <span className="footer-bg-glow footer-bg-glow--left" aria-hidden="true" />
+      <span className="footer-bg-glow footer-bg-glow--right" aria-hidden="true" />
+      <span className="footer-bg-mesh" aria-hidden="true" />
+
+      <div className="footer-cta-band scroll-reveal scroll-reveal--up" data-scroll-reveal>
+        <span className="footer-cta-shine" aria-hidden="true" />
+        <span className="footer-cta-glow footer-cta-glow--lime" aria-hidden="true" />
+        <span className="footer-cta-glow footer-cta-glow--white" aria-hidden="true" />
+        <div className="container footer-cta-inner">
+          <div className="footer-cta-copy">
+            <span className="footer-cta-tag">Ücretsiz Hesaplayıcı</span>
+            <h3>Kıdem tazminatınızı birkaç dakikada tahmin edin</h3>
+            <p>Veriler tarayıcınızda kalır; hızlı, güvenli ve 4857 sayılı İş Kanunu&apos;na göre.</p>
+          </div>
+          <Link href={`${HOME_PATH}#hesapla`} className="footer-cta-btn">
+            Şimdi Hesapla
+            <ArrowRight size={18} strokeWidth={2.5} aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+
+      <div className="container footer-main scroll-reveal scroll-reveal--up" data-scroll-reveal>
+        <div className="footer-brand footer-brand-panel">
+          <Link href={HOME_PATH} className="footer-logo" aria-label="Anasayfaya dön">
             <span className="footer-logo-mark">
-              <Image src="/logo.png" alt="" width={38} height={38} />
+              <Image src="/logo.png" alt="Tazminat Hesaplama logosu" width={38} height={38} />
             </span>
             <span className="footer-logo-text">
               <strong>Tazminat Hesaplama</strong>
-              <small>Turk Is Hukuku Rehberi</small>
+              <small>Türk İş Hukuku Rehberi</small>
             </span>
           </Link>
           <p>
-            4857 sayili Is Kanunu&apos;na gore kidem, ihbar ve yillik izin odemeleri icin ucretsiz hesaplama
-            araci. Veriler tarayiciniz disina cikmaz.
+            4857 sayılı İş Kanunu&apos;na göre kıdem, ihbar ve yıllık izin ödemeleri için ücretsiz hesaplama aracı.
+            Veriler tarayıcınız dışına çıkmaz.
           </p>
+          <div className="footer-trust-row">
+            <span className="footer-trust-badge">
+              <Sparkles size={14} aria-hidden="true" />
+              Ücretsiz
+            </span>
+            <span className="footer-trust-badge">
+              <ShieldCheck size={14} aria-hidden="true" />
+              Güvenli
+            </span>
+            <span className="footer-trust-badge">İş Kanunu 4857</span>
+          </div>
           <div className="footer-social">
             <a
               className="social-linkedin"
@@ -80,61 +140,69 @@ export default function Footer() {
             </a>
           </div>
         </div>
-        <div className="footer-links">
-          <h4>ARACLAR</h4>
+
+        <div className="footer-columns scroll-reveal-stagger">
+        <div className="footer-links footer-links-panel">
+          <h4>ARAÇLAR</h4>
           <ul>
-            <li>
-              <Link href="/#hesapla">Kidem Tazminati Hesaplama</Link>
-            </li>
-            <li>
-              <Link href="/ihbar-tazminati-hesaplama">Ihbar Tazminati Hesaplama</Link>
-            </li>
-            <li>
-              <Link href="/yillik-izin-ucreti-hesaplama">Yillik Izin Ucreti Hesaplama</Link>
-            </li>
-            <li>
-              <Link href="/#hesapla">Detayli Hesaplayici</Link>
-            </li>
+            {FOOTER_LINKS.tools.map((item) => (
+              <li key={item.label}>
+                <Link href={item.href}>
+                  <ChevronRight size={14} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
-        <div className="footer-links">
-          <h4>BILGI</h4>
+
+        <div className="footer-links footer-links-panel">
+          <h4>REHBERLER</h4>
           <ul>
-            <li>
-              <Link href="/kidem-tazminati-nedir">Kidem Tazminati Nedir?</Link>
-            </li>
-            <li>
-              <Link href="/ihbar-sureleri">Ihbar Sureleri</Link>
-            </li>
-            <li>
-              <Link href="/tazminat-tavani-2024">2024 Tavan Tutarlari</Link>
-            </li>
-            <li>
-              <Link href="/is-kanunu">Is Kanunu Ozeti</Link>
-            </li>
+            {FOOTER_LINKS.guides.map((item) => (
+              <li key={item.label}>
+                <Link href={item.href}>
+                  <ChevronRight size={14} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
-        <div className="footer-links">
+
+        <div className="footer-links footer-links-panel">
+          <h4>BİLGİ</h4>
+          <ul>
+            {FOOTER_LINKS.info.map((item) => (
+              <li key={item.label}>
+                <Link href={item.href}>
+                  <ChevronRight size={14} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="footer-links footer-links-panel">
           <h4>YASAL</h4>
           <ul>
-            <li>
-              <Link href="/gizlilik-politikasi">Gizlilik Politikasi</Link>
-            </li>
-            <li>
-              <Link href="/kullanim-sartlari">Kullanim Sartlari</Link>
-            </li>
-            <li>
-              <Link href="/yasal-uyari">Yasal Uyari</Link>
-            </li>
-            <li>
-              <Link href="/contact">Iletisim</Link>
-            </li>
+            {FOOTER_LINKS.legal.map((item) => (
+              <li key={item.label}>
+                <Link href={item.href}>
+                  <ChevronRight size={14} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
+        </div>
       </div>
+
       <div className="container footer-bar">
-        <span>© {year} Tazminat Hesaplama. Tum haklari saklidir.</span>
-        <span className="footer-pill">🇹🇷 Turkiye Is Hukuku&apos;na Gore</span>
+        <span className="footer-bar-line" aria-hidden="true" />
+        <span className="footer-bar-copy">© {year} Tazminat Hesaplama. Tüm hakları saklıdır.</span>
       </div>
     </footer>
   );
