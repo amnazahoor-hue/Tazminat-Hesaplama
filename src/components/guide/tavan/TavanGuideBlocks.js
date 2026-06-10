@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { HOME_PATH } from "@/config/site";
 import {
   AlertTriangle,
   ArrowDown,
@@ -71,7 +72,7 @@ export function TavanHero({ stat }) {
             kıyasla kıdem tazminatı tavanında önemli bir artış söz konusu.
           </p>
           <div className="tavan-guide-hero-actions">
-            <CalcCta href="/kidem-tazminati-hesaplamasi#hesapla">Şimdi Hesapla</CalcCta>
+            <CalcCta href={`${HOME_PATH}#hesapla`}>Şimdi Hesapla</CalcCta>
           </div>
         </motion.div>
         <motion.div

@@ -5,7 +5,14 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import CalcCta from "@/components/common/CalcCta";
-import { buildSectionHref, getPageNav, HOME_PATH, resolvePagePath } from "@/config/pageNav";
+import { IMAGES } from "@/config/images";
+import {
+  buildSectionHref,
+  getPageNav,
+  HOME_PATH,
+  MAIN_HEADER_PAGES,
+  resolvePagePath
+} from "@/config/pageNav";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -19,8 +26,7 @@ export default function Navbar() {
   const navItems = pageNav?.items ?? [];
   const hasSectionNav = navItems.length > 0;
   const isHome = pagePath === HOME_PATH;
-  const ctaTarget = pageNav?.cta ?? { path: HOME_PATH, section: "hesapla", focusInput: "giris" };
-  const ctaHref = buildSectionHref(ctaTarget.path, ctaTarget.section);
+  const ctaHref = buildSectionHref(HOME_PATH, "hesapla");
 
   useEffect(() => {
     const onScroll = () => {
@@ -59,27 +65,13 @@ export default function Navbar() {
   }, [hasSectionNav, navItems, pagePath]);
 
   useEffect(() => {
-    if (!hasSectionNav) return undefined;
-
-    const hash = window.location.hash.replace("#", "");
-    if (!hash) return undefined;
-
-    const frame = window.requestAnimationFrame(() => {
-      scrollToSection(hash, false);
-      setActiveSection(hash);
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, [hasSectionNav, pagePath]);
-
-  useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
 
-  const scrollToSection = (sectionId, shouldFocusStartDate = false, focusInputId = ctaTarget.focusInput) => {
+  const scrollToSection = (sectionId, shouldFocusStartDate = false, focusInputId = "giris") => {
     const target = document.getElementById(sectionId);
     if (!target) return;
     target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -97,15 +89,14 @@ export default function Navbar() {
 
     if (onCurrentPage && hasSectionNav) {
       setActiveSection(sectionId);
-      scrollToSection(sectionId, focusCalc, focusCalc ? ctaTarget.focusInput : undefined);
+      scrollToSection(sectionId, focusCalc, focusCalc ? "giris" : undefined);
       return;
     }
 
     router.push(buildSectionHref(pagePath, sectionId));
   };
 
-  const handleNavClick = (event, sectionId) => {
-    if (!hasSectionNav) return;
+  const handleSectionClick = (event, sectionId) => {
     event.preventDefault();
     setOpen(false);
     goToSection(sectionId);
@@ -115,8 +106,8 @@ export default function Navbar() {
     event.preventDefault();
     setOpen(false);
 
-    if (pagePath === ctaTarget.path && ctaTarget.section) {
-      goToSection(ctaTarget.section, { focusCalc: Boolean(ctaTarget.focusInput) });
+    if (isHome) {
+      goToSection("hesapla", { focusCalc: true });
       return;
     }
 
@@ -127,9 +118,7 @@ export default function Navbar() {
     setOpen(false);
     if (isHome) {
       event.preventDefault();
-      setActiveSection(navItems[0]?.id ?? "hesapla");
       window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
     }
   };
 
@@ -147,17 +136,17 @@ export default function Navbar() {
 
   return (
     <header
-      className={`site-header${isHome ? " is-home" : ""}${scrolled ? " is-scrolled" : ""}${open ? " is-menu-open" : ""}`}
+      className={`site-header is-home${scrolled ? " is-scrolled" : ""}${open ? " is-menu-open" : ""}`}
     >
       <div className="header-progress" aria-hidden="true">
         <span className="header-progress-bar" style={{ width: `${scrollProgress}%` }} />
       </div>
 
       <div className="header-shell">
-        <div className="container header-inner">
+        <div className="container header-inner site-chrome-inner">
           <Link href={HOME_PATH} className="brand" aria-label="Anasayfaya dön" onClick={handleLogoClick}>
             <span className="brand-mark">
-              <Image src="/logo.png" alt="Tazminat Hesaplama logosu" width={88} height={88} priority />
+              <Image src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} priority />
             </span>
             <span className="brand-text">
               <span className="brand-title">Tazminat Hesaplama</span>
@@ -168,31 +157,23 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {hasSectionNav ? (
-            <nav className="nav-pill" aria-label="Sayfa bölümleri">
-              <div className="nav-pill-track">
-                {navItems.map((item) => (
-                  <a
-                    key={item.id}
-                    href={buildSectionHref(pagePath, item.id)}
-                    onClick={(event) => handleNavClick(event, item.id)}
-                    className={`nav-pill-link${item.long ? " nav-pill-link--long" : ""}${activeSection === item.id ? " active" : ""}`}
-                    title={item.long ? item.label : undefined}
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </div>
-            </nav>
-          ) : null}
+          <nav className="nav-pill header-page-nav" aria-label="Site sayfaları">
+            <div className="nav-pill-track">
+              {MAIN_HEADER_PAGES.map((page) => (
+                <Link
+                  key={page.path}
+                  href={page.path}
+                  className={`nav-pill-link${pagePath === page.path ? " active" : ""}`}
+                  title={page.title}
+                  onClick={() => setOpen(false)}
+                >
+                  {page.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
 
           <div className="header-actions">
-            {!isHome && (
-              <span className="header-trust-badge">
-                <span className="header-trust-dot" aria-hidden="true" />
-                Ücretsiz
-              </span>
-            )}
             <CalcCta href={ctaHref} className="header-calc-cta" onClick={handleCtaClick}>
               Şimdi Hesapla
             </CalcCta>
@@ -220,23 +201,41 @@ export default function Navbar() {
               ×
             </button>
           </div>
+
+          <nav className="mobile-drawer-nav mobile-drawer-nav--pages">
+            {MAIN_HEADER_PAGES.map((page) => (
+              <Link
+                key={page.path}
+                href={page.path}
+                className={pagePath === page.path ? "active" : ""}
+                onClick={() => setOpen(false)}
+              >
+                {page.label}
+              </Link>
+            ))}
+          </nav>
+
           {hasSectionNav ? (
-            <nav className="mobile-drawer-nav">
-              {navItems.map((item) => {
-                const href = buildSectionHref(pagePath, item.id);
-                return (
-                  <a
-                    key={item.id}
-                    href={href}
-                    className={activeSection === item.id ? "active" : ""}
-                    onClick={(event) => navigateTo(event, href, item.id)}
-                  >
-                    {item.label}
-                  </a>
-                );
-              })}
-            </nav>
+            <>
+              <p className="mobile-drawer-section-label">Bu sayfa</p>
+              <nav className="mobile-drawer-nav mobile-drawer-nav--sections">
+                {navItems.map((item) => {
+                  const href = buildSectionHref(pagePath, item.id);
+                  return (
+                    <a
+                      key={item.id}
+                      href={href}
+                      className={activeSection === item.id ? "active" : ""}
+                      onClick={(event) => navigateTo(event, href, item.id)}
+                    >
+                      {item.label}
+                    </a>
+                  );
+                })}
+              </nav>
+            </>
           ) : null}
+
           <CalcCta href={ctaHref} className="mobile-calc-cta" onClick={handleCtaClick}>
             Şimdi Hesapla
           </CalcCta>

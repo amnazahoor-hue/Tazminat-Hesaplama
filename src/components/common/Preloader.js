@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { IMAGES } from "@/config/images";
 import { useEffect, useState } from "react";
 
 const MIN_VISIBLE_MS = 420;
@@ -66,7 +67,7 @@ export default function Preloader() {
       <div className="site-preloader-panel">
         <div className="site-preloader-logo-stage">
           <Image
-            src="/logo.png"
+            src={IMAGES.logo}
             alt="Tazminat Hesaplama logosu"
             width={100}
             height={100}

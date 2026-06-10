@@ -1,14 +1,22 @@
-const SITE_URL = "https://tazminathesaplama.com";
+import { SITE_URL, siteUrl } from "@/config/site";
+
+export { SITE_URL };
+
+function withTrailingSlash(path) {
+  if (!path || path === "/") return path;
+  return path.endsWith("/") ? path : `${path}/`;
+}
 
 export function buildPageMetadata({ title, description, path, keywords = [] }) {
-  const url = `${SITE_URL}${path}`;
+  const canonicalPath = withTrailingSlash(path);
+  const url = siteUrl(path);
   const keywordString = Array.isArray(keywords) ? keywords.join(", ") : keywords;
   return {
     title,
     description,
     keywords: keywordString,
     alternates: {
-      canonical: path
+      canonical: canonicalPath
     },
     openGraph: {
       type: "website",
@@ -34,7 +42,7 @@ export function buildBreadcrumbSchema(items) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: `${SITE_URL}${item.path}`
+      item: siteUrl(item.path)
     }))
   };
 }
@@ -45,7 +53,7 @@ export function buildOrganizationSchema() {
     "@type": "Organization",
     name: "Tazminat Hesaplama",
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
+    logo: `${SITE_URL}/images/logo.webp`,
     sameAs: [
       "https://www.linkedin.com",
       "https://www.facebook.com",

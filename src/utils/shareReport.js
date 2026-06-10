@@ -27,6 +27,9 @@ export function buildShareReport({ form, result, activeTab }) {
   ];
 
   if (activeTab === "detayli") {
+    if (form.performanceBonus) inputLines.push(`Performans Bonusu: ₺${form.performanceBonus}`);
+    if (form.mealAllowance) inputLines.push(`Aylık Yemek Yardımı: ₺${form.mealAllowance}`);
+    if (form.travelAllowance) inputLines.push(`Aylık Ulaşım Ödeneği: ₺${form.travelAllowance}`);
     inputLines.push(`Kullanılmamış Yıllık İzin: ${form.unusedLeaveDays || "0"} gün`);
     if (form.overtime) inputLines.push(`Fazla Mesai Alacağı: ₺${form.overtime}`);
     if (form.otherReceivables) inputLines.push(`Diğer Alacaklar: ₺${form.otherReceivables}`);
@@ -34,8 +37,11 @@ export function buildShareReport({ form, result, activeTab }) {
 
   const outputLines = [
     `Çalışma Süresi: ${formatDurationText(result.calismaSuresi)}`,
+    `Düzenlenmiş Brüt Maaş: ₺${TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)}`,
+    `Günlük Ücret: ₺${TR.money(result.gunlukUcret ?? result.brutMaas / 30)}`,
+    `Haftalık Ücret: ₺${TR.money(result.haftalikUcret ?? (result.brutMaas * 12) / 52)}`,
     `Kıdem Tazminatı: ₺${TR.money(result.kidemTazminati)}`,
-    `İhbar Tazminatı: ₺${TR.money(result.ihbarTazminati)}`,
+    `İhbar Tazminatı (${result.ihbarSuresiLabel || ""}): ₺${TR.money(result.ihbarTazminati)}`,
     `Toplam Tazminat: ₺${TR.money(result.toplamTazminat)}`
   ];
 
@@ -54,4 +60,32 @@ export function getWhatsAppShareUrl(text) {
 
 export function getEmailShareUrl({ text, subject = "Tazminat Hesaplama Sonuçları" }) {
   return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+}
+
+export function buildTotalCompensationShareReport({ form, result, activeTab }) {
+  const { inputLines, outputLines } = buildShareReport({ form, result, activeTab });
+
+  const extraInputs = [];
+  if (form.performanceBonus) extraInputs.push(`Performans Bonusu: ₺${form.performanceBonus}`);
+  if (form.mealAllowance) extraInputs.push(`Aylık Yemek Yardımı: ₺${form.mealAllowance}`);
+  if (form.travelAllowance) extraInputs.push(`Aylık Ulaşım Ödeneği: ₺${form.travelAllowance}`);
+
+  const extraOutputs = [
+    `Maaş (yıllık): ₺${TR.money(result.yillikMaas)}`,
+    `Bonuslar: ₺${TR.money(result.bonuslar)}`,
+    `Yemek Harcırahı: ₺${TR.money(result.yillikYemek)}`,
+    `Ulaşım Ödeneği: ₺${TR.money(result.yillikUlasim)}`,
+    `Kıdem Tazminatı: ₺${TR.money(result.kidemTazminati)}`,
+    `Toplam Tazminat Değeri: ₺${TR.money(result.toplamTazminatDegeri)}`,
+    "",
+    `Ek çıkış ödemeleri (toplam değere dahil değil):`,
+    `İhbar Tazminatı: ₺${TR.money(result.ihbarTazminati)}`,
+    `Toplam Çıkış Paketi: ₺${TR.money(result.cikisOdemePaketi)}`
+  ];
+
+  const allInputs = [...inputLines, ...extraInputs];
+  const allOutputs = [...outputLines, "", ...extraOutputs];
+  const text = ["TOPLAM TAZMİNAT HESAPLAMA SONUÇLARI", "", ...allInputs, "", ...allOutputs].join("\n");
+
+  return { text, inputLines: allInputs, outputLines: allOutputs };
 }

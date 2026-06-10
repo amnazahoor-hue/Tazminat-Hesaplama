@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { IMAGES } from "@/config/images";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -11,42 +12,42 @@ const STEPS = [
     className: "how-steps-card--1",
     keyword: "MAAŞ",
     text: "Yıllık maaşınızı veya haftalık ücretinizi girin.",
-    image: "/free-calc-office.webp"
+    image: IMAGES.home.freeCalcOffice
   },
   {
     id: 2,
     className: "how-steps-card--2",
     keyword: "SÜRE",
     text: "Şirketteki toplam hizmet sürenizi ekleyin.",
-    image: "/employer-why-bg.jpg"
+    image: IMAGES.home.employerWhyBg
   },
   {
     id: 3,
     className: "how-steps-card--3",
     keyword: "YAŞ",
     text: "Yaşa bağlı düzenlemeler uygulanıyorsa, yaşınızı girin.",
-    image: "/feature-results-salary.jpg"
+    image: IMAGES.home.featureResultsSalary
   },
   {
     id: 4,
     className: "how-steps-card--4",
     keyword: "EKLER",
     text: "Bonuslar veya kullanılmamış izinler gibi ek tazminatları ekleyin.",
-    image: "/feature-tax-coin.jpg"
+    image: IMAGES.home.featureTaxCoin
   },
   {
     id: 5,
     className: "how-steps-card--5",
     keyword: "POLİTİKA",
     text: "Biliniyorsa, şirketinizin kıdem tazminatı politikasını seçin.",
-    image: "/diff-purple-salary.jpg"
+    image: IMAGES.home.diffPurpleSalary
   },
   {
     id: 6,
     className: "how-steps-card--6",
     keyword: "HESAPLA",
     text: "Tahmini tutarınızı anında oluşturmak için hesapla düğmesine tıklayın.",
-    image: "/intro-severance-bg.webp"
+    image: IMAGES.home.introSeveranceBg
   }
 ];
 
@@ -410,7 +411,7 @@ export default function HowStepsCarousel() {
                 <motion.div className="how-steps-orbit-center" variants={centerVariants}>
                   <div className="how-steps-orbit-center-glow" aria-hidden="true" />
                   <Image
-                    src="/logo.png"
+                    src={IMAGES.logo}
                     alt="Tazminat Hesaplama logosu"
                     width={160}
                     height={160}

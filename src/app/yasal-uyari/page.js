@@ -1,72 +1,77 @@
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import LegalPageShell from "@/components/legal/LegalPageShell";
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Yasal Uyari | Tazminat Hesaplama",
-  description: "Yasal uyari: hesaplama sinirlari, hukuki farkliliklar ve profesyonel danismanlik notlari.",
+  title: "Yasal Uyarı | Tazminat Hesaplama",
+  description: "Yasal uyarı: hesaplama sınırları, hukuki farklılıklar ve profesyonel danışmanlık notları.",
   path: "/yasal-uyari",
-  keywords: ["yasal uyari", "disclaimer", "tazminat hesaplama sinirlari"]
+  keywords: ["yasal uyarı", "disclaimer", "tazminat hesaplama sınırları"]
 });
+
+const SECTIONS = [
+  {
+    title: "Hesaplama Esasları",
+    body: (
+      <p>
+        Tavan tutarı, bildirim süreleri ve temel kıdem/ihbar katsayıları güncel mevzuata göre düzenli olarak
+        gözden geçirilir.
+      </p>
+    )
+  },
+  {
+    title: "Sonuç Doğruluğu ve Sınırlar",
+    body: (
+      <p>
+        Araç tahmini sonuç üretir. Özel sözleşme maddeleri, ek menfaatler ve emsal yargı kararlarına bağlı kalemler
+        nihai hesapta farklılık oluşturabilir.
+      </p>
+    )
+  },
+  {
+    title: "Nihai Tutar Farklılıkları",
+    body: (
+      <p>
+        Toplu iş sözleşmeleri, sendikal düzenlemeler, özel sözleşme maddeleri veya mahkeme kararları nihai tutarı
+        değiştirebilir.
+      </p>
+    )
+  },
+  {
+    title: "Dahil Olmayan Kalemler",
+    body: (
+      <p>
+        Prim, ikramiye, yol, yemek, fazla mesai ve sözleşmesel ek menfaatler hesaplama modeline her zaman tam olarak
+        yansımayabilir.
+      </p>
+    )
+  },
+  {
+    title: "Üçüncü Taraf Bağlantılar",
+    body: (
+      <p>
+        Sitede yer alabilecek dış bağlantılar yalnızca bilgilendirme amacıyla verilir. Üçüncü taraf içeriklerin
+        güncelliği ve doğruluğu ilgili yayıncı sorumluluğundadır.
+      </p>
+    )
+  },
+  {
+    title: "Profesyonel Danışmanlık",
+    body: <p>Kesin değerlendirme için iş hukuku alanında uzman bir avukata başvurunuz.</p>
+  }
+];
 
 export default function LegalDisclaimerPage() {
   return (
-    <section className="legal-page legal-guide container">
-      <BreadcrumbSchema
-        items={[
-          { name: "Anasayfa", path: "/" },
-          { name: "Yasal Uyari", path: "/yasal-uyari" }
-        ]}
-      />
-      <header className="legal-hero">
-        <span className="legal-hero-tag">YASAL UYARI</span>
-        <h1>Yasal Uyari</h1>
-        <p>
-          Hesaplamalarda standart Is Kanunu formulleri esas alinmistir; buna ragmen sonuclar baglayici hukuki
-          mutalaa yerine gecmez.
-        </p>
-      </header>
-
-      <div className="legal-grid">
-        <article className="legal-card">
-          <h2>Hesaplama Esaslari</h2>
-          <p>
-            Tavan tutari, bildirim sureleri ve temel kidem/ihbar katsayilari guncel mevzuata gore duzenli
-            olarak gozden gecirilir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Sonuc Dogrulugu ve Sinirlar</h2>
-          <p>
-            Arac tahmini sonuc uretir. Ozel sozlesme maddeleri, ek menfaatler ve emsal yargi kararlarina bagli
-            kalemler nihai hesapta farklilik olusturabilir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Nihai Tutar Farkliliklari</h2>
-          <p>
-            Toplu is sozlesmeleri, sendikal duzenlemeler, ozel sozlesme maddeleri veya mahkeme kararlari nihai
-            tutari degistirebilir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Dahil Olmayan Kalemler</h2>
-          <p>
-            Prim, ikramiye, yol, yemek, fazla mesai ve sozlesmesel ek menfaatler hesaplama modeline her zaman
-            tam olarak yansimayabilir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Ucuncu Taraf Baglantilar</h2>
-          <p>
-            Sitede yer alabilecek dis baglantilar yalnizca bilgilendirme amaciyla verilir. Ucuncu taraf
-            iceriklerin guncelligi ve dogrulugu ilgili yayinci sorumlulugundadir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Profesyonel Danismanlik</h2>
-          <p>Kesin degerlendirme icin is hukuku alaninda uzman bir avukata basvurunuz.</p>
-        </article>
-      </div>
-    </section>
+    <LegalPageShell
+      path="/yasal-uyari"
+      breadcrumb={[
+        { name: "Anasayfa", path: "/" },
+        { name: "Yasal Uyarı", path: "/yasal-uyari" }
+      ]}
+      tag="Yasal Uyarı"
+      title="Yasal Uyarı"
+      lead="Hesaplamalarda standart İş Kanunu formülleri esas alınmıştır; buna rağmen sonuçlar bağlayıcı hukuki mütalaa yerine geçmez."
+      sections={SECTIONS}
+    />
   );
 }

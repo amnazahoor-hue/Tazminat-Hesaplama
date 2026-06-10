@@ -4,6 +4,7 @@ import Preloader from "@/components/common/Preloader";
 import ScrollRevealInit from "@/components/common/ScrollRevealInit";
 import Footer from "@/components/layouts/Footer";
 import { Inter } from "next/font/google";
+import { SITE_URL } from "@/config/site";
 import { buildPageMetadata } from "@/utils/seo";
 
 const inter = Inter({
@@ -13,6 +14,7 @@ const inter = Inter({
 });
 
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   ...buildPageMetadata({
     title: "Tazminat Hesaplama",
     description: "Kıdem tazminatı, ihbar tazminatı ve yıllık izin ücreti hesaplama araçları.",
@@ -20,8 +22,8 @@ export const metadata = {
     keywords: ["tazminat hesaplama", "kıdem tazminatı hesaplaması"]
   }),
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png"
+    icon: "/images/logo.webp",
+    apple: "/images/logo.webp"
   }
 };
 

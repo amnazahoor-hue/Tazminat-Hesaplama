@@ -1,4 +1,5 @@
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({

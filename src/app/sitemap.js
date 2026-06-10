@@ -1,14 +1,16 @@
-const baseUrl = "https://tazminathesaplama.com";
+import {
+  IHBAR_NEDIR_PATH,
+  KIDEM_TAVANI_PATH,
+  siteUrl,
+  TAZMINAT_HESAPLAMA_PATH
+} from "@/config/site";
 
 export default function sitemap() {
   const routes = [
-    "/kidem-tazminati-hesaplamasi",
-    "/ihbar-tazminati-hesaplama",
-    "/yillik-izin-ucreti-hesaplama",
-    "/kidem-tazminati-nedir",
-    "/toplam-tazminat-hesaplama-kilavuzu",
-    "/ihbar-tazminati-nedir",
-    "/kidem-tazminati-tavani-turkiye-2026",
+    "/",
+    TAZMINAT_HESAPLAMA_PATH,
+    IHBAR_NEDIR_PATH,
+    KIDEM_TAVANI_PATH,
     "/ihbar-sureleri",
     "/tazminat-tavani-2024",
     "/is-kanunu",
@@ -24,9 +26,9 @@ export default function sitemap() {
   ];
 
   return routes.map((route) => ({
-    url: `${baseUrl}${route}`,
+    url: siteUrl(route),
     lastModified: new Date(),
     changeFrequency: "weekly",
-    priority: route === "/kidem-tazminati-hesaplamasi" ? 1 : 0.8
+    priority: route === "/" ? 1 : 0.8
   }));
 }

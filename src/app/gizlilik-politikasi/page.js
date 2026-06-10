@@ -1,76 +1,83 @@
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import LegalPageShell from "@/components/legal/LegalPageShell";
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Gizlilik Politikasi | Tazminat Hesaplama",
-  description: "Tazminat Hesaplama gizlilik politikasi: veri kullanimi, cerezler ve kullanici haklari.",
+  title: "Gizlilik Politikası | Tazminat Hesaplama",
+  description: "Tazminat Hesaplama gizlilik politikası: veri kullanımı, çerezler ve kullanıcı hakları.",
   path: "/gizlilik-politikasi",
-  keywords: ["gizlilik politikasi", "veri guvenligi", "kidem hesaplama gizlilik"]
+  keywords: ["gizlilik politikası", "veri güvenliği", "kıdem hesaplama gizlilik"]
 });
+
+const SECTIONS = [
+  {
+    title: "Toplanan Veriler",
+    body: (
+      <p>
+        Temel kullanımda ad-soyad, kimlik, telefon veya e-posta gibi kişisel veriler talep edilmez. Hesaplama
+        için girilen maaş ve tarih bilgileri yalnızca anlık işlenir.
+      </p>
+    )
+  },
+  {
+    title: "Veri İşleme Amacı",
+    body: (
+      <p>
+        Girdiler kıdem, ihbar ve izin hesaplamasını göstermek için kullanılır. Sistem varsayılan olarak bu
+        verileri kalıcı veri tabanında saklamaz.
+      </p>
+    )
+  },
+  {
+    title: "Çerez ve Teknik Kayıtlar",
+    body: (
+      <p>
+        Sayfa güvenliği ve performansı için teknik çerezler kullanılabilir. Kişisel profil çıkarmaya yönelik
+        davranışsal takip politikası uygulanmaz.
+      </p>
+    )
+  },
+  {
+    title: "Analitik ve Reklam Araçları",
+    body: (
+      <p>
+        Google Analytics veya benzeri analiz/reklam servisleri etkinleştirildiğinde, ilgili servisler kendi
+        politikalarına göre anonim veya cihaz bazlı veriler işleyebilir. Bu durumda çerez bildirimi ve açık
+        rıza mekanizması güncellenir.
+      </p>
+    )
+  },
+  {
+    title: "GDPR ve CCPA Uyum Notu",
+    body: (
+      <p>
+        AB ve California ziyaretçileri için veri erişimi, silme ve işleme itiraz hakları uygulanır. Talepleriniz
+        e-posta üzerinden kayda alınarak yasal süreler dahilinde cevaplanır.
+      </p>
+    )
+  },
+  {
+    title: "Kullanıcı Hakları",
+    body: (
+      <p>
+        Gizlilik talepleriniz, veri işleme sorularınız ve politika bildirimleriniz için{" "}
+        <a href="mailto:info@tazminathesaplama.com">info@tazminathesaplama.com</a> adresine ulaşabilirsiniz.
+      </p>
+    )
+  }
+];
 
 export default function PrivacyPolicyPage() {
   return (
-    <section className="legal-page legal-guide container">
-      <BreadcrumbSchema
-        items={[
-          { name: "Anasayfa", path: "/" },
-          { name: "Gizlilik Politikasi", path: "/gizlilik-politikasi" }
-        ]}
-      />
-      <header className="legal-hero">
-        <span className="legal-hero-tag">YASAL METIN</span>
-        <h1>Gizlilik Politikasi</h1>
-        <p>
-          Bu platform hesaplamalari istemci tarafinda yapar; kullanici verileri varsayilan duzende sunucuya
-          aktarilmaz ve tum islemler cihazinizda gerceklesir.
-        </p>
-      </header>
-
-      <div className="legal-grid">
-        <article className="legal-card">
-          <h2>Toplanan Veriler</h2>
-          <p>
-            Temel kullanimda ad-soyad, kimlik, telefon veya e-posta gibi kisisel veriler talep edilmez.
-            Hesaplama icin girilen maas ve tarih bilgileri yalnizca anlik islenir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Veri Isleme Amaci</h2>
-          <p>
-            Girdiler kidem, ihbar ve izin hesaplamasini gostermek icin kullanilir. Sistem varsayilan olarak bu
-            verileri kalici veri tabaninda saklamaz.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Cerez ve Teknik Kayitlar</h2>
-          <p>
-            Sayfa guvenligi ve performansi icin teknik cerezler kullanilabilir. Kisisel profil cikarmaya
-            yonelik davranissal takip politikasi uygulanmaz.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Analitik ve Reklam Araclari</h2>
-          <p>
-            Google Analytics veya benzeri analiz/reklam servisleri etkinlestirildiginde, ilgili servisler kendi
-            politikalarina gore anonim veya cihaz bazli veriler isleyebilir. Bu durumda cerez bildirimi ve
-            acik riza mekanizmasi guncellenir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>GDPR ve CCPA Uyum Notu</h2>
-          <p>
-            AB ve California ziyaretcileri icin veri erisimi, silme ve isleme itiraz haklari uygulanir.
-            Talepleriniz e-posta uzerinden kayda alinarak yasal sureler dahilinde cevaplanir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Kullanici Haklari</h2>
-          <p>
-            Gizlilik talepleriniz, veri isleme sorulariniz ve politika bildirimleriniz icin
-            info@tazminathesaplama.com adresine ulasabilirsiniz.
-          </p>
-        </article>
-      </div>
-    </section>
+    <LegalPageShell
+      path="/gizlilik-politikasi"
+      breadcrumb={[
+        { name: "Anasayfa", path: "/" },
+        { name: "Gizlilik Politikası", path: "/gizlilik-politikasi" }
+      ]}
+      tag="Yasal Metin"
+      title="Gizlilik Politikası"
+      lead="Bu platform hesaplamaları istemci tarafında yapar; kullanıcı verileri varsayılan düzende sunucuya aktarılmaz ve tüm işlemler cihazınızda gerçekleşir."
+      sections={SECTIONS}
+    />
   );
 }

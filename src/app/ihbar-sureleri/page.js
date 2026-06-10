@@ -36,7 +36,7 @@ export default function NoticePeriodsPage() {
       </table>
 
       <div className="legal-actions">
-        <Link href="/ihbar-tazminati-hesaplama">Ihbar Hesaplama Aracina Git</Link>
+        <Link href="/ihbar-tazminati-nedir/">İhbar Tazminatı Rehberi</Link>
         <Link href="/#hesapla">Ana Hesaplayiciyi Ac</Link>
       </div>
     </section>

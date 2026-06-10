@@ -1,6 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { IMAGES } from "@/config/images";
+import { HOME_PATH, IHBAR_NEDIR_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
 import { motion, useScroll, useTransform } from "framer-motion";
 import GuidePageEnd from "./GuidePageEnd";
 import {
@@ -24,6 +27,7 @@ import {
   Wallet
 } from "lucide-react";
 import CalcCta from "@/components/common/CalcCta";
+import TotalCompensationCalculatorPanel from "@/components/TotalCompensationCalculatorPanel";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import GuideFaq from "./GuideFaq";
 import {
@@ -249,26 +253,45 @@ export default function TotalCompensationGuide() {
     <GuidePageShell>
       <BreadcrumbSchema
         items={[
-          { name: "Anasayfa", path: "/kidem-tazminati-hesaplamasi" },
-          { name: "Toplam Tazminat Hesaplama Kılavuzu", path: "/toplam-tazminat-hesaplama-kilavuzu" }
+          { name: "Anasayfa", path: HOME_PATH },
+          { name: "Toplam Tazminat Hesaplama Kılavuzu", path: TAZMINAT_HESAPLAMA_PATH }
         ]}
       />
 
       <header className="guide-page-hero">
-        <span className="guide-page-hero-bg" aria-hidden="true" />
+        <span className="guide-page-hero-bg" aria-hidden="true">
+          <Image
+            src={IMAGES.tazminatHesaplama.hero}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="guide-page-hero-bg-image"
+          />
+        </span>
         <span className="guide-page-hero-overlay" aria-hidden="true" />
         <div className="container guide-page-hero-content">
           <Reveal>
             <h1>2026 Yılı İçin Ücret Hesaplaması</h1>
             <div className="guide-page-hero-actions">
-              <CalcCta href="/kidem-tazminati-hesaplamasi#hesapla">Şimdi Hesapla</CalcCta>
-              <Link href="/kidem-tazminati-hesaplamasi" className="guide-page-secondary-link">
+              <CalcCta
+                href="#hesapla"
+                onClick={(event) => {
+                  event.preventDefault();
+                  document.getElementById("hesapla")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              >
+                Şimdi Hesapla
+              </CalcCta>
+              <Link href={`${HOME_PATH}#hesapla`} className="guide-page-secondary-link">
                 Kıdem Tazminatı Hesaplayıcısı
               </Link>
             </div>
           </Reveal>
         </div>
       </header>
+
+      <TotalCompensationCalculatorPanel />
 
       <GuideSection id="guide-tanim">
         <IntroBlock>
@@ -482,7 +505,7 @@ export default function TotalCompensationGuide() {
 
       <GuideFaq />
       <GuidePageEnd
-        href="/ihbar-tazminati-nedir"
+        href={IHBAR_NEDIR_PATH}
         title="İhbar Tazminatı Nedir?"
         description="İhbar süreleri, örnekler, çalışan hakları ve SSS ile kapsamlı iş hukuku rehberi."
         linkLabel="İhbar Tazminatı Rehberi"
