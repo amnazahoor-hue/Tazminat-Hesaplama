@@ -1,18 +1,18 @@
 export const IHBAR_IMAGES = {
   hero: {
-    src: "/images/ihbar/hero.jpg",
+    src: "/images/ihbar/hero.webp",
     alt: "İş sözleşmesi imzalama ve ofis toplantısı görseli"
   },
   kidem: {
-    src: "/images/ihbar/kidem.jpg",
+    src: "/images/ihbar/kidem.webp",
     alt: "Finans hesaplama masası ve hesap makinesi görseli"
   },
   examples: {
-    src: "/images/ihbar/examples.jpg",
+    src: "/images/ihbar/examples.webp",
     alt: "İşveren ve çalışan arasında iş hukuku görüşmesi görseli"
   },
   rights: {
-    src: "/images/ihbar/rights.jpg",
+    src: "/images/ihbar/rights.webp",
     alt: "İhbar süresi boyunca ofiste çalışan profesyonel ekip görseli"
   }
 };

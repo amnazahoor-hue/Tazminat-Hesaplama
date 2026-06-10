@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "images:convert": "node scripts/convert-images.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -20,5 +21,8 @@
     "react-dom": "latest",
     "react-parallax-tilt": "^1.7.331",
     "three": "^0.184.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }

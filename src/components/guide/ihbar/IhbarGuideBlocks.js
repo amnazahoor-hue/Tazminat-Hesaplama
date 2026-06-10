@@ -61,7 +61,7 @@ export function NoticeHero({ image }) {
             özellikle 17. maddesinde (ihbar) belirtilmiştir.
           </p>
           <div className="ihbar-guide-hero-actions">
-            <CalcCta href="/ihbar-tazminati-hesaplama#hesapla">İhbar Tazminatı Hesapla</CalcCta>
+            <CalcCta href="/#hesapla">Kıdem Tazminatı Hesapla</CalcCta>
           </div>
         </motion.div>
         <motion.div

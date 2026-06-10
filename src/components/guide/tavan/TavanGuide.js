@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { HOME_PATH, KIDEM_TAVANI_PATH } from "@/config/site";
 import {
   ABOVE_CEILING_ITEMS,
   AFFECTED_GROUPS,
@@ -17,7 +18,8 @@ import {
   TAVAN_HERO_STAT,
   YEARLY_COMPARISON_ROWS
 } from "@/data/tavanGuideContent";
-import TavanGuideFaq from "./TavanGuideFaq";
+import GuideFaqSection from "../GuideFaqSection";
+import { TAVAN_FAQ_ITEMS } from "@/data/tavanGuideContent";
 import {
   AffectedGroupChips,
   CeilingMechanismCards,
@@ -58,8 +60,8 @@ export default function TavanGuide() {
     <GuidePageShell>
       <BreadcrumbSchema
         items={[
-          { name: "Anasayfa", path: "/kidem-tazminati-hesaplamasi" },
-          { name: "Kıdem Tazminatı Tavanı 2026", path: "/kidem-tazminati-tavani-turkiye-2026" }
+          { name: "Anasayfa", path: HOME_PATH },
+          { name: "Kıdem Tazminatı Tavanı 2026", path: KIDEM_TAVANI_PATH }
         ]}
       />
 
@@ -180,7 +182,7 @@ export default function TavanGuide() {
         <MistakesTable rows={EMPLOYER_MISTAKES_ROWS} />
       </GuideSection>
 
-      <TavanGuideFaq />
+      <GuideFaqSection id="tavan-sss" items={TAVAN_FAQ_ITEMS} />
     </GuidePageShell>
   );
 }

@@ -1,72 +1,82 @@
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import LegalPageShell from "@/components/legal/LegalPageShell";
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Kullanim Sartlari | Tazminat Hesaplama",
-  description: "Tazminat Hesaplama kullanim sartlari: hizmet kapsami, sorumluluk ve guncelleme esaslari.",
+  title: "Kullanım Şartları | Tazminat Hesaplama",
+  description: "Tazminat Hesaplama kullanım şartları: hizmet kapsamı, sorumluluk ve güncelleme esasları.",
   path: "/kullanim-sartlari",
-  keywords: ["kullanim sartlari", "hukuki kosullar", "tazminat hesaplama kullanimi"]
+  keywords: ["kullanım şartları", "hukuki koşullar", "tazminat hesaplama kullanımı"]
 });
+
+const SECTIONS = [
+  {
+    title: "Kullanım Kuralları",
+    body: (
+      <p>
+        Siteyi kullanan herkes, sayfa içeriklerini hukuka uygun amaçlarla kullanmayı, hizmete zarar verecek
+        otomasyonlardan ve kötüye kullanımdan kaçınmayı kabul eder.
+      </p>
+    )
+  },
+  {
+    title: "Hizmet Kapsamı",
+    body: (
+      <p>
+        Platform, Türk İş Hukuku&apos;ndaki genel formüllere dayalı kıdem, ihbar ve izin hesaplama araçları sunar.
+        Sonuçlar tahmini niteliktedir.
+      </p>
+    )
+  },
+  {
+    title: "Kullanıcı Sorumluluğu",
+    body: (
+      <p>
+        Girilen bilgilerin doğruluğundan kullanıcı sorumludur. Hatalı veya eksik veri, hesaplama sonucunu doğrudan
+        etkileyebilir.
+      </p>
+    )
+  },
+  {
+    title: "Sorumluluk ve Mesuliyet Sınırı",
+    body: (
+      <p>
+        Site içeriğine dayanılarak alınan kararlardan doğabilecek doğrudan veya dolaylı zararlardan işletmeci
+        sorumlu tutulamaz.
+      </p>
+    )
+  },
+  {
+    title: "Kısıtlamalar",
+    body: (
+      <p>
+        Kod, içerik veya hizmetin izinsiz kopyalanması, tersine mühendislik amaçlı otomatik tarama ya da hizmeti
+        aksatma girişimleri yasaktır.
+      </p>
+    )
+  },
+  {
+    title: "Güncelleme Hakkı",
+    body: (
+      <p>
+        İçerik ve kullanım koşulları, mevzuat değişikliklerine paralel olarak önceden bildirim olmaksızın
+        güncellenebilir.
+      </p>
+    )
+  }
+];
 
 export default function TermsPage() {
   return (
-    <section className="legal-page legal-guide container">
-      <BreadcrumbSchema
-        items={[
-          { name: "Anasayfa", path: "/" },
-          { name: "Kullanim Sartlari", path: "/kullanim-sartlari" }
-        ]}
-      />
-      <header className="legal-hero">
-        <span className="legal-hero-tag">KULLANIM KOSULLARI</span>
-        <h1>Kullanim Sartlari</h1>
-        <p>Bu arac bilgilendirme amaclidir ve hukuki danismanlik yerine gecmez.</p>
-      </header>
-
-      <div className="legal-grid">
-        <article className="legal-card">
-          <h2>Kullanim Kurallari</h2>
-          <p>
-            Siteyi kullanan herkes, sayfa iceriklerini hukuka uygun amaclarla kullanmayi, hizmete zarar
-            verecek otomasyonlardan ve kotuye kullanimdan kacinmayi kabul eder.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Hizmet Kapsami</h2>
-          <p>
-            Platform, Turk Is Hukuku&apos;ndaki genel formullere dayali kidem, ihbar ve izin hesaplama araclari
-            sunar. Sonuclar tahmini niteliktedir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Kullanici Sorumlulugu</h2>
-          <p>
-            Girilen bilgilerin dogrulugundan kullanici sorumludur. Hatali veya eksik veri, hesaplama sonucunu
-            dogrudan etkileyebilir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Sorumluluk ve Mesuliyet Siniri</h2>
-          <p>
-            Site icerigine dayanilarak alinan kararlardan dogabilecek dogrudan veya dolayli zararlardan
-            isletmeci sorumlu tutulamaz.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Kisitlamalar</h2>
-          <p>
-            Kod, icerik veya hizmetin izinsiz kopyalanmasi, tersine muhendislik amacli otomatik tarama ya da
-            hizmeti aksatma girisimleri yasaktir.
-          </p>
-        </article>
-        <article className="legal-card">
-          <h2>Guncelleme Hakki</h2>
-          <p>
-            Icerik ve kullanim kosullari, mevzuat degisikliklerine paralel olarak onceden bildirim olmaksizin
-            guncellenebilir.
-          </p>
-        </article>
-      </div>
-    </section>
+    <LegalPageShell
+      path="/kullanim-sartlari"
+      breadcrumb={[
+        { name: "Anasayfa", path: "/" },
+        { name: "Kullanım Şartları", path: "/kullanim-sartlari" }
+      ]}
+      tag="Kullanım Koşulları"
+      title="Kullanım Şartları"
+      lead="Bu araç bilgilendirme amaçlıdır ve hukuki danışmanlık yerine geçmez."
+      sections={SECTIONS}
+    />
   );
 }

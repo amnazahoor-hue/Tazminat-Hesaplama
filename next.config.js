@@ -1,19 +1,40 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  images: {
-    remotePatterns: [
+  trailingSlash: true,
+  async redirects() {
+    return [
       {
-        protocol: "https",
-        hostname: "media.istockphoto.com",
-        pathname: "/**"
+        source: "/kidem-tazminati-hesaplamasi",
+        destination: "/",
+        permanent: true
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "/**"
+        source: "/toplam-tazminat-hesaplama-kilavuzu",
+        destination: "/tazminat-hesaplama/",
+        permanent: true
+      },
+      {
+        source: "/kidem-tazminati-tavani-turkiye-2026",
+        destination: "/kidem-tazminati-tavani/",
+        permanent: true
+      },
+      {
+        source: "/ihbar-tazminati-hesaplama",
+        destination: "/ihbar-tazminati-nedir/",
+        permanent: true
+      },
+      {
+        source: "/yillik-izin-ucreti-hesaplama",
+        destination: "/tazminat-hesaplama/",
+        permanent: true
+      },
+      {
+        source: "/kidem-tazminati-nedir",
+        destination: "/",
+        permanent: true
       }
-    ]
+    ];
   }
 };
 

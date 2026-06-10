@@ -4,16 +4,39 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import CalcCta from "@/components/common/CalcCta";
+import { IMAGES } from "@/config/images";
+import { TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
 import GuidePageEnd from "@/components/guide/GuidePageEnd";
 import HowStepsCarousel from "@/components/HowStepsCarousel";
 import ResultPdfTemplate from "@/components/ResultPdfTemplate";
 import ResultShareBar from "@/components/ResultShareBar";
-import { exportResultPdf } from "@/utils/exportPdf";
-import { buildShareReport, getEmailShareUrl, getWhatsAppShareUrl } from "@/utils/shareReport";
+import { useCalculatorShare } from "@/hooks/useCalculatorShare";
+import { buildShareReport } from "@/utils/shareReport";
 import TickMark from "@/components/common/TickMark";
 import SummaryShowcaseIllustration from "@/components/SummaryShowcaseIllustration";
 import { ShieldCheck, Sparkles } from "lucide-react";
-import { calculateCompensation, CONFIG, TR, validateForm } from "@/utils/helpers";
+import SeveranceBreakdownTable from "@/components/calculator/SeveranceBreakdownTable";
+import {
+  BONUS_PAYMENTS_PER_YEAR,
+  calculateCompensation,
+  CONFIG,
+  TR,
+  validateForm
+} from "@/utils/helpers";
+
+const SEVERANCE_EXAMPLE = {
+  startDate: "2020-06-08",
+  endDate: "2025-06-07",
+  grossSalary: "30.000,00",
+  reason: "haksiz_fesih",
+  weeklyDays: "5",
+  unusedLeaveDays: "0",
+  overtime: "",
+  otherReceivables: "",
+  performanceBonus: "",
+  mealAllowance: "",
+  travelAllowance: ""
+};
 
 const initialForm = {
   startDate: "",
@@ -23,7 +46,10 @@ const initialForm = {
   weeklyDays: "5",
   unusedLeaveDays: "0",
   overtime: "",
-  otherReceivables: ""
+  otherReceivables: "",
+  performanceBonus: "",
+  mealAllowance: "",
+  travelAllowance: ""
 };
 
 const faqItems = [
@@ -100,10 +126,10 @@ const faqItems = [
 ];
 
 const HERO_CAROUSEL_IMAGES = [
-  "/hero-carousel-lira.png",
-  "/hero-carousel-1.png",
-  "/hero-carousel-2.png",
-  "/hero-carousel-3.png"
+  IMAGES.home.heroCarouselLira,
+  IMAGES.home.heroCarousel1,
+  IMAGES.home.heroCarousel2,
+  IMAGES.home.heroCarousel3
 ];
 
 function formatDuration(s) {
@@ -125,7 +151,6 @@ export default function CompensationCalculator() {
   const [result, setResult] = useState(null);
   const [openFaq, setOpenFaq] = useState("");
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
-  const [pdfLoading, setPdfLoading] = useState(false);
   const pdfRef = useRef(null);
   const resultsRef = useRef(null);
   const gerekliGirisRef = useRef(null);
@@ -243,7 +268,11 @@ export default function CompensationCalculator() {
       weeklyDays: parseInt(form.weeklyDays, 10),
       unusedLeaveDays: parseInt(form.unusedLeaveDays || "0", 10),
       overtime: TR.parseMoney(form.overtime),
-      otherReceivables: TR.parseMoney(form.otherReceivables)
+      otherReceivables: TR.parseMoney(form.otherReceivables),
+      performanceBonus: TR.parseMoney(form.performanceBonus),
+      mealAllowance: TR.parseMoney(form.mealAllowance),
+      travelAllowance: TR.parseMoney(form.travelAllowance),
+      bonusPaymentsPerYear: BONUS_PAYMENTS_PER_YEAR
     };
     const v = validateForm(payload);
     setErrors(v);
@@ -267,39 +296,37 @@ export default function CompensationCalculator() {
     setResult(null);
   };
 
-  const copy = async () => {
-    if (!result) return;
-    const { text } = buildShareReport({ form, result, activeTab });
-    await navigator.clipboard.writeText(text);
-    window.alert("Sonuç kopyalandı.");
+  const fillExample = () => {
+    setForm({ ...SEVERANCE_EXAMPLE });
+    setErrors({});
+    setActiveTab("standart");
+    const payload = {
+      startDate: SEVERANCE_EXAMPLE.startDate,
+      endDate: SEVERANCE_EXAMPLE.endDate,
+      grossSalary: TR.parseMoney(SEVERANCE_EXAMPLE.grossSalary),
+      reason: SEVERANCE_EXAMPLE.reason,
+      weeklyDays: 5,
+      unusedLeaveDays: 0,
+      overtime: 0,
+      otherReceivables: 0,
+      performanceBonus: 0,
+      mealAllowance: 0,
+      travelAllowance: 0,
+      bonusPaymentsPerYear: BONUS_PAYMENTS_PER_YEAR
+    };
+    const calc = calculateCompensation(payload);
+    setResult(calc.error ? null : calc);
+    if (!calc.error) pendingScrollToResults.current = true;
   };
 
-  const shareWhatsApp = () => {
-    if (!result) return;
-    const { text } = buildShareReport({ form, result, activeTab });
-    window.open(getWhatsAppShareUrl(text), "_blank", "noopener,noreferrer");
-  };
-
-  const shareEmail = () => {
-    if (!result) return;
-    const { text } = buildShareReport({ form, result, activeTab });
-    window.location.href = getEmailShareUrl({ text });
-  };
-
-  const downloadPdf = async () => {
-    if (!result || !pdfRef.current) return;
-    const sheet = pdfRef.current.querySelector(".pdf-report-sheet");
-    if (!sheet) return;
-
-    setPdfLoading(true);
-    try {
-      await exportResultPdf(sheet);
-    } catch {
-      window.alert("PDF oluşturulamadı. Lütfen tekrar deneyin.");
-    } finally {
-      setPdfLoading(false);
-    }
-  };
+  const { pdfLoading, copy, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
+    form,
+    result,
+    activeTab,
+    buildReport: buildShareReport,
+    pdfRef,
+    pdfFilename: "tazminat-hesaplama-raporu.pdf"
+  });
 
   useEffect(() => {
     setForm((prev) => {
@@ -689,6 +716,48 @@ export default function CompensationCalculator() {
               {activeTab === "detayli" && (
                 <>
                   <label>
+                    Performans Bonusu (₺)
+                    <input
+                      type="text"
+                      value={form.performanceBonus}
+                      onChange={(e) => onChange("performanceBonus", e.target.value)}
+                      onBlur={(e) => {
+                        const n = TR.parseMoney(e.target.value);
+                        if (n > 0) onChange("performanceBonus", TR.money(n));
+                      }}
+                      placeholder="5.000,00"
+                    />
+                    <small className="calc-field-hint">
+                      Düzenlenmiş brüt maaşa dahil edilir (yıllık prim / {BONUS_PAYMENTS_PER_YEAR})
+                    </small>
+                  </label>
+                  <label>
+                    Aylık Yemek Yardımı (₺)
+                    <input
+                      type="text"
+                      value={form.mealAllowance}
+                      onChange={(e) => onChange("mealAllowance", e.target.value)}
+                      onBlur={(e) => {
+                        const n = TR.parseMoney(e.target.value);
+                        if (n > 0) onChange("mealAllowance", TR.money(n));
+                      }}
+                      placeholder="2.000,00"
+                    />
+                  </label>
+                  <label>
+                    Aylık Ulaşım Ödeneği (₺)
+                    <input
+                      type="text"
+                      value={form.travelAllowance}
+                      onChange={(e) => onChange("travelAllowance", e.target.value)}
+                      onBlur={(e) => {
+                        const n = TR.parseMoney(e.target.value);
+                        if (n > 0) onChange("travelAllowance", TR.money(n));
+                      }}
+                      placeholder="1.000,00"
+                    />
+                  </label>
+                  <label>
                     Kullanılmamış Yıllık İzin (gün)
                     <input
                       type="number"
@@ -717,6 +786,9 @@ export default function CompensationCalculator() {
                   Tazminatı Hesapla
                 </CalcCta>
                 <div className="calc-secondary-actions">
+                  <button type="button" onClick={fillExample}>
+                    Örnek Doldur
+                  </button>
                   <button type="button" onClick={clear}>
                     Temizle
                   </button>
@@ -744,6 +816,12 @@ export default function CompensationCalculator() {
                 <p className="result-period">
                   {result.iseGirisTarihi} - {result.istenCikisTarihi} / {formatDuration(result.calismaSuresi)}
                 </p>
+                {result.tavanUygulandi && (
+                  <p className="result-note">
+                    Kıdem tazminatında 2026 tavanı (₺{TR.money(result.tavanTutari)}) uygulanmıştır.
+                  </p>
+                )}
+                <p className="result-note">{result.eligNote}</p>
               </div>
               <div className="result-cards scroll-reveal-stagger">
                 <article>
@@ -760,47 +838,7 @@ export default function CompensationCalculator() {
                 </article>
               </div>
 
-              <div className="result-table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Kalem</th>
-                      <th>Hesaplama</th>
-                      <th>Tutar</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Kıdem Tazminatı</td>
-                      <td>
-                        ₺{TR.money(Math.min(result.brutMaas, result.tavanTutari))} x {result.totalYears.toFixed(2)} yıl
-                      </td>
-                      <td>₺{TR.money(result.kidemTazminati)}</td>
-                    </tr>
-                    <tr>
-                      <td>İhbar Tazminatı</td>
-                      <td>
-                        (₺{TR.money(result.brutMaas)} / 30) x {result.ihbarSuresi} gün
-                      </td>
-                      <td>₺{TR.money(result.ihbarTazminati)}</td>
-                    </tr>
-                    {activeTab === "detayli" && result.unusedLeaveDays > 0 && (
-                      <tr>
-                        <td>Kullanılmamış İzin</td>
-                        <td>
-                          (₺{TR.money(result.brutMaas)} / 30) x {result.unusedLeaveDays} gün
-                        </td>
-                        <td>₺{TR.money(result.unusedLeavePay)}</td>
-                      </tr>
-                    )}
-                    <tr className="result-total-row">
-                      <td>Toplam</td>
-                      <td />
-                      <td>₺{TR.money(result.toplamTazminat)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <SeveranceBreakdownTable result={result} activeTab={activeTab} />
 
               <ResultShareBar
                 onWhatsApp={shareWhatsApp}
@@ -822,7 +860,7 @@ export default function CompensationCalculator() {
       <section className="section content-section" id="tazminat-turleri">
         <div className="intro-section-bg" aria-hidden="true">
           <Image
-            src="/intro-severance-bg.webp"
+            src={IMAGES.home.introSeveranceBg}
             alt=""
             fill
             unoptimized
@@ -874,7 +912,7 @@ export default function CompensationCalculator() {
         <div className="free-calc-showcase scroll-reveal-stagger">
           <div className="free-calc-visual">
             <Image
-              src="/free-calc-office.webp"
+              src={IMAGES.home.freeCalcOffice}
               alt="Ofiste laptop ile kıdem tazminatı görüşmesi yapan iş insanları"
               width={612}
               height={612}
@@ -1202,7 +1240,7 @@ export default function CompensationCalculator() {
               <div className="how-feature-card-visual">
                 <div className="how-feature-card-art how-feature-card-art--photo">
                   <Image
-                    src="/feature-results-salary.jpg"
+                    src={IMAGES.home.featureResultsSalary}
                     alt="Maaş bordrosu ve nakit ödeme belgeleri"
                     width={600}
                     height={400}
@@ -1234,7 +1272,7 @@ export default function CompensationCalculator() {
               <div className="how-feature-card-visual">
                 <div className="how-feature-card-art how-feature-card-art--photo">
                   <Image
-                    src="/feature-tax-coin.jpg"
+                    src={IMAGES.home.featureTaxCoin}
                     alt="Türk lira parası ve maaş hesaplaması"
                     width={600}
                     height={400}
@@ -1253,7 +1291,7 @@ export default function CompensationCalculator() {
           <div className="employer-why-panel">
             <div className="employer-why-panel-media" aria-hidden="true">
               <Image
-                src="/employer-why-calculator-bg.jpg"
+                src={IMAGES.home.employerWhyCalculatorBg}
                 alt=""
                 fill
                 unoptimized
@@ -1268,7 +1306,7 @@ export default function CompensationCalculator() {
 
             <div className="employer-why-container employer-why-stack">
               <header className="employer-why-header scroll-reveal scroll-reveal--up" data-scroll-reveal>
-                <span className="section-tag">İşverenler</span>
+                <span className="section-tag section-tag--light">İşverenler</span>
                 <h2>İşverenler Neden Kıdem Tazminatı Öder?</h2>
                 <p className="employer-why-intro">
                   İşverenler, iş kanunlarına uymak, yasal anlaşmazlıkları azaltmak ve çalışanları iş değiştirme
@@ -1451,7 +1489,7 @@ export default function CompensationCalculator() {
             <div className="diff-showcase-aside scroll-reveal scroll-reveal--right" data-scroll-reveal>
               <div className="diff-showcase-visual">
                 <Image
-                  src="/diff-purple-salary.jpg"
+                  src={IMAGES.home.diffPurpleSalary}
                   alt="Maaş ve tazminat ödemesi görseli"
                   fill
                   unoptimized
@@ -1871,7 +1909,7 @@ export default function CompensationCalculator() {
       </section>
 
       <GuidePageEnd
-        href="/toplam-tazminat-hesaplama-kilavuzu"
+        href={TAZMINAT_HESAPLAMA_PATH}
         title="Toplam Tazminat Hesaplama Kılavuzu"
         description="Kıdem, ihbar, izin ve brüt maaş dahil toplam tazminat hesaplama adımları ve örnekler."
         linkLabel="Toplam Tazminat Kılavuzu"

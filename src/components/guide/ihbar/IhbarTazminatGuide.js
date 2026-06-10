@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH } from "@/config/site";
 import {
   COMPARISON_ROWS,
   IHBAR_IMAGES,
@@ -14,7 +15,8 @@ import {
   PILON_PROS,
   RIGHTS_CARDS
 } from "@/data/ihbarGuideContent";
-import IhbarGuideFaq from "./IhbarGuideFaq";
+import GuideFaqSection from "../GuideFaqSection";
+import { IHBAR_FAQ_ITEMS } from "@/data/ihbarGuideContent";
 import GuidePageEnd from "../GuidePageEnd";
 import {
   EligibilityCards,
@@ -54,8 +56,8 @@ export default function IhbarTazminatGuide() {
     <GuidePageShell>
       <BreadcrumbSchema
         items={[
-          { name: "Anasayfa", path: "/kidem-tazminati-hesaplamasi" },
-          { name: "İhbar Tazminatı Nedir?", path: "/ihbar-tazminati-nedir" }
+          { name: "Anasayfa", path: HOME_PATH },
+          { name: "İhbar Tazminatı Nedir?", path: IHBAR_NEDIR_PATH }
         ]}
       />
 
@@ -146,10 +148,10 @@ export default function IhbarTazminatGuide() {
         <InsolvencyCallout />
       </GuideSection>
 
-      <IhbarGuideFaq />
+      <GuideFaqSection id="ihbar-sss" items={IHBAR_FAQ_ITEMS} includeFormula />
 
       <GuidePageEnd
-        href="/kidem-tazminati-tavani-turkiye-2026"
+        href={KIDEM_TAVANI_PATH}
         title="2026 Türkiye Kıdem Tazminatı Tavanı"
         description="Güncellenmiş tavan oranları, hesaplama yöntemleri, vergi kuralları ve uygunluk şartları."
         linkLabel="Kıdem Tazminatı Tavanı Rehberi"
