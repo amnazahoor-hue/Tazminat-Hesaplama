@@ -22,7 +22,7 @@ export default function ContactPage() {
       </header>
 
       <div className="legal-grid">
-        <article className="legal-card">
+        <article className="legal-card" id="iletisim">
           <h2>E-posta</h2>
           <p>info@tazminathesaplama.com</p>
           <p>Alternatif: support@tazminathesaplama.com</p>
@@ -31,7 +31,7 @@ export default function ContactPage() {
           <h2>Calisma Saatleri</h2>
           <p>Hafta ici 09:00 - 18:00 (TSI)</p>
         </article>
-        <article className="legal-card">
+        <article className="legal-card" id="destek">
           <h2>Destek Kapsami</h2>
           <p>Genel kullanim, hesaplama girdileri ve sayfa yonlendirmeleri konusunda destek saglanir.</p>
         </article>

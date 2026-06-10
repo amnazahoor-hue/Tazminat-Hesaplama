@@ -24,7 +24,9 @@ export default function NoticePayPage() {
         <h1>Ihbar Tazminati Hesaplama</h1>
         <p>Ihbar suresini ve tahmini ihbar odemesini, girilen verilere gore otomatik hesaplayin.</p>
       </header>
-      <MiniNoticeCalculator />
+      <div id="hesapla">
+        <MiniNoticeCalculator />
+      </div>
       <div className="legal-actions">
         <Link href="/#hesapla">Anasayfa Tam Hesaplama</Link>
         <Link href="/ihbar-sureleri">Ihbar Sureleri Tablosu</Link>

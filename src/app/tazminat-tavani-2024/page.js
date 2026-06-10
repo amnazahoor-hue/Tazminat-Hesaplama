@@ -44,7 +44,7 @@ export default function CeilingPage() {
         <p>Tavan, memur maas katsayisi ve ilgili mali donem parametrelerine gore belirlenir.</p>
       </header>
 
-      <table className="mini-table">
+      <table className="mini-table" id="tavan">
         <thead>
           <tr>
             <th>Yil</th>

@@ -18,7 +18,7 @@ export default function LaborLawPage() {
         <p>Onemli maddelerin sade dille ozetlenmis hali:</p>
       </header>
 
-      <div className="legal-grid">
+      <div className="legal-grid" id="mevzuat">
         <article className="legal-card">
           <h2>Madde 14 (1475 Sayili Kanun)</h2>
           <p>Kidem tazminatinin temel dayanak maddesidir ve hak kazanma kosullarini cerceveler.</p>
