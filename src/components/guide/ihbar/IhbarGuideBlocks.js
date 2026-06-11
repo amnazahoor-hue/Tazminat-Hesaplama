@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import CalcCta from "@/components/common/CalcCta";
+import { HOME_PATH } from "@/config/site";
 import {
   AlertTriangle,
   Briefcase,
@@ -37,41 +38,75 @@ export function GuideImage({ src, alt, priority = false, className = "" }) {
 }
 
 export function NoticeHero({ image }) {
-  const { reduceMotion, viewport, ease } = useMotionPrefs();
+  const { reduceMotion, ease } = useMotionPrefs();
 
   return (
     <header id="ihbar-tanim" className="ihbar-guide-hero">
       <span className="ihbar-guide-hero-bg" aria-hidden="true" />
       <span className="ihbar-guide-hero-overlay" aria-hidden="true" />
-      <span className="ihbar-guide-hero-glow ihbar-guide-hero-glow--1" aria-hidden="true" />
-      <span className="ihbar-guide-hero-glow ihbar-guide-hero-glow--2" aria-hidden="true" />
       <div className="container ihbar-guide-hero-grid">
         <motion.div
           className="ihbar-guide-hero-copy"
-          initial={{ opacity: reduceMotion ? 1 : 0, x: reduceMotion ? 0 : -28 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={viewport}
+          initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 24 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
-          <span className="ihbar-guide-eyebrow">İş Hukuku Rehberi</span>
           <h1>İhbar tazminatı nedir?</h1>
-          <p>
+          <p className="hero-copy">
             İhbar tazminatı, bir tarafın yasal olarak gerekli ihbar süresine uymadan iş sözleşmesini feshetmesi
             durumunda ortaya çıkan tutardır. İhbar tazminatına ilişkin yasal çerçeve, 4857 sayılı İş Kanunu&apos;nun
             özellikle 17. maddesinde (ihbar) belirtilmiştir.
           </p>
+<<<<<<< HEAD
           <div className="ihbar-guide-hero-actions">
             <CalcCta href="/#hesapla">Kıdem Tazminatı Hesapla</CalcCta>
           </div>
+=======
+>>>>>>> Update-content
         </motion.div>
         <motion.div
           className="ihbar-guide-hero-visual"
-          initial={{ opacity: reduceMotion ? 1 : 0, scale: reduceMotion ? 1 : 0.94 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={viewport}
-          transition={{ duration: reduceMotion ? 0 : 0.6, ease, delay: reduceMotion ? 0 : 0.08 }}
+          initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.6, ease, delay: reduceMotion ? 0 : 0.1 }}
         >
-          <GuideImage src={image.src} alt={image.alt} priority className="ihbar-guide-image--hero" />
+          <div className="ihbar-guide-hero-frame">
+            <span className="ihbar-guide-hero-frame-ring" aria-hidden="true" />
+            <GuideImage src={image.src} alt={image.alt} priority className="ihbar-guide-image--hero" />
+            <div className="ihbar-guide-hero-float-card">
+              <CalendarClock size={22} strokeWidth={1.8} aria-hidden="true" />
+              <strong>Madde 17</strong>
+              <span>Yasal ihbar çerçevesi</span>
+            </div>
+          </div>
+        </motion.div>
+        <motion.div
+          className="ihbar-guide-hero-foot"
+          initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.55, ease, delay: reduceMotion ? 0 : 0.14 }}
+        >
+          <span className="hero-divider" aria-hidden="true" />
+          <ul className="ihbar-guide-hero-highlights" aria-label="Öne çıkan bilgiler">
+            <li>
+              <Scale size={16} strokeWidth={2} aria-hidden="true" />
+              <span>4857 sayılı İş Kanunu</span>
+            </li>
+            <li>
+              <Clock3 size={16} strokeWidth={2} aria-hidden="true" />
+              <span>2–8 hafta ihbar süresi</span>
+            </li>
+            <li>
+              <Wallet size={16} strokeWidth={2} aria-hidden="true" />
+              <span>Brüt maaş üzerinden hesap</span>
+            </li>
+          </ul>
+          <div className="ihbar-guide-hero-actions">
+            <CalcCta href={`${HOME_PATH}#hesapla`}>Kıdem Tazminatı Hesapla</CalcCta>
+            <a href="#ihbar-sure" className="guide-page-secondary-link">
+              İhbar sürelerini incele
+            </a>
+          </div>
         </motion.div>
       </div>
     </header>

@@ -4,16 +4,20 @@ import Image from "next/image";
 import { IMAGES } from "@/config/images";
 import { useEffect, useState } from "react";
 
-const MIN_VISIBLE_MS = 420;
-const MAX_VISIBLE_MS = 900;
-const FADE_MS = 280;
+const SESSION_KEY = "tazminat-app-ready";
+const FADE_MS = 140;
+const MAX_VISIBLE_MS = 220;
 
 export default function Preloader() {
   const [phase, setPhase] = useState("loading");
 
   useEffect(() => {
+    if (sessionStorage.getItem(SESSION_KEY)) {
+      setPhase("done");
+      return undefined;
+    }
+
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const startedAt = Date.now();
     let hideTimer;
     let doneTimer;
     let finished = false;
@@ -23,28 +27,27 @@ export default function Preloader() {
     const finish = () => {
       if (finished) return;
       finished = true;
+      sessionStorage.setItem(SESSION_KEY, "1");
 
-      const elapsed = Date.now() - startedAt;
-      const wait = reducedMotion ? 0 : Math.max(0, MIN_VISIBLE_MS - elapsed);
       const fadeDuration = reducedMotion ? 0 : FADE_MS;
 
-      hideTimer = window.setTimeout(() => setPhase("hiding"), wait);
+      hideTimer = window.setTimeout(() => setPhase("hiding"), 0);
       doneTimer = window.setTimeout(() => {
         setPhase("done");
         document.body.classList.remove("is-preloading");
-      }, wait + fadeDuration);
+      }, fadeDuration);
     };
 
-    if (document.readyState === "complete") {
+    if (document.readyState !== "loading") {
       finish();
     } else {
-      window.addEventListener("load", finish, { once: true });
+      document.addEventListener("DOMContentLoaded", finish, { once: true });
     }
 
     const maxTimer = window.setTimeout(finish, reducedMotion ? 0 : MAX_VISIBLE_MS);
 
     return () => {
-      window.removeEventListener("load", finish);
+      document.removeEventListener("DOMContentLoaded", finish);
       window.clearTimeout(maxTimer);
       window.clearTimeout(hideTimer);
       window.clearTimeout(doneTimer);
@@ -60,7 +63,6 @@ export default function Preloader() {
       role="status"
       aria-live="polite"
       aria-label="Sayfa yükleniyor"
-      style={{ "--preloader-duration": `${MAX_VISIBLE_MS}ms` }}
     >
       <div className="site-preloader-backdrop" aria-hidden="true" />
 
@@ -72,7 +74,6 @@ export default function Preloader() {
             width={100}
             height={100}
             priority
-            unoptimized
             className="site-preloader-logo"
           />
         </div>

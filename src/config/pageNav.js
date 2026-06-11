@@ -14,24 +14,40 @@ export const MAIN_HEADER_PAGES = [
     path: HOME_PATH,
     url: siteUrl(HOME_PATH),
     label: "Kıdem Tazminatı Hesaplama",
+<<<<<<< HEAD
+=======
+    shortLabel: "Kıdem",
+>>>>>>> Update-content
     title: "Kıdem Tazminatı Hesaplama"
   },
   {
     path: TAZMINAT_HESAPLAMA_PATH,
     url: siteUrl(TAZMINAT_HESAPLAMA_PATH),
     label: "Tazminat Hesaplama",
+<<<<<<< HEAD
+=======
+    shortLabel: "Tazminat",
+>>>>>>> Update-content
     title: "Tazminat Hesaplama"
   },
   {
     path: IHBAR_NEDIR_PATH,
     url: siteUrl(IHBAR_NEDIR_PATH),
     label: "İhbar Tazminatı Nedir",
+<<<<<<< HEAD
+=======
+    shortLabel: "İhbar Nedir",
+>>>>>>> Update-content
     title: "İhbar Tazminatı Nedir"
   },
   {
     path: KIDEM_TAVANI_PATH,
     url: siteUrl(KIDEM_TAVANI_PATH),
     label: "Kıdem Tazminatı Tavanı",
+<<<<<<< HEAD
+=======
+    shortLabel: "Tavan",
+>>>>>>> Update-content
     title: "Kıdem Tazminatı Tavanı"
   }
 ];
@@ -78,10 +94,13 @@ export const PAGE_NAV = {
       { id: "tavan-sss", label: "SSS" }
     ]
   },
+<<<<<<< HEAD
   "/ihbar-sureleri": {
     cta: { path: HOME_PATH, section: "hesapla", focusInput: "giris" },
     items: [{ id: "tablo", label: "İhbar Tablosu" }]
   },
+=======
+>>>>>>> Update-content
   "/is-kanunu": {
     cta: { path: HOME_PATH, section: "hesapla" },
     items: [{ id: "mevzuat", label: "Madde Özetleri" }]
@@ -90,10 +109,10 @@ export const PAGE_NAV = {
     cta: { path: HOME_PATH, section: "hesapla" },
     items: [{ id: "tavan", label: "Tavan Tablosu" }]
   },
-  "/contact": {
+  "/iletisim": {
     cta: { path: HOME_PATH, section: "hesapla" },
     items: [
-      { id: "iletisim", label: "İletişim" },
+      { id: "iletisim", label: "E-posta" },
       { id: "destek", label: "Destek" }
     ]
   }

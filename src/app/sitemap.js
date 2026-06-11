@@ -11,18 +11,14 @@ export default function sitemap() {
     TAZMINAT_HESAPLAMA_PATH,
     IHBAR_NEDIR_PATH,
     KIDEM_TAVANI_PATH,
+<<<<<<< HEAD
     "/ihbar-sureleri",
+=======
+>>>>>>> Update-content
     "/tazminat-tavani-2024",
     "/is-kanunu",
-    "/gizlilik-politikasi",
-    "/kullanim-sartlari",
     "/yasal-uyari",
-    "/privacy-policy",
-    "/terms-and-conditions",
-    "/disclaimer",
-    "/contact",
-    "/about-us",
-    "/cookie-policy"
+    "/iletisim"
   ];
 
   return routes.map((route) => ({

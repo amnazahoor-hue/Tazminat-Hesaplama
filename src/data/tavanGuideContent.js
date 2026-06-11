@@ -1,7 +1,6 @@
 export const TAVAN_HERO_STAT = {
   value: "64.948,77 TL",
-  label: "Ocak–Haziran 2026",
-  badge: "↑ artış"
+  label: "Ocak–Haziran 2026"
 };
 
 export const TAVAN_DEFINITION_POINTS = [
@@ -42,12 +41,12 @@ export const YEARLY_COMPARISON_ROWS = [
 ];
 
 export const HISTORY_ROWS = [
-  { period: "Ocak-Haziran 2026", amount: "64,948.77", badge: false },
-  { period: "Temmuz–Aralık 2025", amount: "53,919.68", badge: false },
-  { period: "Ocak-Haziran 2025", amount: "41,828.42", badge: false },
-  { period: "2024 Birinci Dönem", amount: "Bakanlık tarafından duyuruldu", badge: true },
-  { period: "2023 Birinci Dönem", amount: "Bakanlık tarafından duyuruldu", badge: true },
-  { period: "2022 İkinci Dönem", amount: "Bakanlık tarafından duyuruldu", badge: true }
+  { period: "Ocak-Haziran 2026", amount: "64,948.77" },
+  { period: "Temmuz–Aralık 2025", amount: "53,919.68" },
+  { period: "Ocak-Haziran 2025", amount: "41,828.42" },
+  { period: "2024 Birinci Dönem", amount: "Bakanlık tarafından duyuruldu" },
+  { period: "2023 Birinci Dönem", amount: "Bakanlık tarafından duyuruldu" },
+  { period: "2022 İkinci Dönem", amount: "Bakanlık tarafından duyuruldu" }
 ];
 
 export const GROSS_INCLUDES = [

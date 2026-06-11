@@ -309,6 +309,8 @@ export default function TotalCompensationGuide() {
         </IntroBlock>
       </GuideSection>
 
+      <TotalCompensationCalculatorPanel />
+
       <GuideSection id="guide-formul" alt>
         <SectionHeading>Tazminat Hesaplama Formülü</SectionHeading>
         <Reveal>
