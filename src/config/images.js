@@ -1,6 +1,7 @@
 /** Local WebP assets under /public/images */
 export const IMAGES = {
   logo: "/images/logo.webp",
+  icon: "/images/icon.png",
   home: {
     heroCarouselLira: "/images/home/hero-carousel-lira.webp",
     heroCarousel1: "/images/home/hero-carousel-1.webp",

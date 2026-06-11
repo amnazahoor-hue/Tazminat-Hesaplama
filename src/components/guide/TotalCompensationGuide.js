@@ -291,8 +291,6 @@ export default function TotalCompensationGuide() {
         </div>
       </header>
 
-      <TotalCompensationCalculatorPanel />
-
       <GuideSection id="guide-tanim">
         <IntroBlock>
           <SectionHeading>Tazminat Hesaplaması Nedir?</SectionHeading>
@@ -308,6 +306,8 @@ export default function TotalCompensationGuide() {
           </p>
         </IntroBlock>
       </GuideSection>
+
+      <TotalCompensationCalculatorPanel />
 
       <GuideSection id="guide-formul" alt>
         <SectionHeading>Tazminat Hesaplama Formülü</SectionHeading>

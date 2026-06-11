@@ -16,7 +16,6 @@ import {
   Landmark,
   Scale,
   Shield,
-  TrendingUp,
   UserCheck,
   Users
 } from "lucide-react";
@@ -60,7 +59,6 @@ export function TavanHero({ stat }) {
           viewport={viewport}
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
-          <span className="tavan-guide-eyebrow">Kıdem Tazminatı Tavanı</span>
           <h1>2026 Türkiye Kıdem Tazminatı Tavanı: Güncellenmiş Oranlar, Hesaplama ve İş Hukuku Rehberi</h1>
           <p>
             İşten ayrılma tazminatı tavanı, ücret hesaplamasında en önemli faktörlerden biridir. İnsan kaynakları
@@ -84,10 +82,6 @@ export function TavanHero({ stat }) {
         >
           <TiltCard className="tavan-hero-stat-card-wrap" tiltMax={7} scale={1.02}>
             <article className="tavan-hero-stat-card">
-              <span className="tavan-hero-stat-badge" aria-hidden="true">
-                <TrendingUp size={14} strokeWidth={2.5} />
-                {stat.badge}
-              </span>
               <p className="tavan-hero-stat-label">{stat.label}</p>
               <p className="tavan-hero-stat-value">
                 <ExactFigure value={stat.value} />
@@ -189,15 +183,16 @@ export function TavanBarChart({ rows }) {
           const height = `${Math.round((row.numeric / max) * 100)}%`;
           return (
             <div key={row.period} className="tavan-bar-chart-col">
-              <motion.div
-                className="tavan-bar-chart-bar"
-                initial={{ height: reduceMotion ? height : "0%" }}
-                whileInView={{ height }}
-                viewport={viewport}
-                transition={{ duration: reduceMotion ? 0 : 0.65, ease, delay: reduceMotion ? 0 : index * 0.1 }}
-              >
-                <span className="tavan-bar-chart-value">{row.amount}</span>
-              </motion.div>
+              <div className="tavan-bar-chart-track">
+                <motion.div
+                  className="tavan-bar-chart-bar"
+                  initial={{ height: reduceMotion ? height : "0%" }}
+                  whileInView={{ height }}
+                  viewport={viewport}
+                  transition={{ duration: reduceMotion ? 0 : 0.65, ease, delay: reduceMotion ? 0 : index * 0.1 }}
+                />
+              </div>
+              <span className="tavan-bar-chart-value">{row.amount}</span>
               <p className="tavan-bar-chart-label">{row.period}</p>
             </div>
           );
@@ -256,9 +251,7 @@ export function HistoryTable({ rows }) {
                 transition={{ duration: 0.4, delay: index * 0.05 }}
               >
                 <th scope="row">{row.period}</th>
-                <td>
-                  {row.badge ? <span className="tavan-muted-badge">{row.amount}</span> : row.amount}
-                </td>
+                <td>{row.amount}</td>
               </motion.tr>
             ))}
           </tbody>
@@ -267,7 +260,7 @@ export function HistoryTable({ rows }) {
           {rows.map((row) => (
             <article key={row.period} className="tavan-mobile-card">
               <h4>{row.period}</h4>
-              <p>{row.badge ? <span className="tavan-muted-badge">{row.amount}</span> : row.amount}</p>
+              <p>{row.amount}</p>
             </article>
           ))}
         </div>

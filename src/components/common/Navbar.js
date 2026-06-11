@@ -165,9 +165,15 @@ export default function Navbar() {
                   href={page.path}
                   className={`nav-pill-link${pagePath === page.path ? " active" : ""}`}
                   title={page.title}
+                  aria-label={page.title}
                   onClick={() => setOpen(false)}
                 >
-                  {page.label}
+                  <span className="nav-pill-link-text nav-pill-link-text--full" aria-hidden="true">
+                    {page.label}
+                  </span>
+                  <span className="nav-pill-link-text nav-pill-link-text--short" aria-hidden="true">
+                    {page.shortLabel ?? page.label}
+                  </span>
                 </Link>
               ))}
             </div>
@@ -240,14 +246,11 @@ export default function Navbar() {
             Şimdi Hesapla
           </CalcCta>
           <div className="mobile-drawer-footer">
-            <Link href="/gizlilik-politikasi" onClick={() => setOpen(false)}>
-              Gizlilik
-            </Link>
-            <Link href="/kullanim-sartlari" onClick={() => setOpen(false)}>
-              Şartlar
-            </Link>
             <Link href="/yasal-uyari" onClick={() => setOpen(false)}>
               Yasal Uyarı
+            </Link>
+            <Link href="/iletisim" onClick={() => setOpen(false)}>
+              İletişim
             </Link>
           </div>
         </div>
