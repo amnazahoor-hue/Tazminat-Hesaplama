@@ -152,7 +152,7 @@ export default function CompensationCalculator() {
   const [errors, setErrors] = useState({});
   const [result, setResult] = useState(null);
   const [openFaq, setOpenFaq] = useState("");
-  const { isMobile, mounted, reduceMotion } = useMotionPrefs();
+  const { reduceMotion } = useMotionPrefs();
   const faqSpring = reduceMotion
     ? { duration: 0 }
     : { type: "spring", stiffness: 680, damping: 48, mass: 0.72 };
@@ -230,13 +230,11 @@ export default function CompensationCalculator() {
     const faqNumber = String(index + 1).padStart(2, "0");
     return (
       <motion.article
-        layout={!reduceMotion ? "position" : false}
         className={`faq-item${isOpen ? " is-open" : ""}`}
         key={faq.id}
         role="listitem"
-        transition={{ layout: faqSpring }}
       >
-        <h3>
+        <div className="faq-question-heading" role="heading" aria-level="3">
           <button
             id={buttonId}
             type="button"
@@ -245,12 +243,10 @@ export default function CompensationCalculator() {
             aria-controls={panelId}
             onClick={() => handleFaqToggle(faq.id)}
           >
-            <span className="faq-trigger-main">
-              <span className="faq-num" aria-hidden="true">
-                {faqNumber}
-              </span>
-              <span className="faq-question-text">{faq.question}</span>
+            <span className="faq-num" aria-hidden="true">
+              {faqNumber}
             </span>
+            <span className="faq-question-text">{faq.question}</span>
             <motion.span
               className="faq-toggle"
               aria-hidden="true"
@@ -260,7 +256,7 @@ export default function CompensationCalculator() {
               +
             </motion.span>
           </button>
-        </h3>
+        </div>
         <AnimatePresence initial={false}>
           {isOpen ? (
             <motion.div
@@ -1933,25 +1929,8 @@ export default function CompensationCalculator() {
             </header>
 
             <LayoutGroup id="home-faq">
-            <div className="faq-list">
-              {mounted && isMobile ? (
-                <div className="faq-list-col" role="list">
-                  {faqItems.map((faq, index) => renderFaqItem(faq, index))}
-                </div>
-              ) : (
-                <>
-                  <div className="faq-list-col" role="list">
-                    {faqItems.map((faq, index) =>
-                      index % 2 === 0 ? renderFaqItem(faq, index) : null
-                    )}
-                  </div>
-                  <div className="faq-list-col" role="list">
-                    {faqItems.map((faq, index) =>
-                      index % 2 === 1 ? renderFaqItem(faq, index) : null
-                    )}
-                  </div>
-                </>
-              )}
+            <div className="faq-list" role="list">
+              {faqItems.map((faq, index) => renderFaqItem(faq, index))}
             </div>
             </LayoutGroup>
           </div>
