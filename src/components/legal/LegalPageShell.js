@@ -11,18 +11,11 @@ import { LEGAL_NAV } from "@/config/legalPages";
  *   tag: string,
  *   title: string,
  *   lead: string,
-<<<<<<< HEAD
- *   sections: { id?: string, title: string, body: React.ReactNode }[]
- * }} props
- */
-export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sections }) {
-=======
  *   sections: { id?: string, title: string, body: React.ReactNode }[],
  *   highlights?: { label: string, value: string, detail?: string }[]
  * }} props
  */
 export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sections, highlights }) {
->>>>>>> Update-content
   return (
     <div className="legal-shell">
       <BreadcrumbSchema items={breadcrumb} />
@@ -75,8 +68,6 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
         </aside>
 
         <div className="legal-shell-main">
-<<<<<<< HEAD
-=======
           {highlights?.length ? (
             <div className="legal-contact-highlights">
               {highlights.map((item) => (
@@ -88,7 +79,6 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
               ))}
             </div>
           ) : null}
->>>>>>> Update-content
           <div className="legal-section-grid">
             {sections.map((section, index) => (
               <article key={section.id ?? section.title} id={section.id} className="legal-section-card">

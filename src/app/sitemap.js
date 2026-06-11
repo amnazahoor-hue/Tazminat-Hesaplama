@@ -11,10 +11,6 @@ export default function sitemap() {
     TAZMINAT_HESAPLAMA_PATH,
     IHBAR_NEDIR_PATH,
     KIDEM_TAVANI_PATH,
-<<<<<<< HEAD
-    "/ihbar-sureleri",
-=======
->>>>>>> Update-content
     "/tazminat-tavani-2024",
     "/is-kanunu",
     "/yasal-uyari",

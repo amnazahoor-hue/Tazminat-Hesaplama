@@ -165,11 +165,6 @@ export default function Navbar() {
                   href={page.path}
                   className={`nav-pill-link${pagePath === page.path ? " active" : ""}`}
                   title={page.title}
-<<<<<<< HEAD
-                  onClick={() => setOpen(false)}
-                >
-                  {page.label}
-=======
                   aria-label={page.title}
                   onClick={() => setOpen(false)}
                 >
@@ -179,7 +174,6 @@ export default function Navbar() {
                   <span className="nav-pill-link-text nav-pill-link-text--short" aria-hidden="true">
                     {page.shortLabel ?? page.label}
                   </span>
->>>>>>> Update-content
                 </Link>
               ))}
             </div>

@@ -57,12 +57,6 @@ export function NoticeHero({ image }) {
             durumunda ortaya çıkan tutardır. İhbar tazminatına ilişkin yasal çerçeve, 4857 sayılı İş Kanunu&apos;nun
             özellikle 17. maddesinde (ihbar) belirtilmiştir.
           </p>
-<<<<<<< HEAD
-          <div className="ihbar-guide-hero-actions">
-            <CalcCta href="/#hesapla">Kıdem Tazminatı Hesapla</CalcCta>
-          </div>
-=======
->>>>>>> Update-content
         </motion.div>
         <motion.div
           className="ihbar-guide-hero-visual"

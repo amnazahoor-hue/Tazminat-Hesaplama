@@ -138,11 +138,7 @@ export default function TotalCompensationCalculatorPanel() {
     if (!calc.error) pendingScrollToResults.current = true;
   };
 
-<<<<<<< HEAD
-  const { pdfLoading, copy, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
-=======
   const { pdfLoading, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
->>>>>>> Update-content
     form,
     result,
     activeTab,
@@ -316,15 +312,6 @@ export default function TotalCompensationCalculatorPanel() {
                 <button type="button" onClick={clear}>
                   Temizle
                 </button>
-<<<<<<< HEAD
-                <button type="button" onClick={() => window.print()}>
-                  Yazdır
-                </button>
-                <button type="button" onClick={copy} disabled={!result}>
-                  Sonucu Kopyala
-                </button>
-=======
->>>>>>> Update-content
               </div>
             </div>
           </form>

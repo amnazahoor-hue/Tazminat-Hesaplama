@@ -346,11 +346,7 @@ export default function CompensationCalculator() {
     if (!calc.error) pendingScrollToResults.current = true;
   };
 
-<<<<<<< HEAD
-  const { pdfLoading, copy, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
-=======
   const { pdfLoading, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
->>>>>>> Update-content
     form,
     result,
     activeTab,

@@ -5,10 +5,7 @@ import ScrollRevealInit from "@/components/common/ScrollRevealInit";
 import Footer from "@/components/layouts/Footer";
 import { Inter } from "next/font/google";
 import { SITE_URL } from "@/config/site";
-<<<<<<< HEAD
-=======
 import { IMAGES } from "@/config/images";
->>>>>>> Update-content
 import { buildPageMetadata } from "@/utils/seo";
 
 const inter = Inter({
@@ -28,13 +25,8 @@ export const metadata = {
     keywords: ["tazminat hesaplama", "kıdem tazminatı hesaplaması"]
   }),
   icons: {
-<<<<<<< HEAD
-    icon: "/images/logo.webp",
-    apple: "/images/logo.webp"
-=======
     icon: IMAGES.icon,
     apple: IMAGES.icon
->>>>>>> Update-content
   }
 };
 

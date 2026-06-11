@@ -5902,20 +5902,7 @@ details {
 }
 
 .footer-link {
-<<<<<<< HEAD
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-=======
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
->>>>>>> Update-content
+
   padding: 9px 10px;
   border-radius: 12px;
   color: #334155;
@@ -5929,15 +5916,7 @@ details {
     transform 180ms ease;
 }
 
-<<<<<<< HEAD
-=======
-.footer-link span {
-  min-width: 0;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
 
->>>>>>> Update-content
 .footer-link svg {
   flex-shrink: 0;
   margin-top: 3px;
@@ -6270,28 +6249,7 @@ details {
   background: #ffffff;
   padding: 22px 20px;
   box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
-<<<<<<< HEAD
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-}
 
-.legal-section-card:hover {
-  transform: translateY(-2px);
-  border-color: #c7d7f6;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
-=======
-  transition:
-    transform var(--motion-base) var(--motion-ease),
-    box-shadow var(--motion-base) ease,
-    border-color var(--motion-fast) ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .legal-section-card:hover {
-    transform: translate3d(0, -2px, 0);
-    border-color: #c7d7f6;
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
-  }
->>>>>>> Update-content
 }
 
 .legal-section-index {
@@ -6354,63 +6312,7 @@ details {
   background: #eff6ff;
 }
 
-<<<<<<< HEAD
-=======
-.legal-contact-highlights {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 18px;
-}
 
-.legal-contact-highlight {
-  position: relative;
-  overflow: hidden;
-  padding: 20px 18px;
-  border-radius: 16px;
-  border: 1px solid rgba(79, 70, 229, 0.14);
-  background:
-    radial-gradient(circle at 100% 0%, rgba(198, 242, 78, 0.12), transparent 42%),
-    linear-gradient(165deg, #ffffff 0%, rgba(238, 242, 255, 0.92) 100%);
-  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.07);
-}
-
-.legal-contact-highlight::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary) 0%, #7c3aed 55%, var(--lime) 100%);
-}
-
-.legal-contact-highlight-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #64748b;
-}
-
-.legal-contact-highlight-value {
-  display: block;
-  font-size: clamp(15px, 1.6vw, 17px);
-  line-height: 1.45;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
-.legal-contact-highlight-detail {
-  margin: 8px 0 0;
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--text-secondary);
-}
-
->>>>>>> Update-content
 @media (max-width: 900px) {
   .legal-shell-body {
     grid-template-columns: 1fr;
@@ -6428,13 +6330,7 @@ details {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
   }
-<<<<<<< HEAD
-=======
 
-  .legal-contact-highlights {
-    grid-template-columns: 1fr;
-  }
->>>>>>> Update-content
 }
 
 @media (max-width: 560px) {
@@ -6696,24 +6592,7 @@ details {
     margin-top: 0;
   }
 
-<<<<<<< HEAD
-  .how-steps-orbit-layout {
-    grid-template-columns: 1fr;
-    gap: clamp(24px, 4vw, 36px);
-  }
 
-  .how-steps-orbit-navigator {
-    order: 1;
-    padding: clamp(8px, 2vw, 12px) 0;
-    min-height: var(--orbit-stage-size, 260px);
-  }
-
-  .how-steps-orbit-detail {
-    order: 2;
-  }
-
-=======
->>>>>>> Update-content
   .required-inputs-diagram {
     display: flex;
     flex-direction: column;
@@ -10743,13 +10622,7 @@ details {
   .how-steps-body {
     margin-top: 0;
     padding-top: clamp(8px, 1.5vw, 14px);
-<<<<<<< HEAD
-=======
-  }
 
-  .how-steps-orbit-layout {
-    gap: 18px;
->>>>>>> Update-content
   }
 
   .how-steps-orbit-navigator {
@@ -10764,11 +10637,7 @@ details {
 
   .how-steps-head {
     padding-bottom: 18px;
-<<<<<<< HEAD
-    text-align: left;
-=======
-    text-align: center;
->>>>>>> Update-content
+
   }
 
   #nasil-hesaplanir .how-steps-head .how-steps-title {
@@ -13040,20 +12909,7 @@ details {
 .tavan-guide-hero-overlay {
   position: absolute;
   inset: 0;
-<<<<<<< HEAD
-  background: var(--hero-brand-shine);
-  pointer-events: none;
-=======
-  pointer-events: none;
-}
 
-.ihbar-guide-hero-overlay {
-  background: var(--hero-brand-shine);
-}
-
-.tavan-guide-hero-overlay {
-  background: var(--hero-brand-shine);
->>>>>>> Update-content
 }
 
 .guide-page-hero-content {
@@ -13929,10 +13785,7 @@ details {
   padding: clamp(56px, 8vw, 96px) 0 clamp(48px, 6vw, 72px);
 }
 
-<<<<<<< HEAD
-.ihbar-guide-hero-glow,
-=======
->>>>>>> Update-content
+
 .tavan-guide-hero-glow {
   display: none;
 }
@@ -13949,76 +13802,7 @@ details {
   align-items: center;
 }
 
-<<<<<<< HEAD
-.ihbar-guide-eyebrow,
-.tavan-guide-eyebrow {
-  display: inline-block;
-  margin-bottom: 14px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: transparent;
-  border: 1px solid var(--hero-brand-eyebrow-border);
-  color: var(--hero-brand-text-soft);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
 
-=======
-.ihbar-guide-hero-copy {
-  grid-area: copy;
-  align-self: end;
-}
-
-.ihbar-guide-hero-foot {
-  grid-area: foot;
-  align-self: start;
-}
-
-.ihbar-guide-hero-visual {
-  grid-area: visual;
-}
-
-.ihbar-guide-hero-copy .hero-copy {
-  margin-bottom: 0;
-  font-size: 16px;
-  line-height: 1.78;
-}
-
-.ihbar-guide-hero-foot .hero-divider {
-  margin: clamp(14px, 2vw, 20px) 0 clamp(16px, 2vw, 22px);
-}
-
-.ihbar-guide-hero-highlights {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 0 0 24px;
-  padding: 0;
-  list-style: none;
-}
-
-.ihbar-guide-hero-highlights li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  background: transparent;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.ihbar-guide-hero-highlights li svg {
-  flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.88);
-}
-
->>>>>>> Update-content
 .ihbar-guide-hero-copy h1,
 .tavan-guide-hero-copy h1,
 .guide-page-hero h1 {
@@ -15194,22 +14978,7 @@ details {
   border: 1px solid rgba(255, 255, 255, 0.28);
   backdrop-filter: blur(10px);
   box-shadow: 0 24px 56px rgba(30, 27, 75, 0.2);
-<<<<<<< HEAD
-}
 
-.tavan-hero-stat-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(198, 242, 78, 0.22);
-  color: var(--lime);
-  font-size: 12px;
-  font-weight: 800;
-=======
->>>>>>> Update-content
 }
 
 .tavan-hero-stat-label {
@@ -15974,25 +15743,7 @@ main {
   .nav-pill-link {
     font-size: 12px;
     padding: 8px 9px;
-<<<<<<< HEAD
-  }
 
-  .site-header.is-home .header-page-nav .nav-pill-link {
-    padding: 8px 10px;
-    font-size: 12.5px;
-  }
-
-  .brand {
-=======
-  }
-
-  .site-header.is-home .header-page-nav .nav-pill-link {
-    padding: 8px 10px;
-    font-size: 12.5px;
-  }
-
-  .site-header:not(.is-home) .brand {
->>>>>>> Update-content
     min-width: 180px;
   }
 
