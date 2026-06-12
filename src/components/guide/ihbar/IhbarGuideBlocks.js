@@ -57,6 +57,12 @@ export function NoticeHero({ image }) {
             durumunda ortaya çıkan tutardır. İhbar tazminatına ilişkin yasal çerçeve, 4857 sayılı İş Kanunu&apos;nun
             özellikle 17. maddesinde (ihbar) belirtilmiştir.
           </p>
+          <div className="ihbar-guide-hero-actions">
+            <CalcCta href={`${HOME_PATH}#hesapla`}>Kıdem Tazminatı Hesapla</CalcCta>
+            <a href="#ihbar-sure" className="guide-page-secondary-link">
+              İhbar sürelerini incele
+            </a>
+          </div>
         </motion.div>
         <motion.div
           className="ihbar-guide-hero-visual"
@@ -72,34 +78,6 @@ export function NoticeHero({ image }) {
               <strong>Madde 17</strong>
               <span>Yasal ihbar çerçevesi</span>
             </div>
-          </div>
-        </motion.div>
-        <motion.div
-          className="ihbar-guide-hero-foot"
-          initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.55, ease, delay: reduceMotion ? 0 : 0.14 }}
-        >
-          <span className="hero-divider" aria-hidden="true" />
-          <ul className="ihbar-guide-hero-highlights" aria-label="Öne çıkan bilgiler">
-            <li>
-              <Scale size={16} strokeWidth={2} aria-hidden="true" />
-              <span>4857 sayılı İş Kanunu</span>
-            </li>
-            <li>
-              <Clock3 size={16} strokeWidth={2} aria-hidden="true" />
-              <span>2–8 hafta ihbar süresi</span>
-            </li>
-            <li>
-              <Wallet size={16} strokeWidth={2} aria-hidden="true" />
-              <span>Brüt maaş üzerinden hesap</span>
-            </li>
-          </ul>
-          <div className="ihbar-guide-hero-actions">
-            <CalcCta href={`${HOME_PATH}#hesapla`}>Kıdem Tazminatı Hesapla</CalcCta>
-            <a href="#ihbar-sure" className="guide-page-secondary-link">
-              İhbar sürelerini incele
-            </a>
           </div>
         </motion.div>
       </div>

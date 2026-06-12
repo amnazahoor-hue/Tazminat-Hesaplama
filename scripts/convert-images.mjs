@@ -5,8 +5,9 @@ import sharp from "sharp";
 const publicDir = path.resolve("public");
 const imagesDir = path.join(publicDir, "images");
 
-const ISTOCK_URL =
-  "https://media.istockphoto.com/id/2205123913/photo/businesswoman-showing-infographic-to-businessman-in-modern-office.webp?a=1&b=1&s=612x612&w=0&k=20&c=wqTpLelKGasnT5vUOUGDYwXrms1cyE3Q1rniDA-AtuA=";
+// Unsplash — office consultation / compensation planning (1920px, free to use)
+const GUIDE_STEPS_IMAGE_URL =
+  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1920&h=2560&q=90";
 
 const ROOT_MAPPINGS = [
   ["logo.png", "logo.webp"],
@@ -50,18 +51,25 @@ async function convertToWebp(inputPath, outputPath, quality = 82) {
   );
 }
 
-async function downloadIstock() {
+async function downloadGuideStepsImage() {
   const outputPath = path.join(imagesDir, "guides", "guide-steps-office.webp");
   await ensureDir(outputPath);
 
-  const response = await fetch(ISTOCK_URL);
+  const response = await fetch(GUIDE_STEPS_IMAGE_URL);
   if (!response.ok) {
-    throw new Error(`Failed to download istock image: ${response.status}`);
+    throw new Error(`Failed to download guide steps image: ${response.status}`);
   }
 
   const buffer = Buffer.from(await response.arrayBuffer());
-  await sharp(buffer).webp({ quality: 82, effort: 4 }).toFile(outputPath);
-  console.log(`✓ ${path.relative(publicDir, outputPath)} (downloaded)`);
+  await sharp(buffer)
+    .resize(1920, 2560, { fit: "cover", position: "centre" })
+    .webp({ quality: 88, effort: 4 })
+    .toFile(outputPath);
+
+  const outputStat = await fs.stat(outputPath);
+  console.log(
+    `✓ ${path.relative(publicDir, outputPath)} (downloaded, ${Math.round(outputStat.size / 1024)}KB, 1920×2560)`
+  );
 }
 
 async function main() {
@@ -89,7 +97,7 @@ async function main() {
     }
   }
 
-  await downloadIstock();
+  await downloadGuideStepsImage();
   console.log("\nDone — all images converted under public/images/");
 }
 
