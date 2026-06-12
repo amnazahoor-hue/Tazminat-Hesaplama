@@ -13,7 +13,10 @@ export default function sitemap() {
     KIDEM_TAVANI_PATH,
     "/tazminat-tavani-2024",
     "/is-kanunu",
+    "/gizlilik-politikasi",
+    "/kullanim-sartlari",
     "/yasal-uyari",
+    "/hakkimizda",
     "/iletisim"
   ];
 

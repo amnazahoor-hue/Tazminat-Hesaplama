@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import CalcCta from "@/components/common/CalcCta";
 import { IMAGES } from "@/config/images";
+import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import {
   buildSectionHref,
   getPageNav,
@@ -246,12 +247,16 @@ export default function Navbar() {
             Şimdi Hesapla
           </CalcCta>
           <div className="mobile-drawer-footer">
-            <Link href="/yasal-uyari" onClick={() => setOpen(false)}>
-              Yasal Uyarı
-            </Link>
-            <Link href="/iletisim" onClick={() => setOpen(false)}>
-              İletişim
-            </Link>
+            {FOOTER_COMPANY_NAV.map((item) => (
+              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+                {item.label}
+              </Link>
+            ))}
+            {LEGAL_NAV.map((item) => (
+              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

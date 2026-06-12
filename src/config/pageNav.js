@@ -89,13 +89,6 @@ export const PAGE_NAV = {
   "/tazminat-tavani-2024": {
     cta: { path: HOME_PATH, section: "hesapla" },
     items: [{ id: "tavan", label: "Tavan Tablosu" }]
-  },
-  "/iletisim": {
-    cta: { path: HOME_PATH, section: "hesapla" },
-    items: [
-      { id: "iletisim", label: "E-posta" },
-      { id: "destek", label: "Destek" }
-    ]
   }
 };
 

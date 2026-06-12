@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useMotionPrefs } from "@/components/guide/motion/useMotionPrefs";
 import CalcCta from "@/components/common/CalcCta";
 import { IMAGES } from "@/config/images";
@@ -230,10 +230,11 @@ export default function CompensationCalculator() {
     const faqNumber = String(index + 1).padStart(2, "0");
     return (
       <motion.article
-        layout={!reduceMotion ? "position" : false}
+        layout={false}
         className={`faq-item${isOpen ? " is-open" : ""}`}
         key={faq.id}
         role="listitem"
+        style={{ width: "100%", maxWidth: "100%", alignSelf: "stretch" }}
         transition={{ layout: faqSpring }}
       >
         <h3>
@@ -1932,9 +1933,8 @@ export default function CompensationCalculator() {
               <h2>Sıkça Sorulan Sorular</h2>
             </header>
 
-            <LayoutGroup id="home-faq">
             <div className="faq-list">
-              {mounted && isMobile ? (
+              {!mounted || isMobile ? (
                 <div className="faq-list-col" role="list">
                   {faqItems.map((faq, index) => renderFaqItem(faq, index))}
                 </div>
@@ -1953,7 +1953,6 @@ export default function CompensationCalculator() {
                 </>
               )}
             </div>
-            </LayoutGroup>
           </div>
         </div>
       </ContentSection>

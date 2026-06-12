@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 import { IMAGES } from "@/config/images";
-import { LEGAL_NAV } from "@/config/legalPages";
+import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
 import {
   MAIN_HEADER_PAGES,
@@ -16,13 +16,31 @@ import {
   resolvePagePath
 } from "@/config/pageNav";
 
-function FooterLinkList({ title, children }) {
+function FooterLinkList({ title, children, panelClass = "" }) {
   return (
-    <section className="footer-panel">
+    <section className={`footer-panel${panelClass ? ` ${panelClass}` : ""}`}>
       <h4 className="footer-panel-title">{title}</h4>
       <ul className="footer-panel-list">{children}</ul>
     </section>
   );
+}
+
+function FooterNavLinks({ items, pathname }) {
+  return items.map((item) => {
+    const isActive = resolvePagePath(item.href) === resolvePagePath(pathname);
+    return (
+      <li key={item.href}>
+        <Link
+          href={item.href}
+          className={`footer-link${isActive ? " is-active" : ""}`}
+          aria-current={isActive ? "page" : undefined}
+        >
+          <ChevronRight size={14} aria-hidden="true" />
+          <span>{item.label}</span>
+        </Link>
+      </li>
+    );
+  });
 }
 
 export default function Footer() {
@@ -80,18 +98,12 @@ export default function Footer() {
             </FooterLinkList>
           ) : null}
 
-          <FooterLinkList title="Yasal">
-            {LEGAL_NAV.map((item) => {
-              const isActive = resolvePagePath(item.href) === resolvePagePath(pathname);
-              return (
-              <li key={item.href}>
-                <Link href={item.href} className={`footer-link${isActive ? " is-active" : ""}`} aria-current={isActive ? "page" : undefined}>
-                  <ChevronRight size={14} aria-hidden="true" />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-            })}
+          <FooterLinkList title="Yasal Sayfalar" panelClass="footer-panel--legal">
+            <FooterNavLinks items={LEGAL_NAV} pathname={pathname} />
+          </FooterLinkList>
+
+          <FooterLinkList title="Kurumsal" panelClass="footer-panel--company">
+            <FooterNavLinks items={FOOTER_COMPANY_NAV} pathname={pathname} />
           </FooterLinkList>
         </div>
         </div>

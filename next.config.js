@@ -33,6 +33,16 @@ const nextConfig = {
         source: "/kidem-tazminati-nedir",
         destination: "/",
         permanent: true
+      },
+      {
+        source: "/about-us",
+        destination: "/hakkimizda/",
+        permanent: true
+      },
+      {
+        source: "/contact",
+        destination: "/iletisim/",
+        permanent: true
       }
     ];
   }

@@ -1,101 +1,93 @@
-import LegalPageShell from "@/components/legal/LegalPageShell";
+import ContactPageShell from "@/components/contact/ContactPageShell";
+import { ILETISIM_PATH } from "@/config/site";
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: "İletişim | Tazminat Hesaplama",
   description:
-    "Tazminat Hesaplama ile iletişime geçin: soru, geri bildirim ve teknik destek talepleri için e-posta kanallarımız.",
-  path: "/iletisim",
-  keywords: ["iletişim", "destek", "tazminat hesaplama yardım", "bize ulaşın"]
+    "Tazminat Hesaplama ile iletişime geçin: genel bilgi, teknik destek, içerik önerileri ve gizlilik talepleri için e-posta kanalları.",
+  path: ILETISIM_PATH,
+  keywords: ["iletişim", "destek", "tazminat hesaplama iletişim", "e-posta"]
 });
 
-const HIGHLIGHTS = [
-  {
-    label: "E-posta",
-    value: "info@tazminathesaplama.com",
-    detail: "Genel sorular ve geri bildirimler"
-  },
-  {
-    label: "Çalışma Saatleri",
-    value: "Hafta içi 09:00 – 18:00",
-    detail: "Türkiye saati (TSİ)"
-  },
-  {
-    label: "Yanıt Süresi",
-    value: "1–2 iş günü",
-    detail: "Talepler sırayla değerlendirilir"
-  }
-];
-
-const SECTIONS = [
-  {
-    id: "iletisim",
-    title: "E-posta Kanalları",
-    body: (
-      <>
-        <p>
-          Hesaplama aracı, içerik önerileri ve genel bilgi talepleri için aşağıdaki adresi kullanabilirsiniz:
-        </p>
-        <p>
-          <a className="legal-contact-mail" href="mailto:info@tazminathesaplama.com">
-            info@tazminathesaplama.com
-          </a>
-        </p>
-        <p>
-          Teknik sorunlar ve hesaplama girdileriyle ilgili destek için alternatif adres:
-        </p>
-        <p>
-          <a className="legal-contact-mail" href="mailto:support@tazminathesaplama.com">
-            support@tazminathesaplama.com
-          </a>
-        </p>
-      </>
-    )
-  },
-  {
-    title: "Destek Kapsamı",
-    body: (
-      <p>
-        Kıdem tazminatı, ihbar tazminatı ve toplam tazminat hesaplayıcılarının kullanımı, sayfa yönlendirmeleri,
-        sonuçların yorumlanması ve genel mevzuat bilgilendirmesi konularında yardımcı oluruz. Kişiye özel hukuki
-        danışmanlık veya resmi temsil hizmeti sunulmaz.
-      </p>
-    )
-  },
-  {
-    id: "destek",
-    title: "Talep Gönderirken",
-    body: (
-      <p>
-        E-posta konu satırına &quot;Tazminat Hesaplama Destek&quot; yazmanız yanıt sürecini hızlandırır. Mesajınızda
-        ad-soyad, talep konusu ve mümkünse ekran görüntüsü paylaşmanız önerilir.
-      </p>
-    )
-  },
-  {
-    title: "Geri Bildirim",
-    body: (
-      <p>
-        Arayüz, hesaplama sonuçları veya rehber içerikleri hakkındaki önerileriniz platformu geliştirmemize yardımcı
-        olur. Yapıcı geri bildirimlerinizi memnuniyetle değerlendiririz.
-      </p>
-    )
-  }
-];
-
-export default function ContactPage() {
+export default function IletisimPage() {
   return (
-    <LegalPageShell
-      path="/iletisim"
+    <ContactPageShell
       breadcrumb={[
         { name: "Anasayfa", path: "/" },
-        { name: "İletişim", path: "/iletisim" }
+        { name: "İletişim", path: ILETISIM_PATH }
       ]}
-      tag="Destek"
-      title="Bize Ulaşın"
-      lead="Soru, öneri ve teknik destek talepleriniz için e-posta kanallarımız üzerinden doğrudan iletişime geçebilirsiniz."
-      highlights={HIGHLIGHTS}
-      sections={SECTIONS}
+      path={ILETISIM_PATH}
+      tag="İletişim"
+      title="Size nasıl yardımcı olabiliriz?"
+      lead="Platform, hesaplama aracı ve rehber içeriklerle ilgili sorularınız için aşağıdaki e-posta kanallarını kullanabilirsiniz. Hukuki danışmanlık hizmeti sunulmaz."
+      channels={[
+        {
+          label: "Genel Bilgi",
+          email: "info@tazminathesaplama.com",
+          detail: "Platform hakkında genel sorular, iş birliği ve basın talepleri için."
+        },
+        {
+          label: "Teknik Destek",
+          email: "support@tazminathesaplama.com",
+          detail: "Hesaplama aracı, sayfa hataları ve teknik sorun bildirimleri için."
+        }
+      ]}
+      sections={[
+        {
+          title: "Hangi konularda yazabilirsiniz?",
+          body: (
+            <>
+              <p>
+                Hesaplayıcı sonuçları, rehber içerikler, tavan tabloları veya site kullanımıyla ilgili geri
+                bildirimlerinizi memnuniyetle alırız. Mesajınızda mümkünse ekran görüntüsü, kullandığınız tarayıcı
+                ve karşılaştığınız sayfa adresini belirtmeniz çözümü hızlandırır.
+              </p>
+              <p>
+                Kişisel dava dosyası, iş sözleşmesi incelemesi veya bireysel hukuki strateji talepleri platform
+                kapsamı dışındadır; bu tür konularda lütfen bir iş hukuku avukatına başvurun.
+              </p>
+            </>
+          )
+        },
+        {
+          title: "Gizlilik ve veri talepleri",
+          body: (
+            <>
+              <p>
+                Gizlilik politikası, veri işleme veya çerez kullanımıyla ilgili taleplerinizi{" "}
+                <a href="mailto:info@tazminathesaplama.com">info@tazminathesaplama.com</a> adresine iletebilirsiniz.
+                Ayrıntılar için{" "}
+                <a href="/gizlilik-politikasi">Gizlilik Politikası</a> sayfasını inceleyebilirsiniz.
+              </p>
+              <p>
+                Hesaplama sırasında girilen maaş ve tarih bilgileri varsayılan düzende sunucuda kalıcı olarak
+                saklanmaz; bu nedenle geçmiş hesaplama verisi talepleri genellikle karşılanamaz.
+              </p>
+            </>
+          )
+        },
+        {
+          title: "İçerik önerileri",
+          body: (
+            <p>
+              Eksik gördüğünüz rehber konuları, güncellenmesi gereken tavan bilgileri veya SSS önerilerinizi
+              paylaşabilirsiniz. Editör ekibimiz mevzuat uygunluğunu kontrol ettikten sonra uygun içerikleri
+              planlı güncellemelere dahil eder.
+            </p>
+          )
+        },
+        {
+          title: "Çalışma saatleri",
+          body: (
+            <p>
+              E-posta mesajları hafta içi mesai saatlerinde değerlendirilir. Acil hukuki durumlar için platform
+              yerine doğrudan yetkili bir avukata veya resmi kurumlara başvurmanız gerekir.
+            </p>
+          )
+        }
+      ]}
+      notice="Tazminat Hesaplama bilgilendirme amaçlı bir dijital araçtır. E-posta yanıtları hukuki danışmanlık veya avukatlık hizmeti niteliği taşımaz."
     />
   );
 }
