@@ -1,7 +1,7 @@
 export const IHBAR_IMAGES = {
   hero: {
     src: "/images/ihbar/hero.webp",
-    alt: "İş sözleşmesi imzalama ve ofis toplantısı görseli"
+    alt: "Şehir manzaralı modern ofiste çalışan profesyonel ekip görseli"
   },
   kidem: {
     src: "/images/ihbar/kidem.webp",

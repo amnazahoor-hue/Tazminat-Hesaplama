@@ -26,7 +26,8 @@ const STEPS = [
     className: "how-steps-card--3",
     keyword: "YAŞ",
     text: "Yaşa bağlı düzenlemeler uygulanıyorsa, yaşınızı girin.",
-    image: IMAGES.home.featureResultsSalary
+    image: IMAGES.home.howStepsAge,
+    imageAlt: "Mavi hesap makinesi kullanan çalışan"
   },
   {
     id: 4,
@@ -481,7 +482,7 @@ export default function HowStepsCarousel() {
               <div className="how-steps-detail-media">
                 <Image
                   src={activeStep.image}
-                  alt=""
+                  alt={activeStep.imageAlt || ""}
                   fill
                   sizes="(max-width: 768px) 100vw, 480px"
                   className="how-steps-detail-image"

@@ -10,6 +10,7 @@ export const IMAGES = {
     introSeveranceBg: "/images/home/intro-severance-bg.webp",
     freeCalcOffice: "/images/home/free-calc-office.webp",
     featureResultsSalary: "/images/home/feature-results-salary.webp",
+    howStepsAge: "/images/home/how-steps-age.webp",
     featureTaxCoin: "/images/home/feature-tax-coin.webp",
     employerWhyCalculatorBg: "/images/home/employer-why-calculator-bg.webp",
     employerWhyBg: "/images/home/employer-why-bg.webp",

@@ -94,11 +94,6 @@ export function NoticeHero({ image }) {
           <div className="ihbar-guide-hero-frame">
             <span className="ihbar-guide-hero-frame-ring" aria-hidden="true" />
             <GuideImage src={image.src} alt={image.alt} priority className="ihbar-guide-image--hero" />
-            <div className="ihbar-guide-hero-float-card">
-              <CalendarClock size={22} strokeWidth={1.8} aria-hidden="true" />
-              <strong>Madde 17</strong>
-              <span>Yasal ihbar çerçevesi</span>
-            </div>
           </div>
         </motion.div>
       </div>
