@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-import { HOME_PATH, KIDEM_TAVANI_PATH } from "@/config/site";
+import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, TAZMINAT_HESAPLAMA_PATH, siteUrl } from "@/config/site";
 import {
   ABOVE_CEILING_ITEMS,
   AFFECTED_GROUPS,
@@ -19,6 +19,8 @@ import {
   YEARLY_COMPARISON_ROWS
 } from "@/data/tavanGuideContent";
 import GuideFaqSection from "../GuideFaqSection";
+import GuidePageFooter from "../GuidePageFooter";
+import TableOfContents from "../TableOfContents";
 import { TAVAN_FAQ_ITEMS } from "@/data/tavanGuideContent";
 import {
   AffectedGroupChips,
@@ -35,7 +37,8 @@ import {
   SectionHeading,
   TaxInfoNote,
   TavanBarChart,
-  TavanHero
+  TavanHero,
+  TAVAN_TOC_ITEMS
 } from "./TavanGuideBlocks";
 import { GuideSection } from "../motion/Reveal";
 import { useMotionPrefs } from "../motion/useMotionPrefs";
@@ -66,6 +69,12 @@ export default function TavanGuide() {
       />
 
       <TavanHero stat={TAVAN_HERO_STAT} />
+
+      <section className="guide-pre-tool guide-pre-tool--after-hero">
+        <div className="container guide-pre-tool-inner">
+          <TableOfContents items={TAVAN_TOC_ITEMS} />
+        </div>
+      </section>
 
       <GuideSection id="tavan-nedir" alt>
         <SectionHeading>Türkiye&apos;de Kıdem Tazminatı Tavanı Nedir?</SectionHeading>
@@ -107,7 +116,7 @@ export default function TavanGuide() {
       </GuideSection>
 
       <GuideSection id="tavan-gecmis">
-        <SectionHeading>Karşılaştırma Tablosu: Kıdem Tazminatı Tavanı Geçmişi</SectionHeading>
+        <SectionHeading id="tavan-tablosu">Karşılaştırma Tablosu: Kıdem Tazminatı Tavanı Geçmişi</SectionHeading>
         <p>İşte dönemleri ve üst limitlerini içeren kısa bir rehber.</p>
         <HistoryTable rows={HISTORY_ROWS} />
       </GuideSection>
@@ -183,6 +192,16 @@ export default function TavanGuide() {
       </GuideSection>
 
       <GuideFaqSection id="tavan-sss" items={TAVAN_FAQ_ITEMS} />
+
+      <GuidePageFooter
+        relatedLinks={[
+          { href: HOME_PATH, label: "Kıdem Tazminatı Hesaplayıcısı — Ana Sayfa" },
+          { href: TAZMINAT_HESAPLAMA_PATH, label: "Toplam Tazminat Hesaplama Rehberi" },
+          { href: IHBAR_NEDIR_PATH, label: "İhbar Tazminatı Nedir ve Nasıl Hesaplanır?" }
+        ]}
+        shareUrl={siteUrl(KIDEM_TAVANI_PATH)}
+        shareTitle="Kıdem Tazminatı Tavanı 2026 — Güncel Bilgi ve Hesaplama"
+      />
     </GuidePageShell>
   );
 }

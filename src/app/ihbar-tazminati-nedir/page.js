@@ -1,15 +1,26 @@
 import IhbarTazminatGuide from "@/components/guide/ihbar/IhbarTazminatGuide";
 import { IHBAR_NEDIR_PATH } from "@/config/site";
-import { buildPageMetadata } from "@/utils/seo";
+import { buildArticleSchema, buildPageMetadata, buildSpeakableSchema } from "@/utils/seo";
+
+const PAGE_TITLE = "İhbar Tazminatı Nedir? | Hesaplama ve Çalışan Hakları";
 
 export const metadata = buildPageMetadata({
-  title: "İhbar Tazminatı Nedir? Anlamı, Uygunluk Şartları, Hesaplaması ve Çalışan Hakları",
+  title: PAGE_TITLE,
   description:
-    "İş hukuku kapsamında ihbar tazminatının ne olduğunu, kimlerin hak kazandığını, nasıl hesaplandığını, ihbar sürelerini, PILON'u (İşten Çıkarma Tazminatı Programı), vergileri ve ihbar tazminatı ile kıdem tazminatı arasındaki farkı öğrenin.",
+    "İhbar tazminatı nedir, kimler hak kazanır ve nasıl hesaplanır? İhbar süreleri, örnekler, vergi kuralları ve kıdem tazminatı farkları bu rehberde açıklanır.",
   path: IHBAR_NEDIR_PATH,
   keywords: ["ihbar tazminatı nedir", "ihbar tazminatı", "ihbar süresi", "bildirim ücreti", "PILON"]
 });
 
 export default function IhbarTazminatGuidePage() {
-  return <IhbarTazminatGuide />;
+  const articleSchema = buildArticleSchema({ headline: PAGE_TITLE, path: IHBAR_NEDIR_PATH });
+  const speakableSchema = buildSpeakableSchema();
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }} />
+      <IhbarTazminatGuide />
+    </>
+  );
 }

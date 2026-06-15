@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useMotionPrefs } from "./useMotionPrefs";
 
-export default function SectionHeading({ as: Tag = "h2", children, className = "", light = false }) {
+export default function SectionHeading({ as: Tag = "h2", children, className = "", light = false, id }) {
   const { reduceMotion, viewport, ease } = useMotionPrefs();
 
   return (
@@ -14,7 +14,7 @@ export default function SectionHeading({ as: Tag = "h2", children, className = "
       viewport={viewport}
       transition={{ duration: reduceMotion ? 0 : 0.48, ease }}
     >
-      <Tag>{children}</Tag>
+      <Tag id={id}>{children}</Tag>
     </motion.div>
   );
 }

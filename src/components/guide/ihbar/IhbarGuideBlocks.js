@@ -28,6 +28,16 @@ import TiltCard from "../ui/TiltCard";
 import { Reveal, RevealItem, RevealStagger } from "../motion/Reveal";
 import { useMotionPrefs } from "../motion/useMotionPrefs";
 
+const TOC_ITEMS = [
+  { id: "ihbar-nedir", label: "İhbar Tazminatı Nedir?" },
+  { id: "ihbar-suresi", label: "İhbar Süreleri" },
+  { id: "nasil-hesaplanir", label: "İhbar Süresi ve Ücret Farkı" },
+  { id: "ornekler", label: "Hesaplama Örnekleri" },
+  { id: "ihbar-sss", label: "Sık Sorulan Sorular" }
+];
+
+export { TOC_ITEMS as IHBAR_TOC_ITEMS };
+
 export function GuideImage({ src, alt, priority = false, className = "" }) {
   return (
     <div className={`ihbar-guide-image${className ? ` ${className}` : ""}`}>
@@ -51,10 +61,21 @@ export function NoticeHero({ image }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
-          <h1>İhbar tazminatı nedir?</h1>
+          <h1 id="ihbar-nedir">İhbar tazminatı nedir?</h1>
+          <p className="author-attribution">
+            Yazan: Tazminat Hesaplama Uzmanı &nbsp;|&nbsp; Son güncelleme: Haziran 2026
+          </p>
           <p className="hero-copy">
             İhbar tazminatı, bir tarafın yasal olarak gerekli ihbar süresine uymadan iş sözleşmesini feshetmesi
-            durumunda ortaya çıkan tutardır. İhbar tazminatına ilişkin yasal çerçeve, 4857 sayılı İş Kanunu&apos;nun
+            durumunda ortaya çıkan tutardır. İhbar tazminatına ilişkin yasal çerçeve, 4857 sayılı{" "}
+            <a
+              href="https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4857&MevzuatTur=1&MevzuatTertip=5"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              İş Kanunu
+            </a>
+            &apos;nun
             özellikle 17. maddesinde (ihbar) belirtilmiştir.
           </p>
           <div className="ihbar-guide-hero-actions">

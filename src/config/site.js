@@ -22,5 +22,7 @@ export const LEGACY_PATH_REDIRECTS = {
   "/yillik-izin-ucreti-hesaplama": TAZMINAT_HESAPLAMA_PATH,
   "/kidem-tazminati-nedir": HOME_PATH,
   "/about-us": HAKKIMIZDA_PATH,
-  "/contact": ILETISIM_PATH
+  "/contact": ILETISIM_PATH,
+  "/is-kanunu": HOME_PATH,
+  "/tazminat-tavani-2024": KIDEM_TAVANI_PATH
 };

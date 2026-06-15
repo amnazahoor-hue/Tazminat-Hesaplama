@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { HOME_PATH } from "@/config/site";
 import {
@@ -25,6 +26,82 @@ import TiltCard from "../ui/TiltCard";
 import { Reveal, RevealItem, RevealStagger } from "../motion/Reveal";
 import SectionHeading from "../motion/SectionHeading";
 import { useMotionPrefs } from "../motion/useMotionPrefs";
+
+const TOC_ITEMS = [
+  { id: "tavan-nedir", label: "Kıdem Tazminatı Tavanı Nedir?" },
+  { id: "tavan-hesaplama", label: "Tavan Hesaplama" },
+  { id: "tavan-tablosu", label: "2026 Tavan Tablosu" },
+  { id: "tavan-sss", label: "Sık Sorulan Sorular" }
+];
+
+export { TOC_ITEMS as TAVAN_TOC_ITEMS };
+
+const RESMI_GAZETE_URL = "https://www.resmigazete.gov.tr/";
+const MEVZUAT_URL = "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4857&MevzuatTur=1&MevzuatTertip=5";
+const SGK_URL = "https://www.sgk.gov.tr/";
+
+function LawLink({ href, children }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  );
+}
+
+function linkLawReferences(text, linkedTerms) {
+  if (!text) return text;
+
+  const rules = [
+    { key: "resmiGazete", term: "Resmî Gazete", href: RESMI_GAZETE_URL },
+    { key: "resmiGazete", term: "Resmi Gazete", href: RESMI_GAZETE_URL },
+    { key: "isKanunu", term: "4857 sayılı Kanun", href: MEVZUAT_URL, label: "İş Kanunu" },
+    { key: "isKanunu", term: "İş Kanunu", href: MEVZUAT_URL },
+    { key: "sgk", term: "SGK", href: SGK_URL }
+  ];
+
+  let parts = [text];
+  let changed = false;
+
+  for (const rule of rules) {
+    if (linkedTerms.has(rule.key)) continue;
+
+    const nextParts = [];
+    let linked = false;
+
+    for (const part of parts) {
+      if (typeof part !== "string" || linked) {
+        nextParts.push(part);
+        continue;
+      }
+
+      const index = part.indexOf(rule.term);
+      if (index === -1) {
+        nextParts.push(part);
+        continue;
+      }
+
+      linked = true;
+      changed = true;
+      linkedTerms.add(rule.key);
+
+      if (index > 0) nextParts.push(part.slice(0, index));
+      nextParts.push(
+        <LawLink key={`${rule.key}-${index}`} href={rule.href}>
+          {rule.label ?? rule.term}
+        </LawLink>
+      );
+      if (index + rule.term.length < part.length) {
+        nextParts.push(part.slice(index + rule.term.length));
+      }
+    }
+
+    parts = nextParts;
+  }
+
+  if (!changed) return text;
+  if (parts.length === 1) return parts[0];
+  return <>{parts}</>;
+}
 
 export function ExactFigure({ value, className = "" }) {
   const { reduceMotion, viewport, ease } = useMotionPrefs();
@@ -60,15 +137,20 @@ export function TavanHero({ stat }) {
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
           <h1>2026 Türkiye Kıdem Tazminatı Tavanı: Güncellenmiş Oranlar, Hesaplama ve İş Hukuku Rehberi</h1>
-          <p>
-            İşten ayrılma tazminatı tavanı, ücret hesaplamasında en önemli faktörlerden biridir. İnsan kaynakları
-            uzmanları, muhasebe departmanı üyeleri ve çalışanlar her yıl tavan güncellemelerini kontrol eder, çünkü
-            bu durum işten ayrılma tazminatı hesaplaması üzerinde büyük bir etkiye sahiptir.
+          <p className="author-attribution">
+            Yazan: Tazminat Hesaplama Uzmanı &nbsp;|&nbsp; Son güncelleme: Haziran 2026
           </p>
-          <p>
-            Ocak-Haziran 2026 dönemi için kıdem tazminatı tavanı 64.948,77 TL olarak açıklandı. Bir önceki yıla
-            kıyasla kıdem tazminatı tavanında önemli bir artış söz konusu.
-          </p>
+          <div className="tavan-guide-hero-lead">
+            <p>
+              İşten ayrılma tazminatı tavanı, ücret hesaplamasında en önemli faktörlerden biridir. İnsan kaynakları
+              uzmanları, muhasebe departmanı üyeleri ve çalışanlar her yıl tavan güncellemelerini kontrol eder, çünkü
+              bu durum işten ayrılma tazminatı hesaplaması üzerinde büyük bir etkiye sahiptir.
+            </p>
+            <p>
+              Ocak-Haziran 2026 dönemi için kıdem tazminatı tavanı 64.948,77 TL olarak açıklandı. Bir önceki yıla
+              kıyasla kıdem tazminatı tavanında önemli bir artış söz konusu.
+            </p>
+          </div>
           <div className="tavan-guide-hero-actions">
             <CalcCta href={`${HOME_PATH}#hesapla`}>Şimdi Hesapla</CalcCta>
           </div>
@@ -134,7 +216,13 @@ export function LegalBasisCards({ rows }) {
               <span className="tavan-legal-icon" aria-hidden="true">
                 <Icon size={20} strokeWidth={1.8} />
               </span>
-              <p className="tavan-legal-source">{row.source}</p>
+              <p className="tavan-legal-source">
+                {row.source === "Resmi Gazete" ? (
+                  <LawLink href={RESMI_GAZETE_URL}>{row.source}</LawLink>
+                ) : (
+                  row.source
+                )}
+              </p>
               <p className="tavan-legal-definition">{row.definition}</p>
             </article>
           </RevealItem>
@@ -360,6 +448,8 @@ export function ExampleCalculationCards({ examples }) {
 const SCENARIO_ICONS = [Briefcase, Shield, UserCheck, Heart];
 
 export function EligibilityScenarioGrid({ scenarios }) {
+  const linkedTermsRef = useRef(new Set());
+
   return (
     <RevealStagger className="tavan-eligibility-grid">
       {scenarios.map((scenario, index) => {
@@ -372,7 +462,7 @@ export function EligibilityScenarioGrid({ scenarios }) {
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
                 <h3>{scenario.title}</h3>
-                <p>{scenario.intro}</p>
+                <p>{linkLawReferences(scenario.intro, linkedTermsRef.current)}</p>
                 {scenario.list.length > 0 ? (
                   <ul className="tavan-checklist tavan-checklist--inline">
                     {scenario.list.map((item) => (
@@ -383,7 +473,7 @@ export function EligibilityScenarioGrid({ scenarios }) {
                     ))}
                   </ul>
                 ) : null}
-                {scenario.closing ? <p>{scenario.closing}</p> : null}
+                {scenario.closing ? <p>{linkLawReferences(scenario.closing, linkedTermsRef.current)}</p> : null}
               </article>
             </TiltCard>
           </RevealItem>

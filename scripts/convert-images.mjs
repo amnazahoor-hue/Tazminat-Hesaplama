@@ -4,51 +4,51 @@ import sharp from "sharp";
 
 const publicDir = path.resolve("public");
 const imagesDir = path.join(publicDir, "images");
+const MAX_KB = 100;
 
-// Unsplash — office consultation / compensation planning (1920px, free to use)
 const GUIDE_STEPS_IMAGE_URL =
   "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1920&h=2560&q=90";
 
+/** Only assets referenced in src/config/images.js, ihbarGuideContent.js, or layout metadata */
 const ROOT_MAPPINGS = [
-  ["logo.png", "logo.webp"],
-  ["hero-carousel-lira.png", "home/hero-carousel-lira.webp"],
-  ["hero-carousel-1.png", "home/hero-carousel-1.webp"],
-  ["hero-carousel-2.png", "home/hero-carousel-2.webp"],
-  ["hero-carousel-3.png", "home/hero-carousel-3.webp"],
-  ["hero-image.png", "home/hero-image.webp"],
-  ["intro-severance-bg.webp", "home/intro-severance-bg.webp"],
-  ["free-calc-office.webp", "home/free-calc-office.webp"],
-  ["feature-results-salary.jpg", "home/feature-results-salary.webp"],
-  ["feature-tax-coin.jpg", "home/feature-tax-coin.webp"],
-  ["employer-why-calculator-bg.jpg", "home/employer-why-calculator-bg.webp"],
-  ["employer-why-bg.jpg", "home/employer-why-bg.webp"],
-  ["diff-purple-salary.jpg", "home/diff-purple-salary.webp"],
-  ["diff-invoice-salary.jpg", "home/diff-invoice-salary.webp"],
-  ["free-calc-idea.png", "home/free-calc-idea.webp"],
-  ["intro-corkboard.png", "home/intro-corkboard.webp"],
-  ["intro-sticky-idea.png", "home/intro-sticky-idea.webp"]
+  ["logo.png", "logo.webp", { maxWidth: 256, quality: 82 }],
+  ["hero-carousel-lira.png", "home/hero-carousel-lira.webp", { quality: 82 }],
+  ["hero-carousel-1.png", "home/hero-carousel-1.webp", { quality: 82 }],
+  ["hero-carousel-2.png", "home/hero-carousel-2.webp", { quality: 82 }],
+  ["hero-carousel-3.png", "home/hero-carousel-3.webp", { quality: 82 }],
+  ["intro-severance-bg.webp", "home/intro-severance-bg.webp", { quality: 82 }],
+  ["free-calc-office.webp", "home/free-calc-office.webp", { quality: 82 }],
+  ["feature-results-salary.jpg", "home/feature-results-salary.webp", { quality: 82 }],
+  ["feature-tax-coin.jpg", "home/feature-tax-coin.webp", { quality: 82 }],
+  ["employer-why-calculator-bg.jpg", "home/employer-why-calculator-bg.webp", { maxWidth: 1280, quality: 76 }],
+  ["employer-why-bg.jpg", "home/employer-why-bg.webp", { quality: 82 }],
+  ["diff-purple-salary.jpg", "home/diff-purple-salary.webp", { quality: 82 }]
 ];
 
 const SUBDIR_MAPPINGS = [
-  ["images/ihbar/hero.jpg", "ihbar/hero.webp"],
-  ["images/ihbar/kidem.jpg", "ihbar/kidem.webp"],
-  ["images/ihbar/examples.jpg", "ihbar/examples.webp"],
-  ["images/ihbar/rights.jpg", "ihbar/rights.webp"],
-  ["images/tazminat-hesaplama/hero.jpg", "tazminat-hesaplama/hero.webp"]
+  ["images/ihbar/hero.jpg", "ihbar/hero.webp", { quality: 82 }],
+  ["images/ihbar/kidem.jpg", "ihbar/kidem.webp", { quality: 82 }],
+  ["images/ihbar/examples.jpg", "ihbar/examples.webp", { maxWidth: 1200, quality: 78 }],
+  ["images/tazminat-hesaplama/hero.jpg", "tazminat-hesaplama/hero.webp", { quality: 82 }]
 ];
 
 async function ensureDir(filePath) {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
 }
 
-async function convertToWebp(inputPath, outputPath, quality = 82) {
+async function convertToWebp(inputPath, outputPath, options = {}) {
+  const { maxWidth, quality = 82 } = options;
   await ensureDir(outputPath);
-  await sharp(inputPath).webp({ quality, effort: 4 }).toFile(outputPath);
-  const inputStat = await fs.stat(inputPath);
+
+  let pipeline = sharp(inputPath);
+  if (maxWidth) {
+    pipeline = pipeline.resize(maxWidth, null, { withoutEnlargement: true });
+  }
+
+  await pipeline.webp({ quality, effort: 6 }).toFile(outputPath);
   const outputStat = await fs.stat(outputPath);
-  console.log(
-    `✓ ${path.relative(publicDir, outputPath)} (${Math.round(outputStat.size / 1024)}KB, was ${Math.round(inputStat.size / 1024)}KB)`
-  );
+  const kb = Math.round(outputStat.size / 1024);
+  console.log(`✓ ${path.relative(publicDir, outputPath)} (${kb}KB)`);
 }
 
 async function downloadGuideStepsImage() {
@@ -62,43 +62,43 @@ async function downloadGuideStepsImage() {
 
   const buffer = Buffer.from(await response.arrayBuffer());
   await sharp(buffer)
-    .resize(1920, 2560, { fit: "cover", position: "centre" })
-    .webp({ quality: 88, effort: 4 })
+    .resize(1040, 1380, { fit: "cover", position: "centre" })
+    .webp({ quality: 78, effort: 6 })
     .toFile(outputPath);
 
   const outputStat = await fs.stat(outputPath);
   console.log(
-    `✓ ${path.relative(publicDir, outputPath)} (downloaded, ${Math.round(outputStat.size / 1024)}KB, 1920×2560)`
+    `✓ ${path.relative(publicDir, outputPath)} (downloaded, ${Math.round(outputStat.size / 1024)}KB)`
   );
 }
 
 async function main() {
   await fs.mkdir(imagesDir, { recursive: true });
 
-  for (const [source, target] of ROOT_MAPPINGS) {
+  for (const [source, target, options] of ROOT_MAPPINGS) {
     const inputPath = path.join(publicDir, source);
     const outputPath = path.join(imagesDir, target);
     try {
       await fs.access(inputPath);
-      await convertToWebp(inputPath, outputPath);
+      await convertToWebp(inputPath, outputPath, options);
     } catch {
       console.warn(`⚠ Skipped missing file: ${source}`);
     }
   }
 
-  for (const [source, target] of SUBDIR_MAPPINGS) {
+  for (const [source, target, options] of SUBDIR_MAPPINGS) {
     const inputPath = path.join(publicDir, source);
     const outputPath = path.join(imagesDir, target);
     try {
       await fs.access(inputPath);
-      await convertToWebp(inputPath, outputPath);
+      await convertToWebp(inputPath, outputPath, options);
     } catch {
       console.warn(`⚠ Skipped missing file: ${source}`);
     }
   }
 
   await downloadGuideStepsImage();
-  console.log("\nDone — all images converted under public/images/");
+  console.log(`\nDone — WebP assets under public/images/ (target ≤ ${MAX_KB}KB)`);
 }
 
 main().catch((error) => {

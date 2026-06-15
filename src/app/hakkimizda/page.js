@@ -3,9 +3,9 @@ import { HAKKIMIZDA_PATH } from "@/config/site";
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Hakkımızda | Tazminat Hesaplama",
+  title: "Hakkımızda | Tazminat Hesaplama Platformu ve Misyonu",
   description:
-    "Tazminat Hesaplama platformunun misyonu, vizyonu, editoryal yaklaşımı ve kullanıcı odaklı değerleri hakkında bilgi edinin.",
+    "Tazminat Hesaplama hakkında: platform misyonu, vizyonu, editoryal yaklaşım, güven ilkeleri ve İş Kanunu 4857 odaklı ücretsiz hesaplama hizmetimiz.",
   path: HAKKIMIZDA_PATH,
   keywords: [
     "hakkımızda",

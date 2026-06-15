@@ -81,14 +81,6 @@ export const PAGE_NAV = {
       { id: "tavan-hesaplama", label: "Hesaplama" },
       { id: "tavan-sss", label: "SSS" }
     ]
-  },
-  "/is-kanunu": {
-    cta: { path: HOME_PATH, section: "hesapla" },
-    items: [{ id: "mevzuat", label: "Madde Özetleri" }]
-  },
-  "/tazminat-tavani-2024": {
-    cta: { path: HOME_PATH, section: "hesapla" },
-    items: [{ id: "tavan", label: "Tavan Tablosu" }]
   }
 };
 

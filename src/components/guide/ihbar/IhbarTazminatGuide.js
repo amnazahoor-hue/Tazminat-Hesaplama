@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH } from "@/config/site";
+import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, siteUrl } from "@/config/site";
 import {
   COMPARISON_ROWS,
   IHBAR_IMAGES,
@@ -17,9 +17,11 @@ import {
 } from "@/data/ihbarGuideContent";
 import GuideFaqSection from "../GuideFaqSection";
 import { IHBAR_FAQ_ITEMS } from "@/data/ihbarGuideContent";
-import GuidePageEnd from "../GuidePageEnd";
+import GuidePageFooter from "../GuidePageFooter";
+import TableOfContents from "../TableOfContents";
 import {
   EligibilityCards,
+  IHBAR_TOC_ITEMS,
   InsolvencyCallout,
   NoticeComparisonTable,
   NoticeHero,
@@ -63,6 +65,12 @@ export default function IhbarTazminatGuide() {
 
       <NoticeHero image={IHBAR_IMAGES.hero} />
 
+      <section className="guide-pre-tool guide-pre-tool--after-hero">
+        <div className="container guide-pre-tool-inner">
+          <TableOfContents items={IHBAR_TOC_ITEMS} />
+        </div>
+      </section>
+
       <GuideSection id="ihbar-kidem" alt>
         <TwoColumnImageBlock image={IHBAR_IMAGES.kidem}>
           <SectionHeading>kıdem tazminatı nedir</SectionHeading>
@@ -75,7 +83,7 @@ export default function IhbarTazminatGuide() {
       </GuideSection>
 
       <GuideSection id="ihbar-sure">
-        <SectionHeading>İhbar Süresi Nedir?</SectionHeading>
+        <SectionHeading id="ihbar-suresi">İhbar Süresi Nedir?</SectionHeading>
         <p>
           İhbar süresi, işten çıkarma bildiriminin verilmesi ile iş ilişkisinin fiilen sona ermesi arasında yasal olarak
           zorunlu olan süredir. Amacı, çalışanlara yeni iş aramak ve işverenlere yerlerine yeni eleman bulmak için makul
@@ -90,13 +98,13 @@ export default function IhbarTazminatGuide() {
       </GuideSection>
 
       <GuideSection id="ihbar-ornekler" alt>
-        <SectionHeading>İhbar Ödeme Örnekleri</SectionHeading>
+        <SectionHeading id="ornekler">İhbar Ödeme Örnekleri</SectionHeading>
         <p>Aşağıdaki örnekler, ihbar tazminatının pratikte nasıl işlediğini göstermektedir.</p>
         <NoticeScenarioCards examples={NOTICE_EXAMPLES} accentImage={IHBAR_IMAGES.examples} />
       </GuideSection>
 
       <GuideSection id="ihbar-fark">
-        <SectionHeading>İhbar Süresi ve İhbar Ücreti Arasındaki Fark</SectionHeading>
+        <SectionHeading id="nasil-hesaplanir">İhbar Süresi ve İhbar Ücreti Arasındaki Fark</SectionHeading>
         <p>
           Aşağıda, ihbar süresi ve ihbar tazminatı arasındaki bazı temel farklar yer almaktadır; bu iki kavramı daha iyi
           anlamanıza yardımcı olacaktır.
@@ -150,11 +158,15 @@ export default function IhbarTazminatGuide() {
 
       <GuideFaqSection id="ihbar-sss" items={IHBAR_FAQ_ITEMS} includeFormula />
 
-      <GuidePageEnd
-        href={KIDEM_TAVANI_PATH}
-        title="2026 Türkiye Kıdem Tazminatı Tavanı"
-        description="Güncellenmiş tavan oranları, hesaplama yöntemleri, vergi kuralları ve uygunluk şartları."
-        linkLabel="Kıdem Tazminatı Tavanı Rehberi"
+      <GuidePageFooter
+        relatedCard={{
+          href: KIDEM_TAVANI_PATH,
+          title: "2026 Türkiye Kıdem Tazminatı Tavanı",
+          description: "Güncellenmiş tavan oranları, hesaplama yöntemleri, vergi kuralları ve uygunluk şartları.",
+          linkLabel: "Kıdem Tazminatı Tavanı Rehberi"
+        }}
+        shareUrl={siteUrl(IHBAR_NEDIR_PATH)}
+        shareTitle="İhbar Tazminatı Nedir ve Nasıl Hesaplanır?"
       />
     </GuidePageShell>
   );

@@ -2,10 +2,12 @@ import LegalPageShell from "@/components/legal/LegalPageShell";
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Yasal Uyarı | Tazminat Hesaplama",
-  description: "Yasal uyarı: hesaplama sınırları, hukuki farklılıklar ve profesyonel danışmanlık notları.",
+  title: "Yasal Uyarı | Tazminat Hesaplama Sorumluluk Bildirimi",
+  description:
+    "Yasal uyarı: hesaplama sonuçları bilgilendirme amaçlıdır, bağlayıcı değildir. Hukuki farklılıklar ve profesyonel danışmanlık almanız gereken durumlar açıklanır.",
   path: "/yasal-uyari",
-  keywords: ["yasal uyarı", "disclaimer", "tazminat hesaplama sınırları"]
+  keywords: ["yasal uyarı", "disclaimer", "tazminat hesaplama sınırları"],
+  robots: { index: false, follow: true }
 });
 
 const SECTIONS = [

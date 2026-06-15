@@ -11,8 +11,6 @@ export default function sitemap() {
     TAZMINAT_HESAPLAMA_PATH,
     IHBAR_NEDIR_PATH,
     KIDEM_TAVANI_PATH,
-    "/tazminat-tavani-2024",
-    "/is-kanunu",
     "/gizlilik-politikasi",
     "/kullanim-sartlari",
     "/yasal-uyari",

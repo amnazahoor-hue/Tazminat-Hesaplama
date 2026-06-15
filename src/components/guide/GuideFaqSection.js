@@ -20,12 +20,12 @@ function buildFaqSchema(items, includeFormula = false) {
   };
 }
 
-export default function GuideFaqSection({ id, items, includeFormula = false }) {
+export default function GuideFaqSection({ id, items, includeFormula = false, headingId }) {
   const faqSchema = useMemo(() => buildFaqSchema(items, includeFormula), [items, includeFormula]);
 
   return (
-    <GuideSection id={id} alt className="guide-section--faq">
-      <SectionHeading>SSS</SectionHeading>
+    <GuideSection id={id} className="guide-section--faq">
+      <SectionHeading id={headingId}>SSS</SectionHeading>
       <Accordion items={items} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </GuideSection>

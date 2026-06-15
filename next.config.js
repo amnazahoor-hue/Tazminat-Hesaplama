@@ -43,6 +43,16 @@ const nextConfig = {
         source: "/contact",
         destination: "/iletisim/",
         permanent: true
+      },
+      {
+        source: "/is-kanunu",
+        destination: "/",
+        permanent: true
+      },
+      {
+        source: "/tazminat-tavani-2024",
+        destination: "/kidem-tazminati-tavani/",
+        permanent: true
       }
     ];
   }

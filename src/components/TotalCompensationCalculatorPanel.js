@@ -138,16 +138,15 @@ export default function TotalCompensationCalculatorPanel() {
     if (!calc.error) pendingScrollToResults.current = true;
   };
 
-  const { pdfLoading, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
+  const { pdfLoading, shareNative, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
     form,
     result,
     activeTab,
     buildReport: buildTotalCompensationShareReport,
     pdfRef,
-    pdfFilename: "toplam-tazminat-hesaplama-raporu.pdf"
+    pdfFilename: "toplam-tazminat-hesaplama-raporu.pdf",
+    shareSubject: "Toplam Tazminat Hesaplama Sonuçları"
   });
-
-  const handleEmailShare = () => shareEmail("Toplam Tazminat Hesaplama Sonuçları");
 
   const moneyBlur = (key) => (e) => {
     const n = TR.parseMoney(e.target.value);
@@ -425,7 +424,7 @@ export default function TotalCompensationCalculatorPanel() {
                     <tr className="result-sub-row">
                       <td>Kullanılmamış İzin</td>
                       <td>
-                        (₺{TR.money(result.brutMaas)} / 30) x {result.unusedLeaveDays} gün
+                        ₺{TR.money(result.gunlukUcret)} × {result.unusedLeaveDays} gün
                       </td>
                       <td>₺{TR.money(result.unusedLeavePay)}</td>
                     </tr>
@@ -449,9 +448,10 @@ export default function TotalCompensationCalculatorPanel() {
             </div>
 
             <ResultShareBar
+              onShare={shareNative}
               onWhatsApp={shareWhatsApp}
               onPdf={downloadPdf}
-                onEmail={handleEmailShare}
+              onEmail={shareEmail}
               pdfLoading={pdfLoading}
             />
           </div>

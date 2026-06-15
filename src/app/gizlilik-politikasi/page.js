@@ -2,10 +2,12 @@ import LegalPageShell from "@/components/legal/LegalPageShell";
 import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Gizlilik Politikası | Tazminat Hesaplama",
-  description: "Tazminat Hesaplama gizlilik politikası: veri kullanımı, çerezler ve kullanıcı hakları.",
+  title: "Gizlilik Politikası | Tazminat Hesaplama Veri Güvenliği",
+  description:
+    "Tazminat Hesaplama gizlilik politikası: hangi veriler işlenir, çerez kullanımı, analitik araçlar ve KVKK kapsamındaki kullanıcı haklarınız için bilgi edinin.",
   path: "/gizlilik-politikasi",
-  keywords: ["gizlilik politikası", "veri güvenliği", "kıdem hesaplama gizlilik"]
+  keywords: ["gizlilik politikası", "veri güvenliği", "kıdem hesaplama gizlilik"],
+  robots: { index: false, follow: true }
 });
 
 const SECTIONS = [

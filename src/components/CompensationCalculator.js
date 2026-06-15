@@ -345,13 +345,14 @@ export default function CompensationCalculator() {
     if (!calc.error) pendingScrollToResults.current = true;
   };
 
-  const { pdfLoading, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
+  const { pdfLoading, shareNative, shareWhatsApp, shareEmail, downloadPdf } = useCalculatorShare({
     form,
     result,
     activeTab,
     buildReport: buildShareReport,
     pdfRef,
-    pdfFilename: "tazminat-hesaplama-raporu.pdf"
+    pdfFilename: "tazminat-hesaplama-raporu.pdf",
+    shareSubject: "Tazminat Hesaplama Sonuçları"
   });
 
   useEffect(() => {
@@ -608,7 +609,7 @@ export default function CompensationCalculator() {
                             >
                               <Image
                                 src={src}
-                                alt=""
+                                alt="Kıdem tazminatı hesaplama aracı tanıtım slayt görseli"
                                 fill
                                 sizes="(max-width: 900px) 84vw, 480px"
                                 priority={index === 0}
@@ -653,6 +654,13 @@ export default function CompensationCalculator() {
 
       <section className="section calc-section" id="hesapla">
         <div className="container calc-wrap scroll-reveal scroll-reveal--up">
+          <div className="answer-block">
+            <p>
+              Kıdem tazminatı, en az 1 yıl çalışan ve iş sözleşmesi haksız feshedilen işçiye ödenir. Her tam çalışma
+              yılı için 30 günlük brüt ücret esas alınır. 2025 yılı kıdem tazminatı tavanı <strong>35.058,58 TL</strong>
+              &apos;dir.
+            </p>
+          </div>
           <div className="calc-panel scroll-reveal scroll-reveal--scale" data-scroll-reveal>
             <div className="calc-panel-top" aria-hidden="true" />
             <div className="calc-panel-head">
@@ -863,6 +871,7 @@ export default function CompensationCalculator() {
               <SeveranceBreakdownTable result={result} activeTab={activeTab} />
 
               <ResultShareBar
+                onShare={shareNative}
                 onWhatsApp={shareWhatsApp}
                 onPdf={downloadPdf}
                 onEmail={shareEmail}
@@ -883,10 +892,9 @@ export default function CompensationCalculator() {
         <div className="intro-section-bg" aria-hidden="true">
           <Image
             src={IMAGES.home.introSeveranceBg}
-            alt=""
-            fill
-            unoptimized
-            className="intro-section-image"
+            alt="İşten ayrılma tazminatı hesaplama bölümü arka plan görseli"
+            width={1920}
+            height={1080}
             sizes="100vw"
           />
           <span className="intro-section-overlay" />
@@ -901,10 +909,9 @@ export default function CompensationCalculator() {
               <div className="intro-showcase-copy-visual" aria-hidden="true">
                 <Image
                   src={IMAGES.home.introSeveranceBg}
-                  alt=""
-                  fill
-                  unoptimized
-                  className="intro-showcase-copy-visual-image"
+                  alt="Kıdem tazminatı tanıtım görseli"
+                  width={1920}
+                  height={1080}
                   sizes="100vw"
                 />
               </div>

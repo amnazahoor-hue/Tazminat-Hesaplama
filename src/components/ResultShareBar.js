@@ -1,5 +1,16 @@
 "use client";
 
+function ShareIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" />
+    </svg>
+  );
+}
+
 function WhatsAppIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -29,10 +40,16 @@ function PdfIcon() {
   );
 }
 
-export default function ResultShareBar({ onWhatsApp, onPdf, onEmail, pdfLoading }) {
+export default function ResultShareBar({ onShare, onWhatsApp, onPdf, onEmail, pdfLoading }) {
   return (
     <div className="result-share">
       <div className="result-share-actions">
+        <button type="button" className="result-share-btn result-share-btn--share" onClick={onShare}>
+          <span className="result-share-icon">
+            <ShareIcon />
+          </span>
+          Paylaş
+        </button>
         <button type="button" className="result-share-btn result-share-btn--whatsapp" onClick={onWhatsApp}>
           <span className="result-share-icon">
             <WhatsAppIcon />

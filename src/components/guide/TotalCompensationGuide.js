@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { IMAGES } from "@/config/images";
-import { HOME_PATH, IHBAR_NEDIR_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
+import { HOME_PATH, IHBAR_NEDIR_PATH, TAZMINAT_HESAPLAMA_PATH, siteUrl } from "@/config/site";
 import { motion, useScroll, useTransform } from "framer-motion";
-import GuidePageEnd from "./GuidePageEnd";
+import GuidePageFooter from "./GuidePageFooter";
 import {
   AlertCircle,
   Award,
@@ -30,6 +30,7 @@ import CalcCta from "@/components/common/CalcCta";
 import TotalCompensationCalculatorPanel from "@/components/TotalCompensationCalculatorPanel";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import GuideFaq from "./GuideFaq";
+import TableOfContents from "./TableOfContents";
 import {
   ChecklistTable,
   EquationPillsBlock,
@@ -181,7 +182,19 @@ const GUIDE_2026_ITEMS = [
   {
     icon: BookOpen,
     title: "İş Hukuku Referansı",
-    body: "Tazminat hakları, özellikle iş sözleşmesinin feshiyle ilgili hakları düzenleyen 4857 sayılı Türk İş Kanunu'nda yer almaktadır."
+    body: (
+      <>
+        Tazminat hakları, özellikle iş sözleşmesinin feshiyle ilgili hakları düzenleyen 4857 sayılı Türk{" "}
+        <a
+          href="https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4857&MevzuatTur=1&MevzuatTertip=5"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          İş Kanunu
+        </a>
+        &apos;nda yer almaktadır.
+      </>
+    )
   }
 ];
 
@@ -211,6 +224,14 @@ const TYPE_ITEMS = [
     title: "Ödenekler",
     body: "Yemek, ulaşım ve diğer konut yardımları gibi avantajlar da buna dahildir."
   }
+];
+
+const TOC_ITEMS = [
+  { id: "tazminat-nedir", label: "Tazminat Hesaplaması Nedir?" },
+  { id: "nasil-hesaplanir", label: "Tazminat Nasıl Hesaplanır?" },
+  { id: "kidem-tazminati", label: "Kıdem ve Ücret Bileşenleri" },
+  { id: "ihbar-tazminati", label: "İhbar Süresi ve Tazminatı" },
+  { id: "guide-sss", label: "Sık Sorulan Sorular" }
 ];
 
 function IconCard({ icon: Icon, title, body, badgeClass = "guide-icon-card-badge" }) {
@@ -262,17 +283,20 @@ export default function TotalCompensationGuide() {
         <span className="guide-page-hero-bg" aria-hidden="true">
           <Image
             src={IMAGES.tazminatHesaplama.hero}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
+            alt="Toplam tazminat hesaplama rehberi arka plan görseli"
+            width={1920}
+            height={1080}
             className="guide-page-hero-bg-image"
+            priority
           />
         </span>
         <span className="guide-page-hero-overlay" aria-hidden="true" />
         <div className="container guide-page-hero-content">
           <Reveal>
             <h1>2026 Yılı İçin Ücret Hesaplaması</h1>
+            <p className="author-attribution">
+              Yazan: Tazminat Hesaplama Uzmanı &nbsp;|&nbsp; Son güncelleme: Haziran 2026
+            </p>
             <div className="guide-page-hero-actions">
               <CalcCta
                 href="#hesapla"
@@ -291,11 +315,23 @@ export default function TotalCompensationGuide() {
         </div>
       </header>
 
+      <section className="guide-pre-tool guide-pre-tool--after-hero">
+        <div className="container guide-pre-tool-inner">
+          <div className="answer-block">
+            <p>
+              Toplam tazminat hesaplaması; kıdem, ihbar ve diğer işçilik alacaklarını kapsar. Hesaplama, brüt ücret,
+              çalışma süresi ve fesih türüne göre değişir. Aşağıdaki araç ile 2026 güncel parametrelerine göre anında
+              sonuç alabilirsiniz.
+            </p>
+          </div>
+          <TableOfContents items={TOC_ITEMS} />
+        </div>
+      </section>
       <TotalCompensationCalculatorPanel />
 
       <GuideSection id="guide-tanim">
         <IntroBlock>
-          <SectionHeading>Tazminat Hesaplaması Nedir?</SectionHeading>
+          <SectionHeading id="tazminat-nedir">Tazminat Hesaplaması Nedir?</SectionHeading>
           <p>
             Tazminat hesaplaması, bir çalışanın Türk İş Hukuku kapsamında hak kazandığı toplam ödemelerin
             belirlenmesi sürecidir. Bu ödemeler; kıdem tazminatı, ihbar tazminatı, kullanılmamış yıllık izin
@@ -308,8 +344,6 @@ export default function TotalCompensationGuide() {
           </p>
         </IntroBlock>
       </GuideSection>
-
-      <TotalCompensationCalculatorPanel />
 
       <GuideSection id="guide-formul" alt>
         <SectionHeading>Tazminat Hesaplama Formülü</SectionHeading>
@@ -336,7 +370,7 @@ export default function TotalCompensationGuide() {
       </GuideSection>
 
       <GuideSection id="guide-bilesenler">
-        <SectionHeading>Tazminat Hesaplamasının Bileşenleri</SectionHeading>
+        <SectionHeading id="kidem-tazminati">Tazminat Hesaplamasının Bileşenleri</SectionHeading>
         <Reveal>
           <p>
             Ücret hesaplamaları maaş, ikramiye ve kıdem tazminatını içerebilir ve nihai ücret buna bağlı olarak
@@ -364,7 +398,7 @@ export default function TotalCompensationGuide() {
       </GuideSection>
 
       <GuideSection id="guide-adimlar">
-        <SectionHeading>Tazminat Nasıl Hesaplanır?</SectionHeading>
+        <SectionHeading id="nasil-hesaplanir">Tazminat Nasıl Hesaplanır?</SectionHeading>
         <StepsShowcase
           illustration={<GuideStepsIllustration />}
           intro={
@@ -407,7 +441,7 @@ export default function TotalCompensationGuide() {
       </GuideSection>
 
       <GuideSection id="guide-ihbar">
-        <SectionHeading>İhbar Süresi</SectionHeading>
+        <SectionHeading id="ihbar-tazminati">İhbar Süresi</SectionHeading>
         <Reveal>
           <p>İhbar tazminatı, çalışanın hizmet süresine göre değişiklik gösterir.</p>
         </Reveal>
@@ -506,11 +540,15 @@ export default function TotalCompensationGuide() {
       </GuideSection>
 
       <GuideFaq />
-      <GuidePageEnd
-        href={IHBAR_NEDIR_PATH}
-        title="İhbar Tazminatı Nedir?"
-        description="İhbar süreleri, örnekler, çalışan hakları ve SSS ile kapsamlı iş hukuku rehberi."
-        linkLabel="İhbar Tazminatı Rehberi"
+      <GuidePageFooter
+        relatedCard={{
+          href: IHBAR_NEDIR_PATH,
+          title: "İhbar Tazminatı Nedir?",
+          description: "İhbar süreleri, örnekler, çalışan hakları ve SSS ile kapsamlı iş hukuku rehberi.",
+          linkLabel: "İhbar Tazminatı Rehberi"
+        }}
+        shareUrl={siteUrl(TAZMINAT_HESAPLAMA_PATH)}
+        shareTitle="2026 Toplam Tazminat Hesaplama Rehberi"
       />
     </GuidePageShell>
   );

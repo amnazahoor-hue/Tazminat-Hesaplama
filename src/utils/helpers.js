@@ -76,7 +76,14 @@ export function buildEffectiveGross(data) {
 }
 
 export function getNoticePeriod(totalMonths) {
-  return CONFIG.NOTICE_PERIODS.find((p) => totalMonths <= p.maxMonths) || CONFIG.NOTICE_PERIODS[3];
+  if (totalMonths < 6) return CONFIG.NOTICE_PERIODS[0];
+  if (totalMonths < 18) return CONFIG.NOTICE_PERIODS[1];
+  if (totalMonths < 36) return CONFIG.NOTICE_PERIODS[2];
+  return CONFIG.NOTICE_PERIODS[3];
+}
+
+function roundMoney(value) {
+  return Math.round(value * 100) / 100;
 }
 
 function getServiceDuration(start, end) {
@@ -160,13 +167,16 @@ export function calculateCompensation(data, options = {}) {
   const kidemBase = kidemUseAdjustedGross ? wages.adjustedGross : wages.grossSalary;
   const ceilingApplied = kidemBase > ceiling;
   const effectiveRate = Math.min(kidemBase, ceiling);
-  const kidem =
-    eligibilityResult.kidem && totalDays >= 365 ? effectiveRate * totalYears : 0;
+  const kidem = roundMoney(
+    eligibilityResult.kidem && totalDays >= 365 ? effectiveRate * totalYears : 0
+  );
 
   const notice = getNoticePeriod(totalMonths);
-  const ihbar = eligibilityResult.ihbar ? wages.dailyGross * notice.days : 0;
-  const leavePay = wages.dailyGross * (data.unusedLeaveDays || 0);
-  const total = kidem + ihbar + leavePay + (data.overtime || 0) + (data.otherReceivables || 0);
+  const ihbar = roundMoney(eligibilityResult.ihbar ? wages.dailyGross * notice.days : 0);
+  const leavePay = roundMoney(wages.dailyGross * (data.unusedLeaveDays || 0));
+  const total = roundMoney(
+    kidem + ihbar + leavePay + (data.overtime || 0) + (data.otherReceivables || 0)
+  );
 
   return {
     iseGirisTarihi: TR.date(data.startDate),
@@ -216,7 +226,7 @@ export function calculateNoticePay({ startDate, endDate, totalMonthsInput, gross
   }
 
   const notice = getNoticePeriod(totalMonths);
-  const amount = wages.dailyGross * notice.days;
+  const amount = roundMoney(wages.dailyGross * notice.days);
   return {
     totalMonths,
     noticeDays: notice.days,
@@ -235,7 +245,7 @@ export function calculateUnusedLeavePay({ grossSalary, unusedLeaveDays, mealAllo
     performanceBonus,
     annualBonus
   });
-  const amount = wages.dailyGross * unusedLeaveDays;
+  const amount = roundMoney(wages.dailyGross * unusedLeaveDays);
   return {
     dailyGross: wages.dailyGross,
     amount
@@ -256,8 +266,9 @@ export function calculateTotalCompensation(data) {
   const yillikUlasim = wages.monthlyTravel * 12;
   const bonuslar = wages.annualBonus;
   const cikisOdemePaketi = base.toplamTazminat;
-  const toplamTazminatDegeri =
-    yillikMaas + bonuslar + yillikYemek + yillikUlasim + base.kidemTazminati;
+  const toplamTazminatDegeri = roundMoney(
+    yillikMaas + bonuslar + yillikYemek + yillikUlasim + base.kidemTazminati
+  );
 
   return {
     ...base,
