@@ -1,19 +1,19 @@
 import IhbarTazminatGuide from "@/components/guide/ihbar/IhbarTazminatGuide";
-import { IHBAR_NEDIR_PATH } from "@/config/site";
+import { IHBAR_NEDIR_PATH, IHBAR_PAGE_SEO } from "@/config/site";
 import { buildArticleSchema, buildPageMetadata, buildSpeakableSchema } from "@/utils/seo";
 
-const PAGE_TITLE = "İhbar Tazminatı Nedir? | Hesaplama ve Çalışan Hakları";
-
 export const metadata = buildPageMetadata({
-  title: PAGE_TITLE,
-  description:
-    "İhbar tazminatı nedir, kimler hak kazanır ve nasıl hesaplanır? İhbar süreleri, örnekler, vergi kuralları ve kıdem tazminatı farkları bu rehberde açıklanır.",
+  title: IHBAR_PAGE_SEO.title,
+  description: IHBAR_PAGE_SEO.description,
   path: IHBAR_NEDIR_PATH,
-  keywords: ["ihbar tazminatı nedir", "ihbar tazminatı", "ihbar süresi", "bildirim ücreti", "PILON"]
+  keywords: IHBAR_PAGE_SEO.keywords
 });
 
 export default function IhbarTazminatGuidePage() {
-  const articleSchema = buildArticleSchema({ headline: PAGE_TITLE, path: IHBAR_NEDIR_PATH });
+  const articleSchema = buildArticleSchema({
+    headline: IHBAR_PAGE_SEO.title,
+    path: IHBAR_NEDIR_PATH
+  });
   const speakableSchema = buildSpeakableSchema();
 
   return (

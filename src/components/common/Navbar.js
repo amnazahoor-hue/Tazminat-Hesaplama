@@ -15,19 +15,19 @@ import {
   resolvePagePath
 } from "@/config/pageNav";
 
+const DEFAULT_CTA = { path: HOME_PATH, section: "hesapla", focusInput: "giris" };
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const pathname = usePathname();
   const router = useRouter();
   const pagePath = resolvePagePath(pathname);
   const pageNav = useMemo(() => getPageNav(pathname), [pathname]);
-  const navItems = pageNav?.items ?? [];
-  const hasSectionNav = navItems.length > 0;
+  const ctaConfig = pageNav?.cta ?? DEFAULT_CTA;
+  const ctaHref = buildSectionHref(ctaConfig.path, ctaConfig.section);
   const isHome = pagePath === HOME_PATH;
-  const ctaHref = buildSectionHref(HOME_PATH, "hesapla");
 
   useEffect(() => {
     const onScroll = () => {
@@ -42,73 +42,31 @@ export default function Navbar() {
   }, [pagePath]);
 
   useEffect(() => {
-    setActiveSection(navItems[0]?.id ?? "");
-  }, [navItems]);
-
-  useEffect(() => {
-    if (!hasSectionNav) return undefined;
-
-    const sections = navItems.map((item) => document.getElementById(item.id)).filter(Boolean);
-    if (sections.length === 0) return undefined;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target?.id) setActiveSection(visible.target.id);
-      },
-      { rootMargin: "-35% 0px -55% 0px", threshold: [0.2, 0.5, 0.8] }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [hasSectionNav, navItems, pagePath]);
-
-  useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
 
-  const scrollToSection = (sectionId, shouldFocusStartDate = false, focusInputId = "giris") => {
+  const scrollToSection = (sectionId, focusInputId) => {
     const target = document.getElementById(sectionId);
     if (!target) return;
     target.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (shouldFocusStartDate && focusInputId) {
+    if (focusInputId) {
       window.setTimeout(() => {
-        const input = document.getElementById(focusInputId);
-        if (input) input.focus();
+        document.getElementById(focusInputId)?.focus();
       }, 550);
     }
-  };
-
-  const goToSection = (sectionId, options = {}) => {
-    const { focusCalc = false } = options;
-    const onCurrentPage = pagePath === resolvePagePath(window.location.pathname);
-
-    if (onCurrentPage && hasSectionNav) {
-      setActiveSection(sectionId);
-      scrollToSection(sectionId, focusCalc, focusCalc ? "giris" : undefined);
-      return;
-    }
-
-    router.push(buildSectionHref(pagePath, sectionId));
-  };
-
-  const handleSectionClick = (event, sectionId) => {
-    event.preventDefault();
-    setOpen(false);
-    goToSection(sectionId);
   };
 
   const handleCtaClick = (event) => {
     event.preventDefault();
     setOpen(false);
 
-    if (isHome) {
-      goToSection("hesapla", { focusCalc: true });
+    const onCtaPage = pagePath === ctaConfig.path;
+
+    if (onCtaPage && ctaConfig.section) {
+      scrollToSection(ctaConfig.section, ctaConfig.focusInput);
       return;
     }
 
@@ -121,18 +79,6 @@ export default function Navbar() {
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  };
-
-  const navigateTo = (event, href, sectionId) => {
-    event.preventDefault();
-    setOpen(false);
-
-    if (pagePath === resolvePagePath(href.split("#")[0]) && sectionId) {
-      goToSection(sectionId);
-      return;
-    }
-
-    router.push(href);
   };
 
   return (
@@ -164,7 +110,7 @@ export default function Navbar() {
                 <Link
                   key={page.path}
                   href={page.path}
-                  className={`nav-pill-link${pagePath === page.path ? " active" : ""}`}
+                  className={`nav-pill-link${pagePath === page.path ? " active" : ""}${page.path === HOME_PATH ? " nav-pill-link--long" : ""}`}
                   title={page.title}
                   aria-label={page.title}
                   onClick={() => setOpen(false)}
@@ -222,30 +168,12 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {hasSectionNav ? (
-            <>
-              <p className="mobile-drawer-section-label">Bu sayfa</p>
-              <nav className="mobile-drawer-nav mobile-drawer-nav--sections">
-                {navItems.map((item) => {
-                  const href = buildSectionHref(pagePath, item.id);
-                  return (
-                    <a
-                      key={item.id}
-                      href={href}
-                      className={activeSection === item.id ? "active" : ""}
-                      onClick={(event) => navigateTo(event, href, item.id)}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                })}
-              </nav>
-            </>
-          ) : null}
+          <div className="mobile-drawer-cta-wrap">
+            <CalcCta href={ctaHref} className="mobile-calc-cta" size="large" onClick={handleCtaClick}>
+              Şimdi Hesapla
+            </CalcCta>
+          </div>
 
-          <CalcCta href={ctaHref} className="mobile-calc-cta" onClick={handleCtaClick}>
-            Şimdi Hesapla
-          </CalcCta>
           <div className="mobile-drawer-footer">
             {FOOTER_COMPANY_NAV.map((item) => (
               <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>

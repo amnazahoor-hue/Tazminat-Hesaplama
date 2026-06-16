@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { HOME_PATH } from "@/config/site";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { LEGAL_NAV } from "@/config/legalPages";
 
 /**
@@ -37,7 +38,7 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
             ))}
           </nav>
           <span className="legal-shell-tag">{tag}</span>
-          <h1>{title}</h1>
+          <h1>{capitalizeHeadingText(title)}</h1>
           <p className="legal-shell-lead">{lead}</p>
         </div>
       </header>
@@ -86,7 +87,7 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <div className="legal-section-copy">
-                  <h2>{section.title}</h2>
+                  <h2>{capitalizeHeadingText(section.title)}</h2>
                   <div className="legal-section-body">{section.body}</div>
                 </div>
               </article>

@@ -1,5 +1,5 @@
 import CompensationCalculator from "@/components/CompensationCalculator";
-import { HOME_PATH } from "@/config/site";
+import { HOME_PAGE_SEO, HOME_PATH } from "@/config/site";
 import {
   buildOrganizationSchema,
   buildPageMetadata,
@@ -8,11 +8,10 @@ import {
 } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
-  title: "Kıdem Tazminatı Hesaplaması | Ücretsiz Online Hesaplayıcı",
-  description:
-    "İş Kanunu 4857 kapsamında kıdem, ihbar ve izin ücreti hesaplamasını ücretsiz yapın. Güncel tavan tutarları, formüller ve örneklerle anında sonuç alın.",
+  title: HOME_PAGE_SEO.title,
+  description: HOME_PAGE_SEO.description,
   path: HOME_PATH,
-  keywords: ["kıdem tazminatı hesaplaması"]
+  keywords: HOME_PAGE_SEO.keywords
 });
 
 export default function HomePage() {

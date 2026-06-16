@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, siteUrl } from "@/config/site";
+import { getRelatedToolLinks } from "@/config/internalLinks";
+import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
   COMPARISON_ROWS,
   IHBAR_IMAGES,
@@ -73,11 +76,15 @@ export default function IhbarTazminatGuide() {
 
       <GuideSection id="ihbar-kidem" alt>
         <TwoColumnImageBlock image={IHBAR_IMAGES.kidem}>
-          <SectionHeading>kıdem tazminatı nedir</SectionHeading>
+          <SectionHeading>
+            <Link href={HOME_PATH} className="text-internal-link">
+              Kıdem Tazminatı Nedir
+            </Link>
+          </SectionHeading>
           <p>
-            İşten ayrılma tazminatı, belirli yasal veya sözleşmesel koşullar altında iş ilişkisinin sona ermesi
-            durumunda işveren tarafından çalışana ödenen mali tazminattır. Birçok ülkede, işten ayrılma tazminatının
-            hesaplanması iş kanunları, iş sözleşmeleri, toplu iş sözleşmeleri ve şirket politikaları ile düzenlenir.
+            {linkInternalTerms(
+              "İşten ayrılma tazminatı, belirli yasal veya sözleşmesel koşullar altında iş ilişkisinin sona ermesi durumunda işveren tarafından çalışana ödenen mali tazminattır. Birçok ülkede, işten ayrılma tazminatının hesaplanması iş kanunları, iş sözleşmeleri, toplu iş sözleşmeleri ve şirket politikaları ile düzenlenir."
+            )}
           </p>
         </TwoColumnImageBlock>
       </GuideSection>
@@ -99,15 +106,16 @@ export default function IhbarTazminatGuide() {
 
       <GuideSection id="ihbar-ornekler" alt>
         <SectionHeading id="ornekler">İhbar Ödeme Örnekleri</SectionHeading>
-        <p>Aşağıdaki örnekler, ihbar tazminatının pratikte nasıl işlediğini göstermektedir.</p>
+        <p>{linkInternalTerms("Aşağıdaki örnekler, ihbar tazminatının pratikte nasıl işlediğini göstermektedir.")}</p>
         <NoticeScenarioCards examples={NOTICE_EXAMPLES} accentImage={IHBAR_IMAGES.examples} />
       </GuideSection>
 
       <GuideSection id="ihbar-fark">
         <SectionHeading id="nasil-hesaplanir">İhbar Süresi ve İhbar Ücreti Arasındaki Fark</SectionHeading>
         <p>
-          Aşağıda, ihbar süresi ve ihbar tazminatı arasındaki bazı temel farklar yer almaktadır; bu iki kavramı daha iyi
-          anlamanıza yardımcı olacaktır.
+          {linkInternalTerms(
+            "Aşağıda, ihbar süresi ve ihbar tazminatı arasındaki bazı temel farklar yer almaktadır; bu iki kavramı daha iyi anlamanıza yardımcı olacaktır."
+          )}
         </p>
         <NoticeComparisonTable rows={COMPARISON_ROWS} />
       </GuideSection>
@@ -115,8 +123,9 @@ export default function IhbarTazminatGuide() {
       <GuideSection id="ihbar-uygunluk" alt>
         <SectionHeading>Bildirim Ücreti Uygunluğu</SectionHeading>
         <p>
-          Herkes ihbar tazminatına hak kazanmaz, bu nedenle kimlerin bu tazminatı alabileceğini bilmek önemlidir. İhbar
-          tazminatı alma hakkı, iş sözleşmesine, fesih nedenine ve çalışanın performans raporuna bağlıdır.
+          {linkInternalTerms(
+            "Herkes ihbar tazminatına hak kazanmaz, bu nedenle kimlerin bu tazminatı alabileceğini bilmek önemlidir. İhbar tazminatı alma hakkı, iş sözleşmesine, fesih nedenine ve çalışanın performans raporuna bağlıdır."
+          )}
         </p>
         <EligibilityCards notEligibleItems={NOT_ELIGIBLE_ITEMS} />
       </GuideSection>
@@ -159,12 +168,7 @@ export default function IhbarTazminatGuide() {
       <GuideFaqSection id="ihbar-sss" items={IHBAR_FAQ_ITEMS} includeFormula />
 
       <GuidePageFooter
-        relatedCard={{
-          href: KIDEM_TAVANI_PATH,
-          title: "2026 Türkiye Kıdem Tazminatı Tavanı",
-          description: "Güncellenmiş tavan oranları, hesaplama yöntemleri, vergi kuralları ve uygunluk şartları.",
-          linkLabel: "Kıdem Tazminatı Tavanı Rehberi"
-        }}
+        relatedLinks={getRelatedToolLinks(IHBAR_NEDIR_PATH)}
         shareUrl={siteUrl(IHBAR_NEDIR_PATH)}
         shareTitle="İhbar Tazminatı Nedir ve Nasıl Hesaplanır?"
       />

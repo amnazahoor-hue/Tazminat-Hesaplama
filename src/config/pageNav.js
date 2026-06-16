@@ -1,5 +1,6 @@
 import {
   HOME_PATH,
+  HOME_SLUG_PATH,
   IHBAR_NEDIR_PATH,
   KIDEM_TAVANI_PATH,
   LEGACY_PATH_REDIRECTS,
@@ -88,7 +89,7 @@ function normalizePath(pathname) {
   if (!pathname || pathname === "/") return HOME_PATH;
   const stripped = pathname.replace(/\/$/, "") || "/";
   if (stripped === "/") return HOME_PATH;
-  if (stripped === "/kidem-tazminati-hesaplamasi") return HOME_PATH;
+  if (stripped === "/kidem-tazminati-hesaplamasi" || stripped === HOME_SLUG_PATH) return HOME_PATH;
   return LEGACY_PATH_REDIRECTS[stripped] ?? stripped;
 }
 

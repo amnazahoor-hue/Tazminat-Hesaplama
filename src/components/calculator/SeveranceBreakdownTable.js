@@ -6,7 +6,7 @@ export default function SeveranceBreakdownTable({ result, activeTab, showWageRow
 
   return (
     <div className="result-table-wrap">
-      <table>
+      <table className="result-breakdown-table">
         <thead>
           <tr>
             <th>Kalem</th>
@@ -18,63 +18,63 @@ export default function SeveranceBreakdownTable({ result, activeTab, showWageRow
           {showWageRows && (
             <>
               <tr>
-                <td>Düzenlenmiş Brüt Maaş</td>
-                <td>Maaş + ödenekler + prim (aylık)</td>
-                <td>₺{TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)}</td>
+                <td data-label="Kalem">Düzenlenmiş Brüt Maaş</td>
+                <td data-label="Hesaplama">Maaş + ödenekler + prim (aylık)</td>
+                <td data-label="Tutar">₺{TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)}</td>
               </tr>
               <tr>
-                <td>Günlük Ücret</td>
-                <td>₺{TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)} / 30</td>
-                <td>₺{TR.money(dailyWage)}</td>
+                <td data-label="Kalem">Günlük Ücret</td>
+                <td data-label="Hesaplama">₺{TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)} / 30</td>
+                <td data-label="Tutar">₺{TR.money(dailyWage)}</td>
               </tr>
               <tr>
-                <td>Haftalık Ücret</td>
-                <td>₺{TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)} × 12 / 52</td>
-                <td>₺{TR.money(result.haftalikUcret ?? (result.brutMaas * 12) / 52)}</td>
+                <td data-label="Kalem">Haftalık Ücret</td>
+                <td data-label="Hesaplama">₺{TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)} × 12 / 52</td>
+                <td data-label="Tutar">₺{TR.money(result.haftalikUcret ?? (result.brutMaas * 12) / 52)}</td>
               </tr>
             </>
           )}
           <tr>
-            <td>Kıdem Tazminatı</td>
-            <td>
+            <td data-label="Kalem">Kıdem Tazminatı</td>
+            <td data-label="Hesaplama">
               30 günlük brüt (₺{TR.money(kidemBase)}) × {result.totalYears.toFixed(2)} yıl
             </td>
-            <td>₺{TR.money(result.kidemTazminati)}</td>
+            <td data-label="Tutar">₺{TR.money(result.kidemTazminati)}</td>
           </tr>
           <tr>
-            <td>İhbar Tazminatı</td>
-            <td>
+            <td data-label="Kalem">İhbar Tazminatı</td>
+            <td data-label="Hesaplama">
               ₺{TR.money(dailyWage)} × {result.ihbarSuresi} gün ({result.ihbarSuresiLabel || ""})
             </td>
-            <td>₺{TR.money(result.ihbarTazminati)}</td>
+            <td data-label="Tutar">₺{TR.money(result.ihbarTazminati)}</td>
           </tr>
           {activeTab === "detayli" && result.unusedLeaveDays > 0 && (
             <tr>
-              <td>Kullanılmamış İzin</td>
-              <td>
+              <td data-label="Kalem">Kullanılmamış İzin</td>
+              <td data-label="Hesaplama">
                 ₺{TR.money(dailyWage)} × {result.unusedLeaveDays} gün
               </td>
-              <td>₺{TR.money(result.unusedLeavePay)}</td>
+              <td data-label="Tutar">₺{TR.money(result.unusedLeavePay)}</td>
             </tr>
           )}
           {activeTab === "detayli" && result.overtime > 0 && (
             <tr>
-              <td>Fazla Mesai</td>
-              <td>Belirtilen tutar</td>
-              <td>₺{TR.money(result.overtime)}</td>
+              <td data-label="Kalem">Fazla Mesai</td>
+              <td data-label="Hesaplama">Belirtilen tutar</td>
+              <td data-label="Tutar">₺{TR.money(result.overtime)}</td>
             </tr>
           )}
           {activeTab === "detayli" && result.otherReceivables > 0 && (
             <tr>
-              <td>Diğer Alacaklar</td>
-              <td>Belirtilen tutar</td>
-              <td>₺{TR.money(result.otherReceivables)}</td>
+              <td data-label="Kalem">Diğer Alacaklar</td>
+              <td data-label="Hesaplama">Belirtilen tutar</td>
+              <td data-label="Tutar">₺{TR.money(result.otherReceivables)}</td>
             </tr>
           )}
           <tr className="result-total-row">
-            <td>Toplam Tazminat</td>
-            <td>Kıdem + İhbar + diğer alacaklar</td>
-            <td>₺{TR.money(result.toplamTazminat)}</td>
+            <td data-label="Kalem">Toplam Tazminat</td>
+            <td data-label="Hesaplama">Kıdem + İhbar + diğer alacaklar</td>
+            <td data-label="Tutar">₺{TR.money(result.toplamTazminat)}</td>
           </tr>
         </tbody>
       </table>

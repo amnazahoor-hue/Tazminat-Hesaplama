@@ -4,6 +4,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import CalcCta from "@/components/common/CalcCta";
 import { HOME_PATH } from "@/config/site";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
+import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
   AlertTriangle,
   Briefcase,
@@ -61,7 +63,7 @@ export function NoticeHero({ image }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
-          <h1 id="ihbar-nedir">İhbar tazminatı nedir?</h1>
+          <h1 id="ihbar-nedir">İhbar Tazminatı Nedir?</h1>
           <p className="author-attribution">
             Yazan: Tazminat Hesaplama Uzmanı &nbsp;|&nbsp; Son güncelleme: Haziran 2026
           </p>
@@ -201,8 +203,8 @@ export function NoticeScenarioCards({ examples, accentImage }) {
                   <span className="ihbar-example-icon" aria-hidden="true">
                     <Icon size={20} strokeWidth={1.8} />
                   </span>
-                  <h4>{example.title}</h4>
-                  <p>{example.body}</p>
+                  <h4>{capitalizeHeadingText(example.title)}</h4>
+                  <p>{linkInternalTerms(example.body)}</p>
                 </article>
               </TiltCard>
             </RevealItem>
@@ -243,7 +245,7 @@ export function NoticeComparisonTable({ rows }) {
         <div className="ihbar-compare-cards" aria-label="İhbar süresi ve bildirim ödemesi karşılaştırması">
           {rows.map((row) => (
             <article key={row.feature} className="ihbar-compare-card">
-              <h4>{row.feature}</h4>
+              <h4>{capitalizeHeadingText(row.feature)}</h4>
               <div className="ihbar-compare-card-row">
                 <span className="ihbar-compare-card-label ihbar-compare-card-label--indigo">İhbar Süresi</span>
                 <p>{row.noticePeriod}</p>
@@ -269,7 +271,7 @@ export function EligibilityCards({ notEligibleItems }) {
             <span className="ihbar-eligibility-icon" aria-hidden="true">
               <CheckCircle2 size={24} strokeWidth={1.8} />
             </span>
-            <h3>Kimler ihbar tazminatına hak kazanır?</h3>
+            <h3>Kimler İhbar Tazminatına Hak Kazanır?</h3>
             <p>
               İş sözleşmesiyle çalışanlar genellikle ihbar tazminatına hak kazanırlar. Özellikle de işveren, yasal
               olarak gerekli ihbar süresini vermeden iş ilişkisini sonlandırdığında bu hak daha da artar.
@@ -328,7 +330,7 @@ export function RightsGrid({ cards }) {
                 <span className="ihbar-rights-icon" aria-hidden="true">
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
-                <h3>{card.title}</h3>
+                <h3>{capitalizeHeadingText(card.title)}</h3>
                 {card.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -432,7 +434,7 @@ export function ProsConsGrid({ pros, cons }) {
 export function TaxCallout() {
   return (
     <InfoCalloutStyled icon={Receipt}>
-      <h3>Bildirim ücreti vergiye tabi midir?</h3>
+      <h3>Bildirim Ücreti Vergiye Tabi Midir?</h3>
       <p>
         Evet, ihbar tazminatı, müşterinizle yaptığınız sözleşmede belirtilmişse vergilendirilebilir gelir olarak kabul
         edilir. Çünkü ihbar tazminatı, ihbar süresi boyunca alınacak kazançların yerini alır. Kesin vergi uygulaması,

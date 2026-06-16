@@ -11,8 +11,7 @@ export default function GuideStepsIllustration() {
           src={IMAGES.guides.stepsOffice}
           alt="Tazminat hesaplama sürecini gösteren ofis toplantısı görseli"
           fill
-          quality={90}
-          sizes="(max-width: 900px) 100vw, (max-width: 1200px) 45vw, 520px"
+          sizes="(max-width: 640px) 100vw, (max-width: 1366px) 100vw, (max-width: 1200px) 45vw, 520px"
           className="guide-steps-illustration-image"
         />
         <span className="guide-steps-illustration-overlay" aria-hidden="true" />

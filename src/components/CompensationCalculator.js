@@ -3,10 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import FaqAccordion from "@/components/common/FaqAccordion";
 import CalcCta from "@/components/common/CalcCta";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { IMAGES } from "@/config/images";
-import { TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
-import GuidePageEnd from "@/components/guide/GuidePageEnd";
+import { HOME_PATH, TAZMINAT_HESAPLAMA_PATH, siteUrl } from "@/config/site";
+import { getRelatedToolLinks } from "@/config/internalLinks";
+import GuidePageFooter from "@/components/guide/GuidePageFooter";
 import HowStepsCarousel from "@/components/HowStepsCarousel";
 import ResultPdfTemplate from "@/components/ResultPdfTemplate";
 import ResultShareBar from "@/components/ResultShareBar";
@@ -149,21 +153,12 @@ export default function CompensationCalculator() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [result, setResult] = useState(null);
-  const [openFaq, setOpenFaq] = useState("");
-  const [faqStacked, setFaqStacked] = useState(false);
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
   const pdfRef = useRef(null);
   const resultsRef = useRef(null);
   const gerekliGirisRef = useRef(null);
   const pendingScrollToResults = useRef(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 900px)");
-    const update = () => setFaqStacked(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
 
   useEffect(() => {
     let intervalId;
@@ -218,7 +213,7 @@ export default function CompensationCalculator() {
       "@type": "FAQPage",
       mainEntity: faqItems.map((faq) => ({
         "@type": "Question",
-        name: faq.question,
+        name: capitalizeHeadingText(faq.question),
         acceptedAnswer: {
           "@type": "Answer",
           text: faq.answer
@@ -227,55 +222,6 @@ export default function CompensationCalculator() {
     }),
     []
   );
-
-  const handleFaqToggle = (faqId) => {
-    setOpenFaq((prev) => (prev === faqId ? "" : faqId));
-  };
-
-  const renderFaqItem = (faq, index) => {
-    const isOpen = openFaq === faq.id;
-    const buttonId = `faq-button-${faq.id}`;
-    const panelId = `faq-panel-${faq.id}`;
-    const faqNumber = String(index + 1).padStart(2, "0");
-
-    return (
-      <article
-        className={`faq-item${isOpen ? " is-open" : ""}`}
-        key={faq.id}
-        role="listitem"
-      >
-        <div className="faq-question-heading" role="heading" aria-level="3">
-          <button
-            id={buttonId}
-            type="button"
-            className="faq-trigger"
-            aria-expanded={isOpen}
-            aria-controls={panelId}
-            onClick={() => handleFaqToggle(faq.id)}
-          >
-            <span className="faq-num" aria-hidden="true">
-              {faqNumber}
-            </span>
-            <span className="faq-question-text">{faq.question}</span>
-            <span className="faq-toggle" aria-hidden="true">
-              +
-            </span>
-          </button>
-        </div>
-        <div
-          id={panelId}
-          className="faq-content"
-          role="region"
-          aria-labelledby={buttonId}
-          aria-hidden={!isOpen}
-        >
-          <div className="faq-content-inner">
-            <p>{faq.answer}</p>
-          </div>
-        </div>
-      </article>
-    );
-  };
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -412,8 +358,42 @@ export default function CompensationCalculator() {
               <div className="hero-head scroll-reveal scroll-reveal--left scroll-reveal--instant">
                 <h1>Kıdem Tazminatı Hesaplayıcısı ve Kıdem Tazminatı Hakkında Kapsamlı Kılavuz</h1>
               </div>
+              <div className="hero-foot scroll-reveal scroll-reveal--left scroll-reveal--instant">
+                <p className="hero-copy">
+                  İşten ayrılma tazminatını anlamak hem çalışanlar hem de işverenler için çok önemlidir. Hak ettiğiniz
+                  tazminatı doğru bir şekilde tahmin etmek için İşten Ayrılma Tazminatı Hesaplayıcımızı kullanın ve
+                  işten ayrılma tazminatının nasıl hesaplandığını öğrenmek için kapsamlı kılavuzumuzu inceleyin.
+                </p>
+                <CalcCta
+                  href="#hesapla"
+                  size="large"
+                  className="hero-calc-cta"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    document.getElementById("hesapla")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                >
+                  Hesapla
+                </CalcCta>
+              </div>
               <div className="hero-visual scroll-reveal scroll-reveal--right scroll-reveal--instant" aria-hidden="true">
-                <div className="hero-visual-stage">
+                <div className="hero-visual-mobile">
+                  <Image
+                    src={HERO_CAROUSEL_IMAGES[activeHeroSlide]}
+                    alt="Kıdem tazminatı hesaplama aracı tanıtım görseli"
+                    width={280}
+                    height={280}
+                    sizes="280px"
+                    priority
+                    className="hero-visual-mobile-img"
+                  />
+                  <div className="hero-slider-dots hero-slider-dots--mobile" aria-hidden="true">
+                    {HERO_CAROUSEL_IMAGES.map((src, index) => (
+                      <span key={src} className={activeHeroSlide === index ? "is-active" : ""} />
+                    ))}
+                  </div>
+                </div>
+                <div className="hero-visual-stage hero-visual-stage--desktop">
                   <div className="hero-visual-bg" aria-hidden="true">
                     <span className="hero-visual-bg-mesh" />
                     <svg className="hero-visual-bg-art hero-visual-bg-art--base" viewBox="0 0 520 520" fill="none" aria-hidden="true">
@@ -625,24 +605,6 @@ export default function CompensationCalculator() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="hero-foot scroll-reveal scroll-reveal--left scroll-reveal--instant">
-                <p className="hero-copy">
-                  İşten ayrılma tazminatını anlamak hem çalışanlar hem de işverenler için çok önemlidir. Hak ettiğiniz
-                  tazminatı doğru bir şekilde tahmin etmek için İşten Ayrılma Tazminatı Hesaplayıcımızı kullanın ve
-                  işten ayrılma tazminatının nasıl hesaplandığını öğrenmek için kapsamlı kılavuzumuzu inceleyin.
-                </p>
-                <CalcCta
-                  href="#hesapla"
-                  size="large"
-                  className="hero-calc-cta"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    document.getElementById("hesapla")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                >
-                  Hesapla
-                </CalcCta>
               </div>
             </div>
           </div>
@@ -890,9 +852,10 @@ export default function CompensationCalculator() {
           <Image
             src={IMAGES.home.introSeveranceBg}
             alt="İşten ayrılma tazminatı hesaplama bölümü arka plan görseli"
-            width={1920}
-            height={1080}
-            sizes="100vw"
+            fill
+            sizes="(min-width: 821px) 100vw, 1px"
+            className="intro-section-image"
+            priority
           />
           <span className="intro-section-overlay" />
         </div>
@@ -900,17 +863,17 @@ export default function CompensationCalculator() {
         <div className="container scroll-reveal scroll-reveal--up">
           <div className="intro-section">
             <div className="intro-showcase">
-            <div className="intro-showcase-copy scroll-reveal scroll-reveal--left" data-scroll-reveal>
+            <div className="intro-showcase-top-image" aria-hidden="true">
+              <Image
+                src={IMAGES.home.introSeveranceBg}
+                alt=""
+                fill
+                sizes="(max-width: 820px) calc(100vw - 32px), 1px"
+                className="intro-showcase-top-image__img"
+              />
+            </div>
+            <div className="intro-showcase-copy scroll-reveal scroll-reveal--left scroll-reveal--instant" data-scroll-reveal>
               <h2>İşten Çıkarma Tazminatı Nedir?</h2>
-              <div className="intro-showcase-copy-visual" aria-hidden="true">
-                <Image
-                  src={IMAGES.home.introSeveranceBg}
-                  alt="Kıdem tazminatı tanıtım görseli"
-                  width={1920}
-                  height={1080}
-                  sizes="100vw"
-                />
-              </div>
               <p>
                 İşten çıkarma tazminatı, belirli yasal veya sözleşmesel koşullar altında iş ilişkisinin sona ermesi
                 durumunda işveren tarafından çalışana ödenen mali tazminattır. Birçok ülkede, işten çıkarma tazminatı
@@ -925,7 +888,7 @@ export default function CompensationCalculator() {
                 kullanarak yapabilirsiniz.
               </p>
             </div>
-            <div className="intro-sticky-board scroll-reveal scroll-reveal--right" data-scroll-reveal>
+            <div className="intro-sticky-board scroll-reveal scroll-reveal--right scroll-reveal--instant" data-scroll-reveal>
               <ul className="intro-points-list" aria-label="Hesaplama türleri">
                 <li>İşten çıkarma tazminatı hesaplaması</li>
                 <li>İhbar tazminatı hesaplaması</li>
@@ -975,7 +938,7 @@ export default function CompensationCalculator() {
               <span className="audience-deco audience-deco--blob" aria-hidden="true" />
               <span className="audience-deco audience-deco--wave" aria-hidden="true" />
               <header className="audience-head">
-                <h2>İşten ayrılma tazminatını kimler kullanabilir?</h2>
+                <h2>İşten Ayrılma Tazminatını Kimler Kullanabilir?</h2>
                 <p className="audience-lead">Bu çevrimiçi kıdem tazminatı hesaplayıcısı yardımcı olur.</p>
               </header>
               <ul className="audience-cards scroll-reveal-stagger">
@@ -1302,8 +1265,8 @@ export default function CompensationCalculator() {
               <div className="how-feature-card-visual">
                 <div className="how-feature-card-art how-feature-card-art--photo">
                   <Image
-                    src={IMAGES.home.featureTaxCoin}
-                    alt="Türk lira parası ve maaş hesaplaması"
+                    src={IMAGES.home.featureTaxWallet}
+                    alt="Kırmızı cüzdandan Türk Lirası banknotları çıkaran kişi"
                     width={600}
                     height={400}
                     unoptimized
@@ -1717,7 +1680,7 @@ export default function CompensationCalculator() {
 
               <div className="calc-guide-duo-side">
                 <section className="calc-guide-panel">
-                  <h3>Bildirim süresi</h3>
+                  <h3>Bildirim Süresi</h3>
                   <p>
                     Uygun ihbar yapılmadan işten çıkarılan çalışanlar, yasal ihbar sürelerine göre ihbar tazminatına hak
                     kazanabilirler. İş Kanunu&apos;nun 17. maddesi uyarınca ihbar süreleri genellikle şunlardır:
@@ -1817,7 +1780,7 @@ export default function CompensationCalculator() {
         <div className="benefits-showcase">
           <div className="page-content-wrap">
             <header className="benefits-showcase-head scroll-reveal scroll-reveal--left" data-scroll-reveal>
-              <h2>İşten ayrılma tazminatı hesaplayıcımızı kullanmanın faydaları nelerdir?</h2>
+              <h2>İşten Ayrılma Tazminatı Hesaplayıcımızı Kullanmanın Faydaları Nelerdir?</h2>
               <p className="benefits-showcase-lead">Dönüştürücümüzü kullanmanız için bazı nedenler şunlardır:</p>
             </header>
 
@@ -1922,33 +1885,15 @@ export default function CompensationCalculator() {
               <h2>Sıkça Sorulan Sorular</h2>
             </header>
 
-            <div className={`faq-list${faqStacked ? " faq-list--stacked" : ""}`} role="list">
-              {faqStacked ? (
-                faqItems.map((faq, index) => renderFaqItem(faq, index))
-              ) : (
-                <>
-                  <div className="faq-list-col" role="presentation">
-                    {faqItems
-                      .filter((_, index) => index % 2 === 0)
-                      .map((faq, columnIndex) => renderFaqItem(faq, columnIndex * 2))}
-                  </div>
-                  <div className="faq-list-col" role="presentation">
-                    {faqItems
-                      .filter((_, index) => index % 2 === 1)
-                      .map((faq, columnIndex) => renderFaqItem(faq, columnIndex * 2 + 1))}
-                  </div>
-                </>
-              )}
-            </div>
+            <FaqAccordion items={faqItems} variant="home" />
           </div>
         </div>
       </ContentSection>
 
-      <GuidePageEnd
-        href={TAZMINAT_HESAPLAMA_PATH}
-        title="Toplam Tazminat Hesaplama Kılavuzu"
-        description="Kıdem, ihbar, izin ve brüt maaş dahil toplam tazminat hesaplama adımları ve örnekler."
-        linkLabel="Toplam Tazminat Kılavuzu"
+      <GuidePageFooter
+        relatedLinks={getRelatedToolLinks(HOME_PATH)}
+        shareUrl={siteUrl(HOME_PATH)}
+        shareTitle="Kıdem Tazminatı Hesaplaması"
       />
     </>
   );

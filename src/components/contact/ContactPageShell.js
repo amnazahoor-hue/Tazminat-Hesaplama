@@ -3,6 +3,7 @@ import { ChevronRight, Mail, MessageCircle, ShieldQuestion } from "lucide-react"
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { FOOTER_COMPANY_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 
 /**
  * @param {{
@@ -38,7 +39,7 @@ export default function ContactPageShell({ breadcrumb, path, tag, title, lead, c
             ))}
           </nav>
           <span className="contact-shell-tag">{tag}</span>
-          <h1>{title}</h1>
+          <h1>{capitalizeHeadingText(title)}</h1>
           <p className="contact-shell-lead">{lead}</p>
         </div>
       </header>
@@ -91,7 +92,7 @@ export default function ContactPageShell({ breadcrumb, path, tag, title, lead, c
                   {index === 0 ? <MessageCircle size={18} /> : <ShieldQuestion size={18} />}
                 </span>
                 <div>
-                  <h2>{section.title}</h2>
+                  <h2>{capitalizeHeadingText(section.title)}</h2>
                   <div className="contact-section-body">{section.body}</div>
                 </div>
               </article>

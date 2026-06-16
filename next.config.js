@@ -10,6 +10,11 @@ const nextConfig = {
         permanent: true
       },
       {
+        source: "/kıdem-tazminatı-hesaplaması",
+        destination: "/",
+        permanent: true
+      },
+      {
         source: "/toplam-tazminat-hesaplama-kilavuzu",
         destination: "/tazminat-hesaplama/",
         permanent: true

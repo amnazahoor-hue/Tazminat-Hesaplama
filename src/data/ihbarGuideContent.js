@@ -9,7 +9,7 @@ export const IHBAR_IMAGES = {
   },
   examples: {
     src: "/images/ihbar/examples.webp",
-    alt: "İşveren ve çalışan arasında iş hukuku görüşmesi görseli"
+    alt: "Modern aydınlık ofiste dizüstü bilgisayarda çalışan profesyonel görseli"
   },
   rights: {
     src: "/images/ihbar/rights.webp",

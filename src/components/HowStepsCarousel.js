@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { IMAGES } from "@/config/images";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -66,22 +67,23 @@ function padStepNumber(id) {
 }
 
 function getCardTitle(text) {
+  let title = text;
   const commaIndex = text.indexOf(",");
   if (commaIndex > 0) {
-    return text.slice(0, commaIndex).trim();
+    title = text.slice(0, commaIndex).trim();
+  } else {
+    const veyaIndex = text.indexOf(" veya ");
+    if (veyaIndex > 0) {
+      title = text.slice(0, veyaIndex).trim();
+    } else {
+      const icinIndex = text.lastIndexOf(" için ");
+      if (icinIndex > 0) {
+        title = text.slice(0, icinIndex + 6).trim();
+      }
+    }
   }
 
-  const veyaIndex = text.indexOf(" veya ");
-  if (veyaIndex > 0) {
-    return text.slice(0, veyaIndex).trim();
-  }
-
-  const icinIndex = text.lastIndexOf(" için ");
-  if (icinIndex > 0) {
-    return text.slice(0, icinIndex + 6).trim();
-  }
-
-  return text;
+  return capitalizeHeadingText(title);
 }
 
 function getNodePosition(index, centerX, centerY, radius) {

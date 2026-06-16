@@ -1,15 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { HOME_PATH } from "@/config/site";
+import { InternalLink, linkInternalTerms } from "@/utils/linkInternalTerms";
 import { CheckCircle2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useScroll, useTransform } from "framer-motion";
 import CountUp from "./ui/CountUp";
 import TiltCard from "./ui/TiltCard";
 import Scene3D from "./three/Scene3D";
 import { Reveal, RevealItem, RevealStagger } from "./motion/Reveal";
 import SectionHeading from "./motion/SectionHeading";
 import { useMotionPrefs } from "./motion/useMotionPrefs";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 
 export function IntroBlock({ children }) {
   const { reduceMotion, viewport, ease } = useMotionPrefs();
@@ -64,6 +67,10 @@ export function FormulaBlock() {
               >
                 {part}
               </motion.span>
+            ) : part === "Kıdem tazminatı" ? (
+              <InternalLink key={`${part}-${index}`} href={HOME_PATH}>
+                {part}
+              </InternalLink>
             ) : (
               <span key={`${part}-${index}`}>{part}</span>
             )
@@ -190,7 +197,7 @@ export function ChecklistTable({ rows }) {
               transition={{ duration: 0.38, delay: index * 0.05 }}
               whileHover={{ backgroundColor: "rgba(238, 242, 255, 0.65)" }}
             >
-              <th scope="row">{row}</th>
+              <th scope="row">{linkInternalTerms(row)}</th>
               <td>
                 <motion.span
                   className="guide-check-yes"
@@ -244,7 +251,7 @@ export function TimelineSteps({ steps }) {
             {String(index + 1).padStart(2, "0")}
           </motion.span>
           <div className="guide-timeline-body">
-            <h3>{step.title}</h3>
+            <h3>{capitalizeHeadingText(step.title)}</h3>
             {step.formula ? (
               <motion.p
                 className="guide-step-formula"
@@ -256,7 +263,7 @@ export function TimelineSteps({ steps }) {
                 {step.formula}
               </motion.p>
             ) : null}
-            {step.body ? <p>{step.body}</p> : null}
+            {step.body ? <p>{linkInternalTerms(step.body)}</p> : null}
           </div>
         </motion.li>
       ))}
@@ -272,7 +279,7 @@ export function StepsShowcase({ intro, steps, illustration }) {
     const node = contentRef.current;
     if (!node) return undefined;
 
-    const media = window.matchMedia("(min-width: 901px)");
+    const media = window.matchMedia("(min-width: 1367px)");
 
     const update = () => {
       if (media.matches) {

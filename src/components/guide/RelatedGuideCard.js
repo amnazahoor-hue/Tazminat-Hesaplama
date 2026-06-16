@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { useMotionPrefs } from "./motion/useMotionPrefs";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 
 export default function RelatedGuideCard({
   href,
@@ -27,7 +28,7 @@ export default function RelatedGuideCard({
         </span>
         <div className="guide-related-card-copy">
           <p className="guide-related-card-eyebrow">İlgili Rehber</p>
-          <h3>{title}</h3>
+          <h3>{capitalizeHeadingText(title)}</h3>
           <p>{description}</p>
         </div>
         <Link href={href} className="guide-related-card-link">

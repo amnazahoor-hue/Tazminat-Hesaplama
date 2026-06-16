@@ -9,13 +9,14 @@ import { IMAGES } from "@/config/images";
 import { FOOTER_BRAND_COPY, FOOTER_SOCIAL_LINKS } from "@/config/footer";
 import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { MAIN_HEADER_PAGES, resolvePagePath } from "@/config/pageNav";
 import { FOOTER_SOCIAL_ICON_MAP } from "@/components/layouts/FooterSocialIcon";
 
 function FooterLinkList({ title, children, panelClass = "", lead = "" }) {
   return (
     <section className={`footer-panel${panelClass ? ` ${panelClass}` : ""}`}>
-      <h4 className="footer-panel-title">{title}</h4>
+      <h4 className="footer-panel-title">{capitalizeHeadingText(title)}</h4>
       {lead ? <p className="footer-panel-lead">{lead}</p> : null}
       <ul className="footer-panel-list">{children}</ul>
     </section>

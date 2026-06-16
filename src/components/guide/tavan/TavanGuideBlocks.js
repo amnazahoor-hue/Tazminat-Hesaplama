@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { HOME_PATH } from "@/config/site";
 import {
@@ -21,6 +22,7 @@ import {
   Users
 } from "lucide-react";
 import CalcCta from "@/components/common/CalcCta";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import CountUp from "../ui/CountUp";
 import TiltCard from "../ui/TiltCard";
 import { Reveal, RevealItem, RevealStagger } from "../motion/Reveal";
@@ -119,7 +121,7 @@ export function ExactFigure({ value, className = "" }) {
   );
 }
 
-export function TavanHero({ stat }) {
+export function TavanHero({ stat, image }) {
   const { reduceMotion, viewport, ease } = useMotionPrefs();
 
   return (
@@ -156,23 +158,37 @@ export function TavanHero({ stat }) {
           </div>
         </motion.div>
         <motion.div
-          className="tavan-guide-hero-stat-wrap"
+          className="tavan-guide-hero-visual"
           initial={{ opacity: reduceMotion ? 1 : 0, scale: reduceMotion ? 1 : 0.94 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={viewport}
           transition={{ duration: reduceMotion ? 0 : 0.6, ease, delay: reduceMotion ? 0 : 0.08 }}
         >
-          <TiltCard className="tavan-hero-stat-card-wrap" tiltMax={7} scale={1.02}>
-            <article className="tavan-hero-stat-card">
-              <p className="tavan-hero-stat-label">{stat.label}</p>
-              <p className="tavan-hero-stat-value">
-                <ExactFigure value={stat.value} />
-              </p>
-              <span className="tavan-hero-stat-icon" aria-hidden="true">
-                <Coins size={28} strokeWidth={1.6} />
-              </span>
-            </article>
-          </TiltCard>
+          <div className="tavan-guide-hero-media">
+            <div className="tavan-guide-hero-image">
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(max-width: 900px) 100vw, 50vw"
+                priority
+              />
+              <span className="tavan-guide-hero-image-overlay" aria-hidden="true" />
+            </div>
+            <div className="tavan-guide-hero-stat-wrap">
+              <TiltCard className="tavan-hero-stat-card-wrap" tiltMax={7} scale={1.02}>
+                <article className="tavan-hero-stat-card">
+                  <p className="tavan-hero-stat-label">{stat.label}</p>
+                  <p className="tavan-hero-stat-value">
+                    <ExactFigure value={stat.value} />
+                  </p>
+                  <span className="tavan-hero-stat-icon" aria-hidden="true">
+                    <Coins size={28} strokeWidth={1.6} />
+                  </span>
+                </article>
+              </TiltCard>
+            </div>
+          </div>
         </motion.div>
       </div>
     </header>
@@ -307,7 +323,7 @@ export function TavanBarChart({ rows }) {
         <div className="tavan-mobile-cards" aria-label="Yıllık tavan tutarı karşılaştırması">
           {rows.map((row) => (
             <article key={row.period} className="tavan-mobile-card">
-              <h4>{row.period}</h4>
+              <h4>{capitalizeHeadingText(row.period)}</h4>
               <p>{row.amount}</p>
             </article>
           ))}
@@ -347,7 +363,7 @@ export function HistoryTable({ rows }) {
         <div className="tavan-mobile-cards tavan-mobile-cards--history" aria-label="Kıdem tazminatı tavanı geçmişi">
           {rows.map((row) => (
             <article key={row.period} className="tavan-mobile-card">
-              <h4>{row.period}</h4>
+              <h4>{capitalizeHeadingText(row.period)}</h4>
               <p>{row.amount}</p>
             </article>
           ))}
@@ -420,7 +436,7 @@ export function ExampleCalculationCards({ examples }) {
         <RevealItem key={example.id}>
           <TiltCard className="tavan-example-wrap" tiltMax={7} scale={1.02}>
             <article className="tavan-example-card">
-              <h3>{example.title}</h3>
+              <h3>{capitalizeHeadingText(example.title)}</h3>
               <ul>
                 {example.items.map((item) => (
                   <li key={item}>{item}</li>
@@ -461,7 +477,7 @@ export function EligibilityScenarioGrid({ scenarios }) {
                 <span className="tavan-eligibility-icon" aria-hidden="true">
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
-                <h3>{scenario.title}</h3>
+                <h3>{capitalizeHeadingText(scenario.title)}</h3>
                 <p>{linkLawReferences(scenario.intro, linkedTermsRef.current)}</p>
                 {scenario.list.length > 0 ? (
                   <ul className="tavan-checklist tavan-checklist--inline">

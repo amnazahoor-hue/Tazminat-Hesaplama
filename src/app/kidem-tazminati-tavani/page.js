@@ -1,19 +1,19 @@
 import TavanGuide from "@/components/guide/tavan/TavanGuide";
-import { KIDEM_TAVANI_PATH } from "@/config/site";
+import { KIDEM_TAVANI_PAGE_SEO, KIDEM_TAVANI_PATH } from "@/config/site";
 import { buildArticleSchema, buildPageMetadata, buildSpeakableSchema } from "@/utils/seo";
 
-const PAGE_TITLE = "Kıdem Tazminatı Tavanı 2026 | Türkiye Oranları Rehberi";
-
 export const metadata = buildPageMetadata({
-  title: PAGE_TITLE,
-  description:
-    "2026 kıdem tazminatı tavanı, tarihsel oranlar, hesaplama yöntemi ve vergi kuralları. Türkiye için güncel resmi tavan tutarları ve uygunluk şartları.",
+  title: KIDEM_TAVANI_PAGE_SEO.title,
+  description: KIDEM_TAVANI_PAGE_SEO.description,
   path: KIDEM_TAVANI_PATH,
-  keywords: ["Kıdem Tazminatı Tavanı", "kıdem tazminatı tavanı 2026", "tazminat tavanı", "64.948,77"]
+  keywords: KIDEM_TAVANI_PAGE_SEO.keywords
 });
 
 export default function TavanGuidePage() {
-  const articleSchema = buildArticleSchema({ headline: PAGE_TITLE, path: KIDEM_TAVANI_PATH });
+  const articleSchema = buildArticleSchema({
+    headline: KIDEM_TAVANI_PAGE_SEO.title,
+    path: KIDEM_TAVANI_PATH
+  });
   const speakableSchema = buildSpeakableSchema();
 
   return (

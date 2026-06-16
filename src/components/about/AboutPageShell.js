@@ -14,6 +14,7 @@ import AboutOfferingsIllustration from "@/components/about/AboutOfferingsIllustr
 import CalcCta from "@/components/common/CalcCta";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { HOME_PATH } from "@/config/site";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 
 const VALUE_ICONS = [ShieldCheck, Sparkles, Scale, HeartHandshake];
 
@@ -69,7 +70,7 @@ export default function AboutPageShell({
             ))}
           </nav>
           <span className="about-shell-tag">{tag}</span>
-          <h1>{title}</h1>
+          <h1>{capitalizeHeadingText(title)}</h1>
           <p className="about-shell-lead">{lead}</p>
           <div className="about-stats-row">
             {stats.map((item) => (
@@ -87,7 +88,7 @@ export default function AboutPageShell({
         <div className="container about-intro-grid">
           <div className="about-intro-copy">
             <span className="about-section-eyebrow">Platform Hikâyesi</span>
-            <h2>{intro.title}</h2>
+            <h2>{capitalizeHeadingText(intro.title)}</h2>
             {intro.paragraphs.map((paragraph) => (
               <p key={paragraph.slice(0, 40)}>{paragraph}</p>
             ))}
@@ -119,7 +120,7 @@ export default function AboutPageShell({
                 <span className="about-pillar-icon" aria-hidden="true">
                   {index === 0 ? <Target size={22} /> : <Users size={22} />}
                 </span>
-                <h3>{pillar.title}</h3>
+                <h3>{capitalizeHeadingText(pillar.title)}</h3>
                 <p>{pillar.body}</p>
               </article>
             ))}
@@ -141,7 +142,7 @@ export default function AboutPageShell({
                   <span className="about-value-icon" aria-hidden="true">
                     <Icon size={20} />
                   </span>
-                  <h3>{value.title}</h3>
+                  <h3>{capitalizeHeadingText(value.title)}</h3>
                   <p>{value.body}</p>
                 </article>
               );
@@ -155,7 +156,7 @@ export default function AboutPageShell({
           <div className="about-offerings-panel">
             <div className="about-offerings-copy">
               <span className="about-section-eyebrow">Neler Sunuyoruz?</span>
-              <h2>{offerings.title}</h2>
+              <h2>{capitalizeHeadingText(offerings.title)}</h2>
               <AboutOfferingsIllustration />
             </div>
             <div className="about-offerings-list">
@@ -163,7 +164,7 @@ export default function AboutPageShell({
                 <article key={item.title} className="about-offering-item">
                   <span className="about-offering-index">{String(index + 1).padStart(2, "0")}</span>
                   <div>
-                    <h3>{item.title}</h3>
+                    <h3>{capitalizeHeadingText(item.title)}</h3>
                     <p>{item.body}</p>
                   </div>
                 </article>
@@ -177,14 +178,14 @@ export default function AboutPageShell({
         <div className="container">
           <div className="about-section-head">
             <span className="about-section-eyebrow">Editoryal Yaklaşım</span>
-            <h2>{approach.title}</h2>
+            <h2>{capitalizeHeadingText(approach.title)}</h2>
           </div>
           <div className="about-timeline">
             {approach.steps.map((step, index) => (
               <article key={step.title} className="about-timeline-step">
                 <span className="about-timeline-marker">{index + 1}</span>
                 <div className="about-timeline-copy">
-                  <h3>{step.title}</h3>
+                  <h3>{capitalizeHeadingText(step.title)}</h3>
                   <p>{step.body}</p>
                 </div>
               </article>
@@ -198,7 +199,7 @@ export default function AboutPageShell({
           <div className="about-principles-grid">
             {principles.map((item) => (
               <article key={item.title} className="about-principle-card">
-                <h3>{item.title}</h3>
+                <h3>{capitalizeHeadingText(item.title)}</h3>
                 <p>{item.body}</p>
               </article>
             ))}
@@ -209,7 +210,7 @@ export default function AboutPageShell({
       <section className="about-closing-band">
         <div className="container about-closing-inner">
           <div className="about-closing-copy">
-            <h2>{closing.title}</h2>
+            <h2>{capitalizeHeadingText(closing.title)}</h2>
             <p>{closing.body}</p>
           </div>
           <CalcCta href={HOME_PATH} className="about-closing-cta" size="large">

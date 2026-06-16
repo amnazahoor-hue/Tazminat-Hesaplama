@@ -4,7 +4,7 @@ import Preloader from "@/components/common/Preloader";
 import ScrollRevealInit from "@/components/common/ScrollRevealInit";
 import Footer from "@/components/layouts/Footer";
 import { Inter } from "next/font/google";
-import { SITE_URL } from "@/config/site";
+import { HOME_PAGE_SEO, HOME_PATH, SITE_URL } from "@/config/site";
 import { IMAGES } from "@/config/images";
 import { buildPageMetadata } from "@/utils/seo";
 
@@ -19,10 +19,10 @@ const inter = Inter({
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   ...buildPageMetadata({
-    title: "Tazminat Hesaplama",
-    description: "Kıdem tazminatı, ihbar tazminatı ve yıllık izin ücreti hesaplama araçları.",
-    path: "/",
-    keywords: ["tazminat hesaplama", "kıdem tazminatı hesaplaması"]
+    title: HOME_PAGE_SEO.title,
+    description: HOME_PAGE_SEO.description,
+    path: HOME_PATH,
+    keywords: HOME_PAGE_SEO.keywords
   }),
   icons: {
     icon: IMAGES.icon,
