@@ -6,11 +6,12 @@ import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 import { IMAGES } from "@/config/images";
-import { FOOTER_BRAND_COPY } from "@/config/footer";
+import { FOOTER_BRAND_COPY, FOOTER_SOCIAL_LINKS } from "@/config/footer";
 import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { MAIN_HEADER_PAGES, resolvePagePath } from "@/config/pageNav";
+import { FOOTER_SOCIAL_ICON_MAP } from "@/components/layouts/FooterSocialIcon";
 
 function FooterLinkList({ title, children, panelClass = "", lead = "" }) {
   return (
@@ -61,6 +62,27 @@ function FooterBrandColumn() {
           {FOOTER_BRAND_COPY.map((line) => (
             <p key={line}>{line}</p>
           ))}
+        </div>
+
+        <div className="footer-social-block">
+          <p className="footer-social-label">Bizi takip edin</p>
+          <div className="footer-social">
+            {FOOTER_SOCIAL_LINKS.map((item) => {
+              const Icon = FOOTER_SOCIAL_ICON_MAP[item.className];
+              return (
+                <a
+                  key={item.className}
+                  href={item.href}
+                  className={item.className}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={item.label}
+                >
+                  {Icon ? <Icon size={15} /> : null}
+                </a>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

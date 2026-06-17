@@ -1,3 +1,4 @@
+import { FOOTER_SOCIAL_LINKS } from "@/config/footer";
 import { SITE_URL, siteUrl } from "@/config/site";
 
 export { SITE_URL };
@@ -73,7 +74,8 @@ export function buildOrganizationSchema() {
     "@type": "Organization",
     name: "Tazminat Hesaplama",
     url: SITE_URL,
-    logo: `${SITE_URL}/images/logo.svg`
+    logo: `${SITE_URL}/images/logo.svg`,
+    sameAs: FOOTER_SOCIAL_LINKS.map((item) => item.href)
   };
 }
 

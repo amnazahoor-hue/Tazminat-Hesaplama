@@ -4374,7 +4374,7 @@ section#sss {
   overflow: visible;
   isolation: isolate;
   margin-top: clamp(24px, 4vw, 40px);
-  margin-bottom: clamp(24px, 4vw, 40px);
+  margin-bottom: 0;
 }
 
 .faq-showcase {
@@ -4403,6 +4403,7 @@ section#sss {
   position: relative;
   overflow: visible;
   z-index: 2;
+  padding-bottom: clamp(40px, 5vw, 64px);
 }
 
 .faq-list {
@@ -4441,11 +4442,23 @@ section#sss {
 }
 
 .faq-item.is-open {
-  z-index: 2;
-  overflow: hidden;
+  z-index: 30;
+  overflow: visible;
   border-color: rgba(79, 70, 229, 0.28);
   background: #ffffff;
+  border-radius: 18px 18px 0 0;
   box-shadow: 0 18px 44px rgba(79, 70, 229, 0.12);
+  margin-bottom: var(--faq-answer-offset, 0px);
+}
+
+.guide-accordion-item.is-open {
+  z-index: 30;
+  overflow: visible;
+  background: #ffffff;
+  border-color: rgba(79, 70, 229, 0.28);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 18px 44px rgba(79, 70, 229, 0.12);
+  margin-bottom: var(--faq-answer-offset, 0px);
 }
 
 .faq-item:hover:not(.is-open) {
@@ -4568,69 +4581,36 @@ section#sss {
 .faq-item.is-open .faq-answer-wrap,
 .guide-accordion-item.is-open .guide-accordion-answer-wrap {
   display: block !important;
-  overflow: visible;
-  margin: 0;
-  background: transparent;
-  border: none;
-  border-top: 1px solid rgba(79, 70, 229, 0.12);
-  border-radius: 0;
-  box-shadow: none;
-}
-
-/* FAQ accordions — overlay answer; offset pushes items below; negative wrap margin keeps footer fixed */
-.faq-panel-wrap .faq-item,
-.guide-accordion-wrap .guide-accordion-item {
-  position: relative;
-  overflow: hidden;
-}
-
-.faq-panel-wrap.is-faq-open,
-.guide-accordion-wrap.is-faq-open {
-  margin-bottom: calc(0px - var(--faq-answer-offset, 0px));
-}
-
-#sss .faq-panel-wrap.is-faq-open {
-  margin-bottom: calc(clamp(24px, 4vw, 40px) - var(--faq-answer-offset, 0px));
-}
-
-.guide-section--faq .guide-accordion-wrap.is-faq-open {
-  margin-bottom: calc(0px - var(--faq-answer-offset, 0px));
-}
-
-.faq-panel-wrap .faq-item.is-open,
-.guide-accordion-wrap .guide-accordion-item.is-open {
-  z-index: 30;
-  overflow: visible;
-  border-radius: 18px 18px 0 0;
-  margin-bottom: var(--faq-answer-offset, 0px);
-}
-
-.faq-panel-wrap .faq-item.is-open .faq-answer-wrap,
-.guide-accordion-wrap .guide-accordion-item.is-open .guide-accordion-answer-wrap {
   position: absolute;
   top: 100%;
   left: -1px;
   right: -1px;
   z-index: 31;
-  display: block !important;
+  margin: 0;
+  overflow: hidden;
   background: #ffffff;
   border: 1px solid rgba(79, 70, 229, 0.28);
   border-top: 1px solid rgba(79, 70, 229, 0.12);
   border-radius: 0 0 18px 18px;
   box-shadow: 0 18px 44px rgba(79, 70, 229, 0.12);
   max-height: var(--faq-answer-max-height, none);
-  overflow-y: visible;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
-.faq-panel-wrap .faq-item.is-open .faq-answer-wrap.is-clamped,
-.guide-accordion-wrap .guide-accordion-item.is-open .guide-accordion-answer-wrap.is-clamped {
+.faq-item.is-open .faq-answer-wrap.is-clamped,
+.guide-accordion-item.is-open .guide-accordion-answer-wrap.is-clamped {
   overflow-y: auto;
 }
 
-.guide-accordion-wrap.is-faq-open-last {
-  padding-bottom: 0;
+.faq-panel-wrap .faq-item,
+.guide-accordion-wrap .guide-accordion-item {
+  position: relative;
+}
+
+.faq-panel-wrap.is-faq-open,
+.guide-accordion-wrap.is-faq-open {
+  margin-bottom: calc(0px - var(--faq-answer-offset, 0px));
 }
 
 section#sss,
@@ -4686,6 +4666,10 @@ section#sss,
 
   .faq-content-inner {
     padding-left: 20px;
+  }
+
+  .guide-accordion-panel-inner {
+    padding: 12px 16px 18px 20px;
   }
 }
 
@@ -6007,15 +5991,17 @@ details {
 
 .footer-social {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
 }
 
 .footer-social a {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex: 0 0 36px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(79, 70, 229, 0.12);
@@ -6025,7 +6011,7 @@ details {
   font-weight: 700;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 6px 14px rgba(15, 23, 42, 0.06);
+    0 4px 10px rgba(15, 23, 42, 0.05);
   transition:
     transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
     border-color 220ms ease,
@@ -6035,15 +6021,15 @@ details {
 }
 
 .footer-social a svg {
-  width: 19px;
-  height: 19px;
+  width: 15px;
+  height: 15px;
 }
 
 .footer-social a:hover {
   color: #ffffff !important;
   border-color: transparent;
-  transform: translateY(-4px) scale(1.04);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
 }
 
 .footer-social a.social-x {
@@ -6079,7 +6065,16 @@ details {
 
 .footer-social a.social-youtube:hover {
   background: #ff0033;
-  box-shadow: 0 12px 24px rgba(255, 0, 51, 0.34);
+  box-shadow: 0 8px 18px rgba(255, 0, 51, 0.34);
+}
+
+.footer-social a.social-pinterest {
+  color: #e60023;
+}
+
+.footer-social a.social-pinterest:hover {
+  background: #e60023;
+  box-shadow: 0 8px 18px rgba(230, 0, 35, 0.34);
 }
 
 .footer-social a.social-instagram {
@@ -6311,13 +6306,14 @@ details {
 }
 
 .footer-social-block {
-  padding-top: 0;
+  padding-top: 14px;
   border-top: none;
+  margin-top: 4px;
 }
 
 .footer-social-label {
-  margin: 0 0 12px;
-  font-size: 11px;
+  margin: 0 0 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -6326,6 +6322,8 @@ details {
 
 .footer-panel--brand .footer-social {
   margin-top: 0;
+  flex-wrap: nowrap;
+  max-width: 100%;
 }
 
 .footer-panel-lead {
@@ -8084,7 +8082,8 @@ details {
 
   .footer-panel--brand .footer-social {
     justify-content: center;
-    gap: 10px;
+    gap: 6px;
+    flex-wrap: nowrap;
   }
 
   .site-footer .footer-panel:not(.footer-panel--brand) {
@@ -14562,11 +14561,11 @@ details {
 }
 
 .guide-accordion-panel-inner {
-  padding: 0 20px 18px 72px;
+  padding: 14px 20px 20px 72px;
 }
 
 .guide-accordion-panel-inner p {
-  margin: 14px 0 0;
+  margin: 0;
   font-size: 15px;
   line-height: 1.78;
   color: var(--text-secondary);
@@ -18202,7 +18201,7 @@ main {
 }
 
 .guide-section--faq {
-  padding-bottom: calc(var(--section-gap) / 3);
+  padding-bottom: clamp(24px, 3vw, 40px);
   overflow: visible;
   position: relative;
   z-index: 4;
@@ -20468,24 +20467,24 @@ main {
 
   .footer-panel--brand .footer-social {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
-    gap: 8px;
+    gap: 5px;
     width: 100%;
     max-width: 100%;
     margin-inline: auto;
   }
 
   .footer-panel--brand .footer-social a {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    flex: 0 0 38px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    flex: 0 0 32px;
   }
 
   .footer-panel--brand .footer-social a svg {
-    width: 17px;
-    height: 17px;
+    width: 14px;
+    height: 14px;
   }
 
   .site-footer .footer-link {

@@ -7,10 +7,10 @@ import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { useMotionPrefs } from "@/components/guide/motion/useMotionPrefs";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 
-const FOOTER_GAP = 24;
+const FOOTER_GAP = 32;
 const CLAMP_TOLERANCE_PX = 12;
 
-function measureOpenAnswer(answerEl, isLastOpen) {
+function measureOpenAnswer(answerEl) {
   const prevMax = answerEl.style.maxHeight;
   const prevOverflow = answerEl.style.overflowY;
   answerEl.style.maxHeight = "none";
@@ -18,10 +18,6 @@ function measureOpenAnswer(answerEl, isLastOpen) {
   const fullHeight = Math.ceil(answerEl.scrollHeight);
   answerEl.style.maxHeight = prevMax;
   answerEl.style.overflowY = prevOverflow;
-
-  if (!isLastOpen) {
-    return { offset: fullHeight, maxHeight: null, clamped: false };
-  }
 
   const footer = document.querySelector(".site-footer");
   if (!footer) {
@@ -50,9 +46,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
   const [answerOffset, setAnswerOffset] = useState(0);
   const [answerMaxHeight, setAnswerMaxHeight] = useState(null);
   const [isAnswerClamped, setIsAnswerClamped] = useState(false);
-  const [isLastOpen, setIsLastOpen] = useState(false);
   const answerRef = useRef(null);
-  const wrapRef = useRef(null);
   const { reduceMotion, viewport, ease } = useMotionPrefs();
   const isHome = variant === "home";
 
@@ -66,37 +60,27 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
       setAnswerOffset(0);
       setAnswerMaxHeight(null);
       setIsAnswerClamped(false);
-      setIsLastOpen(false);
       return;
     }
 
-    const lastOpen = items.findIndex((item) => item.id === openId) === items.length - 1;
-    setIsLastOpen(lastOpen);
-
-    const { offset, maxHeight, clamped } = measureOpenAnswer(el, lastOpen);
+    const { offset, maxHeight, clamped } = measureOpenAnswer(el);
     setAnswerOffset(offset);
     setAnswerMaxHeight(maxHeight);
     setIsAnswerClamped(clamped);
-  }, [openId, items]);
+  }, [openId]);
 
   useLayoutEffect(() => {
     if (!openId) {
       setAnswerOffset(0);
       setAnswerMaxHeight(null);
       setIsAnswerClamped(false);
-      setIsLastOpen(false);
       return;
     }
 
     updateMeasurements();
 
-    const rafId = requestAnimationFrame(() => {
-      updateMeasurements();
-    });
-
-    const observer = new ResizeObserver(() => {
-      updateMeasurements();
-    });
+    const rafId = requestAnimationFrame(updateMeasurements);
+    const observer = new ResizeObserver(updateMeasurements);
 
     if (answerRef.current) {
       observer.observe(answerRef.current);
@@ -114,11 +98,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
   }, [openId, updateMeasurements]);
 
   const listClassName = isHome ? "faq-list" : `guide-accordion ${className}`.trim();
-  const wrapClassName = [
-    isHome ? "faq-panel-wrap" : "guide-accordion-wrap",
-    openId ? "is-faq-open" : "",
-    openId && isLastOpen ? "is-faq-open-last" : ""
-  ]
+  const wrapClassName = [isHome ? "faq-panel-wrap" : "guide-accordion-wrap", openId ? "is-faq-open" : ""]
     .filter(Boolean)
     .join(" ");
 
@@ -133,7 +113,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
   const answerClampClass = isAnswerClamped ? " is-clamped" : "";
 
   return (
-    <div className={wrapClassName} style={wrapStyle} ref={wrapRef}>
+    <div className={wrapClassName} style={wrapStyle}>
       <div className={listClassName} role="list">
         {items.map((item, index) => {
           const isOpen = openId === item.id;
@@ -183,8 +163,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
                 id={panelId}
                 ref={isOpen ? answerRef : undefined}
                 className={
-                  (isHome ? "faq-answer-wrap" : "guide-accordion-answer-wrap") +
-                  (isOpen ? answerClampClass : "")
+                  (isHome ? "faq-answer-wrap" : "guide-accordion-answer-wrap") + (isOpen ? answerClampClass : "")
                 }
                 style={isOpen ? answerStyle : undefined}
                 role="region"
