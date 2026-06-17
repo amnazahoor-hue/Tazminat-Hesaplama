@@ -4451,6 +4451,13 @@ section#sss {
   margin-bottom: var(--faq-answer-offset, 0px);
 }
 
+.faq-item.is-open.is-open-last,
+.guide-accordion-item.is-open.is-open-last {
+  margin-bottom: 0;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
 .guide-accordion-item.is-open {
   z-index: 30;
   overflow: visible;
@@ -4573,6 +4580,11 @@ section#sss {
   overflow: hidden;
 }
 
+.faq-item:not(.is-open) .faq-answer-wrap,
+.guide-accordion-item:not(.is-open) .guide-accordion-answer-wrap {
+  display: none !important;
+}
+
 .faq-answer-wrap[hidden],
 .guide-accordion-answer-wrap[hidden] {
   display: none !important;
@@ -4603,6 +4615,23 @@ section#sss {
   overflow-y: auto;
 }
 
+.faq-item.is-open-last .faq-answer-wrap,
+.guide-accordion-item.is-open-last .guide-accordion-answer-wrap {
+  position: static;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(79, 70, 229, 0.12);
+  border-radius: 0;
+  box-shadow: none;
+  max-height: var(--faq-answer-max-height, none);
+}
+
+.faq-item.is-open-last .faq-answer-wrap.is-clamped,
+.guide-accordion-item.is-open-last .guide-accordion-answer-wrap.is-clamped {
+  overflow-y: auto;
+}
+
 .faq-panel-wrap .faq-item,
 .guide-accordion-wrap .guide-accordion-item {
   position: relative;
@@ -4611,6 +4640,11 @@ section#sss {
 .faq-panel-wrap.is-faq-open,
 .guide-accordion-wrap.is-faq-open {
   margin-bottom: calc(0px - var(--faq-answer-offset, 0px));
+  overflow-anchor: none;
+}
+
+.site-footer {
+  overflow-anchor: auto;
 }
 
 section#sss,
@@ -9312,6 +9346,8 @@ details {
 }
 
 .how-steps-orbit-center > span {
+  position: relative;
+  z-index: 1;
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -9324,12 +9360,16 @@ details {
   position: relative;
   z-index: 1;
   display: block;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none;
+  width: 68% !important;
+  height: 68% !important;
+  max-width: 68%;
+  max-height: 68%;
+  margin: 0;
   object-fit: contain;
-  transform: scale(1.42);
-  border-radius: 50%;
+  object-position: center center;
+  transform: none;
+  border-radius: 0;
+  filter: brightness(0) invert(1);
 }
 
 .how-steps-orbit-node-anchor {
@@ -14496,8 +14536,13 @@ details {
 }
 
 .guide-accordion-item.is-open {
+  z-index: 30;
+  overflow: visible;
+  background: #ffffff;
   border-color: rgba(79, 70, 229, 0.28);
+  border-radius: 18px 18px 0 0;
   box-shadow: 0 18px 44px rgba(79, 70, 229, 0.12);
+  margin-bottom: var(--faq-answer-offset, 0px);
 }
 
 .guide-accordion-trigger {

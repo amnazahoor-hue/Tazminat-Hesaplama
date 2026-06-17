@@ -7,17 +7,31 @@ import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { useMotionPrefs } from "@/components/guide/motion/useMotionPrefs";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 
-const FOOTER_GAP = 32;
-const CLAMP_TOLERANCE_PX = 12;
+const CLAMP_TOLERANCE_PX = 8;
+const MOBILE_FAQ_MQ = "(max-width: 900px)";
 
-function measureOpenAnswer(answerEl) {
+function getFooterGap() {
+  if (typeof window === "undefined") return 32;
+  return window.matchMedia(MOBILE_FAQ_MQ).matches ? 40 : 32;
+}
+
+function measureAnswerHeight(answerEl) {
+  const inner = answerEl.querySelector(".faq-content-inner, .guide-accordion-panel-inner");
+  const measureTarget = inner || answerEl;
+
   const prevMax = answerEl.style.maxHeight;
-  const prevOverflow = answerEl.style.overflowY;
   answerEl.style.maxHeight = "none";
   answerEl.style.overflowY = "visible";
-  const fullHeight = Math.ceil(answerEl.scrollHeight);
+
+  const fullHeight = Math.ceil(measureTarget.scrollHeight + 2);
   answerEl.style.maxHeight = prevMax;
-  answerEl.style.overflowY = prevOverflow;
+  answerEl.style.overflowY = "";
+
+  return fullHeight;
+}
+
+function measureOpenAnswer(answerEl, isLastOpen) {
+  const fullHeight = measureAnswerHeight(answerEl);
 
   const footer = document.querySelector(".site-footer");
   if (!footer) {
@@ -26,18 +40,27 @@ function measureOpenAnswer(answerEl) {
 
   const answerTop = answerEl.getBoundingClientRect().top;
   const footerTop = footer.getBoundingClientRect().top;
-  const available = Math.floor(footerTop - answerTop - FOOTER_GAP);
-  const needsClamp = available + CLAMP_TOLERANCE_PX < fullHeight;
+  const available = Math.floor(footerTop - answerTop - getFooterGap());
 
-  if (!needsClamp) {
-    return { offset: fullHeight, maxHeight: null, clamped: false };
+  if (available <= 0) {
+    return { offset: 72, maxHeight: 72, clamped: true };
   }
 
-  const visibleHeight = Math.max(64, Math.min(fullHeight, available));
+  const needsClamp = available + CLAMP_TOLERANCE_PX < fullHeight;
+  const visibleHeight = needsClamp ? Math.max(72, available) : fullHeight;
+
+  if (isLastOpen) {
+    return {
+      offset: visibleHeight,
+      maxHeight: needsClamp ? visibleHeight : null,
+      clamped: needsClamp
+    };
+  }
+
   return {
     offset: visibleHeight,
-    maxHeight: visibleHeight,
-    clamped: true
+    maxHeight: needsClamp ? visibleHeight : null,
+    clamped: needsClamp
   };
 }
 
@@ -46,6 +69,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
   const [answerOffset, setAnswerOffset] = useState(0);
   const [answerMaxHeight, setAnswerMaxHeight] = useState(null);
   const [isAnswerClamped, setIsAnswerClamped] = useState(false);
+  const [isLastOpen, setIsLastOpen] = useState(false);
   const answerRef = useRef(null);
   const { reduceMotion, viewport, ease } = useMotionPrefs();
   const isHome = variant === "home";
@@ -54,23 +78,31 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
     setOpenId((current) => (current === id ? null : id));
   };
 
+  const applyMetrics = useCallback((metrics, lastOpen) => {
+    const { offset, maxHeight, clamped } = metrics;
+    setIsLastOpen(lastOpen);
+    setAnswerOffset((prev) => (prev === offset ? prev : offset));
+    setAnswerMaxHeight((prev) => (prev === maxHeight ? prev : maxHeight));
+    setIsAnswerClamped((prev) => (prev === clamped ? prev : clamped));
+  }, []);
+
   const updateMeasurements = useCallback(() => {
     const el = answerRef.current;
     if (!el || !openId) {
+      setIsLastOpen(false);
       setAnswerOffset(0);
       setAnswerMaxHeight(null);
       setIsAnswerClamped(false);
       return;
     }
 
-    const { offset, maxHeight, clamped } = measureOpenAnswer(el);
-    setAnswerOffset(offset);
-    setAnswerMaxHeight(maxHeight);
-    setIsAnswerClamped(clamped);
-  }, [openId]);
+    const lastOpen = items.findIndex((item) => item.id === openId) === items.length - 1;
+    applyMetrics(measureOpenAnswer(el, lastOpen), lastOpen);
+  }, [openId, items, applyMetrics]);
 
   useLayoutEffect(() => {
     if (!openId) {
+      setIsLastOpen(false);
       setAnswerOffset(0);
       setAnswerMaxHeight(null);
       setIsAnswerClamped(false);
@@ -78,27 +110,34 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
     }
 
     updateMeasurements();
+    const raf1 = requestAnimationFrame(() => {
+      updateMeasurements();
+      requestAnimationFrame(updateMeasurements);
+    });
 
-    const rafId = requestAnimationFrame(updateMeasurements);
     const observer = new ResizeObserver(updateMeasurements);
-
     if (answerRef.current) {
       observer.observe(answerRef.current);
     }
 
-    window.addEventListener("resize", updateMeasurements);
-    window.addEventListener("scroll", updateMeasurements, { passive: true });
+    const onViewportChange = () => updateMeasurements();
+    window.addEventListener("resize", onViewportChange);
+    window.visualViewport?.addEventListener("resize", onViewportChange);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(raf1);
       observer.disconnect();
-      window.removeEventListener("resize", updateMeasurements);
-      window.removeEventListener("scroll", updateMeasurements);
+      window.removeEventListener("resize", onViewportChange);
+      window.visualViewport?.removeEventListener("resize", onViewportChange);
     };
   }, [openId, updateMeasurements]);
 
   const listClassName = isHome ? "faq-list" : `guide-accordion ${className}`.trim();
-  const wrapClassName = [isHome ? "faq-panel-wrap" : "guide-accordion-wrap", openId ? "is-faq-open" : ""]
+  const wrapClassName = [
+    isHome ? "faq-panel-wrap" : "guide-accordion-wrap",
+    openId ? "is-faq-open" : "",
+    openId && isLastOpen ? "is-faq-open-last" : ""
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -117,11 +156,21 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
       <div className={listClassName} role="list">
         {items.map((item, index) => {
           const isOpen = openId === item.id;
+          const isLastItem = index === items.length - 1;
+          const isLastOpenItem = isOpen && isLastItem;
           const prefix = isHome ? "faq" : "guide-accordion";
           const buttonId = `${prefix}-button-${item.id}`;
           const panelId = `${prefix}-panel-${item.id}`;
           const number = String(index + 1).padStart(2, "0");
           const question = isHome ? capitalizeHeadingText(item.question) : item.question;
+
+          const itemClassName = [
+            isHome ? "faq-item" : "guide-accordion-item",
+            isOpen ? "is-open" : "",
+            isLastOpenItem ? "is-open-last" : ""
+          ]
+            .filter(Boolean)
+            .join(" ");
 
           const content = (
             <>
@@ -168,7 +217,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
                 style={isOpen ? answerStyle : undefined}
                 role="region"
                 aria-labelledby={buttonId}
-                hidden={!isOpen}
+                aria-hidden={!isOpen}
               >
                 <div className={isHome ? "faq-content-inner" : "guide-accordion-panel-inner"}>
                   <p>{linkInternalTerms(item.answer)}</p>
@@ -184,7 +233,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
 
           if (isHome) {
             return (
-              <article key={item.id} className={`faq-item${isOpen ? " is-open" : ""}`} role="listitem">
+              <article key={item.id} className={itemClassName} role="listitem">
                 {content}
               </article>
             );
@@ -193,7 +242,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
           return (
             <motion.article
               key={item.id}
-              className={`guide-accordion-item${isOpen ? " is-open" : ""}`}
+              className={itemClassName}
               role="listitem"
               initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 14 }}
               whileInView={{ opacity: 1, y: 0 }}
