@@ -10,8 +10,8 @@ import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import {
   buildSectionHref,
   getPageNav,
+  HEADER_NAV_PAGES,
   HOME_PATH,
-  MAIN_HEADER_PAGES,
   resolvePagePath
 } from "@/config/pageNav";
 
@@ -93,7 +93,7 @@ export default function Navbar() {
         <div className="container header-inner site-chrome-inner">
           <Link href={HOME_PATH} className="brand" aria-label="Anasayfaya dön" onClick={handleLogoClick}>
             <span className="brand-mark">
-              <Image src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} priority />
+              <Image src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} priority unoptimized />
             </span>
             <span className="brand-text">
               <span className="brand-title">Tazminat Hesaplama</span>
@@ -106,11 +106,11 @@ export default function Navbar() {
 
           <nav className="nav-pill header-page-nav" aria-label="Site sayfaları">
             <div className="nav-pill-track">
-              {MAIN_HEADER_PAGES.map((page) => (
+              {HEADER_NAV_PAGES.map((page) => (
                 <Link
                   key={page.path}
                   href={page.path}
-                  className={`nav-pill-link${pagePath === page.path ? " active" : ""}${page.path === HOME_PATH ? " nav-pill-link--long" : ""}`}
+                  className={`nav-pill-link${pagePath === page.path ? " active" : ""}${page.label.length > 22 ? " nav-pill-link--long" : ""}`}
                   title={page.title}
                   aria-label={page.title}
                   onClick={() => setOpen(false)}
@@ -156,7 +156,7 @@ export default function Navbar() {
           </div>
 
           <nav className="mobile-drawer-nav mobile-drawer-nav--pages">
-            {MAIN_HEADER_PAGES.map((page) => (
+            {HEADER_NAV_PAGES.map((page) => (
               <Link
                 key={page.path}
                 href={page.path}

@@ -1,7 +1,7 @@
-/** Local WebP assets under /public/images */
+/** Local assets under /public/images */
 export const IMAGES = {
-  logo: "/images/logo.webp",
-  icon: "/images/logo.webp",
+  logo: "/images/logo.svg",
+  icon: "/favicon-32.png",
   home: {
     heroCarouselLira: "/images/home/hero-carousel-lira.webp",
     heroCarousel1: "/images/home/hero-carousel-1.webp",
@@ -22,5 +22,18 @@ export const IMAGES = {
   },
   guides: {
     stepsOffice: "/images/guides/guide-steps-office.webp"
+  },
+  author: {
+    portrait: "/images/author/evren-mazi-portrait.webp"
   }
+};
+
+/** Descriptive alt text for key home page images (SEO + accessibility). */
+export const IMAGE_ALTS = {
+  introSeveranceBg:
+    "Kıdem ve işten ayrılma tazminatı hesaplama rehberi — tazminat türleri bölümü arka plan görseli",
+  freeCalcOffice:
+    "Ofiste laptop ile ücretsiz kıdem tazminatı hesaplaması yapan çalışanlar",
+  employerWhyCalculatorBg:
+    "İşverenler için kıdem tazminatı ödemesi ve hesaplama paneli arka plan görseli"
 };

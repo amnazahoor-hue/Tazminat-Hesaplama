@@ -1,10 +1,11 @@
 import CompensationCalculator from "@/components/CompensationCalculator";
-import { HOME_PAGE_SEO, HOME_PATH } from "@/config/site";
+import { HOME_PAGE_SEO, HOME_PATH, siteUrl } from "@/config/site";
 import {
   buildOrganizationSchema,
   buildPageMetadata,
   buildSpeakableSchema,
-  buildWebApplicationSchema
+  buildWebApplicationSchema,
+  SPEAKABLE_SELECTORS
 } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
@@ -17,7 +18,11 @@ export const metadata = buildPageMetadata({
 export default function HomePage() {
   const organizationSchema = buildOrganizationSchema();
   const webApplicationSchema = buildWebApplicationSchema();
-  const speakableSchema = buildSpeakableSchema();
+  const speakableSchema = buildSpeakableSchema({
+    name: HOME_PAGE_SEO.title,
+    url: siteUrl(HOME_PATH),
+    cssSelector: SPEAKABLE_SELECTORS.tool
+  });
 
   return (
     <>

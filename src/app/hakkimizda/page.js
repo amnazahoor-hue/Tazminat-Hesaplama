@@ -1,6 +1,6 @@
 import AboutPageShell from "@/components/about/AboutPageShell";
 import { HAKKIMIZDA_PATH } from "@/config/site";
-import { buildPageMetadata } from "@/utils/seo";
+import { buildPageMetadata, ROBOTS_NOINDEX_FOLLOW } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: "Hakkımızda | Tazminat Hesaplama Platformu ve Misyonu",
@@ -12,7 +12,8 @@ export const metadata = buildPageMetadata({
     "tazminat hesaplama platformu",
     "iş hukuku hesaplama aracı",
     "kıdem ihbar hesaplama"
-  ]
+  ],
+  robots: ROBOTS_NOINDEX_FOLLOW
 });
 
 export default function HakkimizdaPage() {
@@ -99,7 +100,7 @@ export default function HakkimizdaPage() {
             body: "Yıllara göre kıdem tazminatı tavan tutarları, örnek senaryolar ve hesaplamaya nasıl yansıdığına dair açıklayıcı tablolar."
           },
           {
-            title: "SSS ve Karşılaştırmalı Açıklamalar",
+            title: "Sıkça Sorulan Sorular ve Karşılaştırmalı Açıklamalar",
             body: "Sık sorulan sorular, farklı ayrılma senaryoları ve hesaplama adımlarını destekleyen görsel anlatımlar."
           },
           {
@@ -125,7 +126,7 @@ export default function HakkimizdaPage() {
           },
           {
             title: "İçerik iyileştirme",
-            body: "Sık görülen hesaplama senaryoları ve rehber metinlerindeki boşluklar düzenli olarak taranır; SSS ve anlatım bölümleri buna göre güncellenir."
+            body: "Sık görülen hesaplama senaryoları ve rehber metinlerindeki boşluklar düzenli olarak taranır; sıkça sorulan sorular ve anlatım bölümleri buna göre güncellenir."
           },
           {
             title: "Periyodik yayın",

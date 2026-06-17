@@ -3,12 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { IMAGES } from "@/config/images";
-import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, TAZMINAT_HESAPLAMA_PATH, siteUrl } from "@/config/site";
-import { getRelatedToolLinks, CARD_TITLE_LINKS } from "@/config/internalLinks";
+import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
+import { CARD_TITLE_LINKS } from "@/config/internalLinks";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { motion, useScroll, useTransform } from "framer-motion";
-import GuidePageFooter from "./GuidePageFooter";
 import {
   AlertCircle,
   Award,
@@ -33,7 +32,6 @@ import CalcCta from "@/components/common/CalcCta";
 import TotalCompensationCalculatorPanel from "@/components/TotalCompensationCalculatorPanel";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import GuideFaq from "./GuideFaq";
-import TableOfContents from "./TableOfContents";
 import {
   ChecklistTable,
   EquationPillsBlock,
@@ -229,14 +227,6 @@ const TYPE_ITEMS = [
   }
 ];
 
-const TOC_ITEMS = [
-  { id: "tazminat-nedir", label: "Tazminat Hesaplaması Nedir?" },
-  { id: "nasil-hesaplanir", label: "Tazminat Nasıl Hesaplanır?" },
-  { id: "kidem-tazminati", label: "Kıdem ve Ücret Bileşenleri" },
-  { id: "ihbar-tazminati", label: "İhbar Süresi ve Tazminatı" },
-  { id: "guide-sss", label: "Sık Sorulan Sorular" }
-];
-
 function IconCard({ icon: Icon, title, body, badgeClass = "guide-icon-card-badge" }) {
   const { reduceMotion } = useMotionPrefs();
 
@@ -305,9 +295,6 @@ export default function TotalCompensationGuide() {
         <div className="container guide-page-hero-content">
           <Reveal>
             <h1>2026 Yılı İçin Ücret Hesaplaması</h1>
-            <p className="author-attribution">
-              Yazan: Tazminat Hesaplama Uzmanı &nbsp;|&nbsp; Son güncelleme: Haziran 2026
-            </p>
             <div className="guide-page-hero-actions">
               <CalcCta
                 href="#hesapla"
@@ -326,18 +313,6 @@ export default function TotalCompensationGuide() {
         </div>
       </header>
 
-      <section className="guide-pre-tool guide-pre-tool--after-hero">
-        <div className="container guide-pre-tool-inner">
-          <div className="answer-block">
-            <p>
-              Toplam tazminat hesaplaması; kıdem, ihbar ve diğer işçilik alacaklarını kapsar. Hesaplama, brüt ücret,
-              çalışma süresi ve fesih türüne göre değişir. Aşağıdaki araç ile 2026 güncel parametrelerine göre anında
-              sonuç alabilirsiniz.
-            </p>
-          </div>
-          <TableOfContents items={TOC_ITEMS} />
-        </div>
-      </section>
       <TotalCompensationCalculatorPanel />
 
       <GuideSection id="guide-tanim">
@@ -557,11 +532,6 @@ export default function TotalCompensationGuide() {
       </GuideSection>
 
       <GuideFaq />
-      <GuidePageFooter
-        relatedLinks={getRelatedToolLinks(TAZMINAT_HESAPLAMA_PATH)}
-        shareUrl={siteUrl(TAZMINAT_HESAPLAMA_PATH)}
-        shareTitle="2026 Toplam Tazminat Hesaplama Rehberi"
-      />
     </GuidePageShell>
   );
 }

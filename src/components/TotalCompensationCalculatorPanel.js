@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import CalcCta from "@/components/common/CalcCta";
+import SeveranceBreakdownTable from "@/components/calculator/SeveranceBreakdownTable";
 import ResultPdfTemplate from "@/components/ResultPdfTemplate";
 import ResultShareBar from "@/components/ResultShareBar";
 import { useCalculatorShare } from "@/hooks/useCalculatorShare";
 import { buildTotalCompensationShareReport } from "@/utils/shareReport";
+import { buildCompensationPayload } from "@/utils/buildCompensationPayload";
 import {
   BONUS_PAYMENTS_PER_YEAR,
   calculateTotalCompensation,
@@ -75,24 +77,9 @@ export default function TotalCompensationCalculatorPanel() {
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
-  const buildPayload = () => ({
-    startDate: form.startDate,
-    endDate: form.endDate,
-    grossSalary: TR.parseMoney(form.grossSalary),
-    reason: form.reason,
-    weeklyDays: parseInt(form.weeklyDays, 10),
-    unusedLeaveDays: parseInt(form.unusedLeaveDays || "0", 10),
-    overtime: TR.parseMoney(form.overtime),
-    otherReceivables: TR.parseMoney(form.otherReceivables),
-    performanceBonus: TR.parseMoney(form.performanceBonus),
-    mealAllowance: TR.parseMoney(form.mealAllowance),
-    travelAllowance: TR.parseMoney(form.travelAllowance),
-    bonusPaymentsPerYear: BONUS_PAYMENTS_PER_YEAR
-  });
-
   const submit = (e) => {
     e.preventDefault();
-    const payload = buildPayload();
+    const payload = buildCompensationPayload(form);
     const v = validateForm(payload);
     setErrors(v);
     if (Object.keys(v).length > 0) return;
@@ -119,21 +106,7 @@ export default function TotalCompensationCalculatorPanel() {
     setForm({ ...EXAMPLE_FORM });
     setErrors({});
     setActiveTab("standart");
-    const payload = {
-      startDate: EXAMPLE_FORM.startDate,
-      endDate: EXAMPLE_FORM.endDate,
-      grossSalary: TR.parseMoney(EXAMPLE_FORM.grossSalary),
-      reason: EXAMPLE_FORM.reason,
-      weeklyDays: 5,
-      unusedLeaveDays: 0,
-      overtime: 0,
-      otherReceivables: 0,
-      performanceBonus: TR.parseMoney(EXAMPLE_FORM.performanceBonus),
-      mealAllowance: TR.parseMoney(EXAMPLE_FORM.mealAllowance),
-      travelAllowance: TR.parseMoney(EXAMPLE_FORM.travelAllowance),
-      bonusPaymentsPerYear: BONUS_PAYMENTS_PER_YEAR
-    };
-    const calc = calculateTotalCompensation(payload);
+    const calc = calculateTotalCompensation(buildCompensationPayload(EXAMPLE_FORM));
     setResult(calc.error ? null : calc);
     if (!calc.error) pendingScrollToResults.current = true;
   };
@@ -156,6 +129,7 @@ export default function TotalCompensationCalculatorPanel() {
   return (
     <section className="section calc-section" id="hesapla">
       <div className="container calc-wrap scroll-reveal scroll-reveal--up">
+        <h2 className="calc-section-heading">Toplam Tazminat Hesaplayıcısı</h2>
         <div className="calc-panel scroll-reveal scroll-reveal--scale" data-scroll-reveal>
           <div className="calc-panel-top" aria-hidden="true" />
           <div className="calc-panel-head">
@@ -331,18 +305,24 @@ export default function TotalCompensationCalculatorPanel() {
               </p>
               {result.tavanUygulandi && (
                 <p className="result-note">
-                  Kıdem tazminatında 2026 tavanı (₺{TR.money(result.tavanTutari)}) uygulanmıştır.
+                  Kıdem tazminatında tavan (₺{TR.money(result.tavanTutari)}) uygulanmıştır.
                 </p>
               )}
+              {result.compensationWarning && (
+                <p className="result-warning" role="alert">
+                  {result.compensationWarning}
+                </p>
+              )}
+              {result.eligNote && <p className="result-note">{result.eligNote}</p>}
             </div>
             <div className="result-cards scroll-reveal-stagger">
               <article>
-                <h4>Maaş (Yıllık)</h4>
-                <strong>₺{TR.money(result.yillikMaas)}</strong>
+                <h4>Kıdem Tazminatı (Net)</h4>
+                <strong>₺{TR.money(result.netKidemTazminati)}</strong>
               </article>
               <article>
-                <h4>Kıdem Tazminatı</h4>
-                <strong>₺{TR.money(result.kidemTazminati)}</strong>
+                <h4>İhbar Tazminatı (Net)</h4>
+                <strong>₺{TR.money(result.netIhbarTazminati)}</strong>
               </article>
               <article>
                 <h4>Toplam Tazminat Değeri</h4>
@@ -350,102 +330,7 @@ export default function TotalCompensationCalculatorPanel() {
               </article>
             </div>
 
-            <div className="result-table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Kalem</th>
-                    <th>Hesaplama</th>
-                    <th>Tutar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="result-sub-row">
-                    <td>Günlük Ücret</td>
-                    <td>₺{TR.money(result.duzenlenmisBrutMaas)} / 30</td>
-                    <td>₺{TR.money(result.gunlukUcret)}</td>
-                  </tr>
-                  <tr className="result-sub-row">
-                    <td>Haftalık Ücret</td>
-                    <td>₺{TR.money(result.duzenlenmisBrutMaas)} × 12 / 52</td>
-                    <td>₺{TR.money(result.haftalikUcret)}</td>
-                  </tr>
-                  <tr>
-                    <td>Maaş</td>
-                    <td>₺{TR.money(result.brutMaas)} x 12 ay</td>
-                    <td>₺{TR.money(result.yillikMaas)}</td>
-                  </tr>
-                  {result.bonuslar > 0 && (
-                    <tr>
-                      <td>Bonuslar</td>
-                      <td>
-                        ₺{TR.money(result.performanceBonus)} x {result.bonusPaymentsPerYear} ödeme
-                      </td>
-                      <td>₺{TR.money(result.bonuslar)}</td>
-                    </tr>
-                  )}
-                  {result.yillikYemek > 0 && (
-                    <tr>
-                      <td>Yemek Harcırahı</td>
-                      <td>₺{TR.money(result.monthlyMeal)} x 12 ay</td>
-                      <td>₺{TR.money(result.yillikYemek)}</td>
-                    </tr>
-                  )}
-                  {result.yillikUlasim > 0 && (
-                    <tr>
-                      <td>Ulaşım Ödeneği</td>
-                      <td>₺{TR.money(result.monthlyTravel)} x 12 ay</td>
-                      <td>₺{TR.money(result.yillikUlasim)}</td>
-                    </tr>
-                  )}
-                  <tr>
-                    <td>Kıdem Tazminatı</td>
-                    <td>
-                      30 günlük brüt (₺{TR.money(result.kidemBazTutari ?? Math.min(result.brutMaas, result.tavanTutari))}) ×{" "}
-                      {result.totalYears.toFixed(2)} yıl
-                    </td>
-                    <td>₺{TR.money(result.kidemTazminati)}</td>
-                  </tr>
-                  <tr className="result-total-row">
-                    <td>Toplam Tazminat Değeri</td>
-                    <td>Maaş + Bonuslar + Ödenekler + Kıdem</td>
-                    <td>₺{TR.money(result.toplamTazminatDegeri)}</td>
-                  </tr>
-                  {result.ihbarTazminati > 0 && (
-                    <tr className="result-sub-row">
-                      <td>İhbar Tazminatı</td>
-                      <td>
-                        ₺{TR.money(result.gunlukUcret)} × {result.ihbarSuresi} gün ({result.ihbarSuresiLabel})
-                      </td>
-                      <td>₺{TR.money(result.ihbarTazminati)}</td>
-                    </tr>
-                  )}
-                  {activeTab === "detayli" && result.unusedLeaveDays > 0 && (
-                    <tr className="result-sub-row">
-                      <td>Kullanılmamış İzin</td>
-                      <td>
-                        ₺{TR.money(result.gunlukUcret)} × {result.unusedLeaveDays} gün
-                      </td>
-                      <td>₺{TR.money(result.unusedLeavePay)}</td>
-                    </tr>
-                  )}
-                  {result.overtime > 0 && (
-                    <tr className="result-sub-row">
-                      <td>Fazla Mesai</td>
-                      <td>Belirtilen tutar</td>
-                      <td>₺{TR.money(result.overtime)}</td>
-                    </tr>
-                  )}
-                  {result.otherReceivables > 0 && (
-                    <tr className="result-sub-row">
-                      <td>Diğer Alacaklar</td>
-                      <td>Belirtilen tutar</td>
-                      <td>₺{TR.money(result.otherReceivables)}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <SeveranceBreakdownTable result={result} activeTab={activeTab} variant="total" />
 
             <ResultShareBar
               onShare={shareNative}

@@ -2,8 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, TAZMINAT_HESAPLAMA_PATH, siteUrl } from "@/config/site";
-import { getRelatedToolLinks } from "@/config/internalLinks";
+import { HOME_PATH, KIDEM_TAVANI_PATH } from "@/config/site";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
   ABOVE_CEILING_ITEMS,
@@ -22,8 +21,6 @@ import {
   YEARLY_COMPARISON_ROWS
 } from "@/data/tavanGuideContent";
 import GuideFaqSection from "../GuideFaqSection";
-import GuidePageFooter from "../GuidePageFooter";
-import TableOfContents from "../TableOfContents";
 import { TAVAN_FAQ_ITEMS } from "@/data/tavanGuideContent";
 import {
   AffectedGroupChips,
@@ -41,7 +38,6 @@ import {
   TaxInfoNote,
   TavanBarChart,
   TavanHero,
-  TAVAN_TOC_ITEMS
 } from "./TavanGuideBlocks";
 import { GuideSection } from "../motion/Reveal";
 import { useMotionPrefs } from "../motion/useMotionPrefs";
@@ -72,12 +68,6 @@ export default function TavanGuide() {
       />
 
       <TavanHero stat={TAVAN_HERO_STAT} image={TAVAN_IMAGES.hero} />
-
-      <section className="guide-pre-tool guide-pre-tool--after-hero">
-        <div className="container guide-pre-tool-inner">
-          <TableOfContents items={TAVAN_TOC_ITEMS} />
-        </div>
-      </section>
 
       <GuideSection id="tavan-nedir" alt>
         <SectionHeading>Türkiye&apos;de Kıdem Tazminatı Tavanı Nedir?</SectionHeading>
@@ -198,12 +188,6 @@ export default function TavanGuide() {
       </GuideSection>
 
       <GuideFaqSection id="tavan-sss" items={TAVAN_FAQ_ITEMS} />
-
-      <GuidePageFooter
-        relatedLinks={getRelatedToolLinks(KIDEM_TAVANI_PATH)}
-        shareUrl={siteUrl(KIDEM_TAVANI_PATH)}
-        shareTitle="Kıdem Tazminatı Tavanı 2026 — Güncel Bilgi ve Hesaplama"
-      />
     </GuidePageShell>
   );
 }

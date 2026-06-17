@@ -29,15 +29,6 @@ import { Reveal, RevealItem, RevealStagger } from "../motion/Reveal";
 import SectionHeading from "../motion/SectionHeading";
 import { useMotionPrefs } from "../motion/useMotionPrefs";
 
-const TOC_ITEMS = [
-  { id: "tavan-nedir", label: "Kıdem Tazminatı Tavanı Nedir?" },
-  { id: "tavan-hesaplama", label: "Tavan Hesaplama" },
-  { id: "tavan-tablosu", label: "2026 Tavan Tablosu" },
-  { id: "tavan-sss", label: "Sık Sorulan Sorular" }
-];
-
-export { TOC_ITEMS as TAVAN_TOC_ITEMS };
-
 const RESMI_GAZETE_URL = "https://www.resmigazete.gov.tr/";
 const MEVZUAT_URL = "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4857&MevzuatTur=1&MevzuatTertip=5";
 const SGK_URL = "https://www.sgk.gov.tr/";
@@ -139,9 +130,6 @@ export function TavanHero({ stat, image }) {
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
           <h1>2026 Türkiye Kıdem Tazminatı Tavanı: Güncellenmiş Oranlar, Hesaplama ve İş Hukuku Rehberi</h1>
-          <p className="author-attribution">
-            Yazan: Tazminat Hesaplama Uzmanı &nbsp;|&nbsp; Son güncelleme: Haziran 2026
-          </p>
           <div className="tavan-guide-hero-lead">
             <p>
               İşten ayrılma tazminatı tavanı, ücret hesaplamasında en önemli faktörlerden biridir. İnsan kaynakları

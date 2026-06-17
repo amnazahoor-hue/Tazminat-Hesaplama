@@ -1,6 +1,11 @@
 import TotalCompensationGuide from "@/components/guide/TotalCompensationGuide";
-import { TAZMINAT_HESAPLAMA_PATH, TAZMINAT_PAGE_SEO } from "@/config/site";
-import { buildArticleSchema, buildPageMetadata, buildSpeakableSchema } from "@/utils/seo";
+import { TAZMINAT_HESAPLAMA_PATH, TAZMINAT_PAGE_SEO, siteUrl } from "@/config/site";
+import {
+  buildArticleSchema,
+  buildPageMetadata,
+  buildSpeakableSchema,
+  SPEAKABLE_SELECTORS
+} from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: TAZMINAT_PAGE_SEO.title,
@@ -14,7 +19,11 @@ export default function TotalCompensationGuidePage() {
     headline: TAZMINAT_PAGE_SEO.title,
     path: TAZMINAT_HESAPLAMA_PATH
   });
-  const speakableSchema = buildSpeakableSchema();
+  const speakableSchema = buildSpeakableSchema({
+    name: TAZMINAT_PAGE_SEO.title,
+    url: siteUrl(TAZMINAT_HESAPLAMA_PATH),
+    cssSelector: SPEAKABLE_SELECTORS.guide
+  });
 
   return (
     <>

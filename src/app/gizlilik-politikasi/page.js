@@ -1,5 +1,5 @@
 import LegalPageShell from "@/components/legal/LegalPageShell";
-import { buildPageMetadata } from "@/utils/seo";
+import { buildPageMetadata, ROBOTS_NOINDEX_FOLLOW } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: "Gizlilik Politikası | Tazminat Hesaplama Veri Güvenliği",
@@ -7,7 +7,7 @@ export const metadata = buildPageMetadata({
     "Tazminat Hesaplama gizlilik politikası: hangi veriler işlenir, çerez kullanımı, analitik araçlar ve KVKK kapsamındaki kullanıcı haklarınız için bilgi edinin.",
   path: "/gizlilik-politikasi",
   keywords: ["gizlilik politikası", "veri güvenliği", "kıdem hesaplama gizlilik"],
-  robots: { index: false, follow: true }
+  robots: ROBOTS_NOINDEX_FOLLOW
 });
 
 const SECTIONS = [

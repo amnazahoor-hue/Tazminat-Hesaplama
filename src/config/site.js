@@ -43,6 +43,7 @@ export const KIDEM_TAVANI_PAGE_SEO = {
 
 export const HAKKIMIZDA_PATH = "/hakkimizda";
 export const ILETISIM_PATH = "/iletisim";
+export const AUTHOR_PATH = "/yazar";
 
 /** @param {string} [path] */
 export function siteUrl(path = "/") {

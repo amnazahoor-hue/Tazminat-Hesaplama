@@ -7,10 +7,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import FaqAccordion from "@/components/common/FaqAccordion";
 import CalcCta from "@/components/common/CalcCta";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
-import { IMAGES } from "@/config/images";
-import { HOME_PATH, TAZMINAT_HESAPLAMA_PATH, siteUrl } from "@/config/site";
-import { getRelatedToolLinks } from "@/config/internalLinks";
-import GuidePageFooter from "@/components/guide/GuidePageFooter";
+import { linkInternalTerms } from "@/utils/linkInternalTerms";
+import { IMAGES, IMAGE_ALTS } from "@/config/images";
+import { HOME_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
 import HowStepsCarousel from "@/components/HowStepsCarousel";
 import ResultPdfTemplate from "@/components/ResultPdfTemplate";
 import ResultShareBar from "@/components/ResultShareBar";
@@ -20,6 +19,7 @@ import TickMark from "@/components/common/TickMark";
 import SummaryShowcaseIllustration from "@/components/SummaryShowcaseIllustration";
 import { ShieldCheck, Sparkles } from "lucide-react";
 import SeveranceBreakdownTable from "@/components/calculator/SeveranceBreakdownTable";
+import { buildCompensationPayload } from "@/utils/buildCompensationPayload";
 import {
   BONUS_PAYMENTS_PER_YEAR,
   calculateCompensation,
@@ -227,20 +227,7 @@ export default function CompensationCalculator() {
 
   const submit = (e) => {
     e.preventDefault();
-    const payload = {
-      startDate: form.startDate,
-      endDate: form.endDate,
-      grossSalary: TR.parseMoney(form.grossSalary),
-      reason: form.reason,
-      weeklyDays: parseInt(form.weeklyDays, 10),
-      unusedLeaveDays: parseInt(form.unusedLeaveDays || "0", 10),
-      overtime: TR.parseMoney(form.overtime),
-      otherReceivables: TR.parseMoney(form.otherReceivables),
-      performanceBonus: TR.parseMoney(form.performanceBonus),
-      mealAllowance: TR.parseMoney(form.mealAllowance),
-      travelAllowance: TR.parseMoney(form.travelAllowance),
-      bonusPaymentsPerYear: BONUS_PAYMENTS_PER_YEAR
-    };
+    const payload = buildCompensationPayload(form);
     const v = validateForm(payload);
     setErrors(v);
     if (Object.keys(v).length > 0) return;
@@ -267,20 +254,7 @@ export default function CompensationCalculator() {
     setForm({ ...SEVERANCE_EXAMPLE });
     setErrors({});
     setActiveTab("standart");
-    const payload = {
-      startDate: SEVERANCE_EXAMPLE.startDate,
-      endDate: SEVERANCE_EXAMPLE.endDate,
-      grossSalary: TR.parseMoney(SEVERANCE_EXAMPLE.grossSalary),
-      reason: SEVERANCE_EXAMPLE.reason,
-      weeklyDays: 5,
-      unusedLeaveDays: 0,
-      overtime: 0,
-      otherReceivables: 0,
-      performanceBonus: 0,
-      mealAllowance: 0,
-      travelAllowance: 0,
-      bonusPaymentsPerYear: BONUS_PAYMENTS_PER_YEAR
-    };
+    const payload = buildCompensationPayload(SEVERANCE_EXAMPLE);
     const calc = calculateCompensation(payload);
     setResult(calc.error ? null : calc);
     if (!calc.error) pendingScrollToResults.current = true;
@@ -613,13 +587,7 @@ export default function CompensationCalculator() {
 
       <section className="section calc-section" id="hesapla">
         <div className="container calc-wrap scroll-reveal scroll-reveal--up">
-          <div className="answer-block">
-            <p>
-              Kıdem tazminatı, en az 1 yıl çalışan ve iş sözleşmesi haksız feshedilen işçiye ödenir. Her tam çalışma
-              yılı için 30 günlük brüt ücret esas alınır. 2025 yılı kıdem tazminatı tavanı <strong>35.058,58 TL</strong>
-              &apos;dir.
-            </p>
-          </div>
+          <h2 className="calc-section-heading">Kıdem Tazminatı Hesaplayıcısı</h2>
           <div className="calc-panel scroll-reveal scroll-reveal--scale" data-scroll-reveal>
             <div className="calc-panel-top" aria-hidden="true" />
             <div className="calc-panel-head">
@@ -810,19 +778,24 @@ export default function CompensationCalculator() {
                     Kıdem tazminatında 2026 tavanı (₺{TR.money(result.tavanTutari)}) uygulanmıştır.
                   </p>
                 )}
+                {result.compensationWarning && (
+                  <p className="result-warning" role="alert">
+                    {result.compensationWarning}
+                  </p>
+                )}
                 <p className="result-note">{result.eligNote}</p>
               </div>
               <div className="result-cards scroll-reveal-stagger">
                 <article>
-                  <h4>Kıdem Tazminatı</h4>
-                  <strong>₺{TR.money(result.kidemTazminati)}</strong>
+                  <h4>Kıdem Tazminatı (Net)</h4>
+                  <strong>₺{TR.money(result.netKidemTazminati)}</strong>
                 </article>
                 <article>
-                  <h4>İhbar Tazminatı</h4>
-                  <strong>₺{TR.money(result.ihbarTazminati)}</strong>
+                  <h4>İhbar Tazminatı (Net)</h4>
+                  <strong>₺{TR.money(result.netIhbarTazminati)}</strong>
                 </article>
                 <article>
-                  <h4>Toplam Tazminat</h4>
+                  <h4>Toplam Tazminat (Net)</h4>
                   <strong>₺{TR.money(result.toplamTazminat)}</strong>
                 </article>
               </div>
@@ -851,7 +824,7 @@ export default function CompensationCalculator() {
         <div className="intro-section-bg" aria-hidden="true">
           <Image
             src={IMAGES.home.introSeveranceBg}
-            alt="İşten ayrılma tazminatı hesaplama bölümü arka plan görseli"
+            alt={IMAGE_ALTS.introSeveranceBg}
             fill
             sizes="(min-width: 821px) 100vw, 1px"
             className="intro-section-image"
@@ -866,7 +839,7 @@ export default function CompensationCalculator() {
             <div className="intro-showcase-top-image" aria-hidden="true">
               <Image
                 src={IMAGES.home.introSeveranceBg}
-                alt=""
+                alt={IMAGE_ALTS.introSeveranceBg}
                 fill
                 sizes="(max-width: 820px) calc(100vw - 32px), 1px"
                 className="intro-showcase-top-image__img"
@@ -881,11 +854,14 @@ export default function CompensationCalculator() {
                 düzenlenir.
               </p>
               <p>
-                Çalışanlar, işten çıkarma, emeklilik, işten çıkarılma, iş gücü azaltımı, askerlik hizmeti, istifa veya
-                işten ayrılma durumlarında işten çıkarma tazminatı alabilirler. Geçerli yasa ve iş şartlarına bağlı olarak,
-                çalışanlar ayrıca ihbar tazminatı ve diğer çalışan alacaklarına da hak kazanabilirler. Ancak politikalar
-                şirketten şirkete biraz farklılık gösterebilir. Tüm bu ödemeler için hesaplamaları hesaplayıcımızı
-                kullanarak yapabilirsiniz.
+                {linkInternalTerms(
+                  "Çalışanlar, işten çıkarma, emeklilik, işten çıkarılma, iş gücü azaltımı, askerlik hizmeti, istifa veya işten ayrılma durumlarında işten çıkarma tazminatı alabilirler. Geçerli yasa ve iş şartlarına bağlı olarak, çalışanlar ayrıca ihbar tazminatı ve diğer çalışan alacaklarına da hak kazanabilirler. Ancak politikalar şirketten şirkete biraz farklılık gösterebilir. Tüm bu ödemeler için hesaplamaları hesaplayıcımızı kullanarak yapabilirsiniz."
+                )}
+              </p>
+              <p>
+                {linkInternalTerms(
+                  "Haklarınızı kolayca öğrenmek için Kıdem Tazminatı Hesaplama aracımızı kullanabilir ve tazminat tutarınızı hızlıca hesaplayabilirsiniz."
+                )}
               </p>
             </div>
             <div className="intro-sticky-board scroll-reveal scroll-reveal--right scroll-reveal--instant" data-scroll-reveal>
@@ -911,7 +887,7 @@ export default function CompensationCalculator() {
           <div className="free-calc-visual">
             <Image
               src={IMAGES.home.freeCalcOffice}
-              alt="Ofiste laptop ile kıdem tazminatı görüşmesi yapan iş insanları"
+              alt={IMAGE_ALTS.freeCalcOffice}
               width={612}
               height={612}
               priority
@@ -1285,7 +1261,7 @@ export default function CompensationCalculator() {
             <div className="employer-why-panel-media" aria-hidden="true">
               <Image
                 src={IMAGES.home.employerWhyCalculatorBg}
-                alt=""
+                alt={IMAGE_ALTS.employerWhyCalculatorBg}
                 fill
                 unoptimized
                 className="employer-why-panel-image"
@@ -1889,12 +1865,6 @@ export default function CompensationCalculator() {
           </div>
         </div>
       </ContentSection>
-
-      <GuidePageFooter
-        relatedLinks={getRelatedToolLinks(HOME_PATH)}
-        shareUrl={siteUrl(HOME_PATH)}
-        shareTitle="Kıdem Tazminatı Hesaplaması"
-      />
     </>
   );
 }

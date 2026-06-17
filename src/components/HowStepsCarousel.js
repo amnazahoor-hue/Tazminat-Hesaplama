@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { IMAGES } from "@/config/images";
+import { IMAGES, IMAGE_ALTS } from "@/config/images";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -13,7 +13,8 @@ const STEPS = [
     className: "how-steps-card--1",
     keyword: "MAAŞ",
     text: "Yıllık maaşınızı veya haftalık ücretinizi girin.",
-    image: IMAGES.home.freeCalcOffice
+    image: IMAGES.home.freeCalcOffice,
+    imageAlt: IMAGE_ALTS.freeCalcOffice
   },
   {
     id: 2,
@@ -49,7 +50,8 @@ const STEPS = [
     className: "how-steps-card--6",
     keyword: "HESAPLA",
     text: "Tahmini tutarınızı anında oluşturmak için hesapla düğmesine tıklayın.",
-    image: IMAGES.home.introSeveranceBg
+    image: IMAGES.home.introSeveranceBg,
+    imageAlt: IMAGE_ALTS.introSeveranceBg
   }
 ];
 

@@ -7,10 +7,6 @@ export const IHBAR_IMAGES = {
     src: "/images/ihbar/kidem.webp",
     alt: "Finans hesaplama masası ve hesap makinesi görseli"
   },
-  examples: {
-    src: "/images/ihbar/examples.webp",
-    alt: "Modern aydınlık ofiste dizüstü bilgisayarda çalışan profesyonel görseli"
-  },
   rights: {
     src: "/images/ihbar/rights.webp",
     alt: "İhbar süresi boyunca ofiste çalışan profesyonel ekip görseli"

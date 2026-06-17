@@ -6,12 +6,11 @@ import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 import { IMAGES } from "@/config/images";
-import { FOOTER_BRAND_COPY, FOOTER_SOCIAL_LINKS } from "@/config/footer";
+import { FOOTER_BRAND_COPY } from "@/config/footer";
 import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { MAIN_HEADER_PAGES, resolvePagePath } from "@/config/pageNav";
-import { FOOTER_SOCIAL_ICON_MAP } from "@/components/layouts/FooterSocialIcon";
 
 function FooterLinkList({ title, children, panelClass = "", lead = "" }) {
   return (
@@ -44,40 +43,24 @@ function FooterNavLinks({ items, pathname }) {
 function FooterBrandColumn() {
   return (
     <section className="footer-panel footer-panel--brand">
-      <Link href={HOME_PATH} className="footer-logo footer-logo--column" aria-label="Anasayfaya dön">
-        <span className="footer-logo-mark">
-          <Image src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={40} height={40} />
+      <Link href={HOME_PATH} className="brand footer-brand" aria-label="Anasayfaya dön">
+        <span className="brand-mark">
+          <Image src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} unoptimized />
         </span>
-        <span className="footer-logo-text">
-          <strong>Tazminat Hesaplama</strong>
-          <small>İş Kanunu 4857 · Ücretsiz araç</small>
+        <span className="brand-text">
+          <span className="brand-title">Tazminat Hesaplama</span>
+          <span className="brand-sub">
+            <span className="brand-dot" aria-hidden="true" />
+            İş Kanunu 4857
+          </span>
         </span>
       </Link>
 
-      <div className="footer-brand-copy">
-        {FOOTER_BRAND_COPY.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-      </div>
-
-      <div className="footer-social-block">
-        <p className="footer-social-label">Bizi takip edin</p>
-        <div className="footer-social">
-          {FOOTER_SOCIAL_LINKS.map((item) => {
-            const Icon = FOOTER_SOCIAL_ICON_MAP[item.className];
-            return (
-              <a
-                key={item.href}
-                href={item.href}
-                className={item.className}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={item.label}
-              >
-                {Icon ? <Icon size={19} /> : null}
-              </a>
-            );
-          })}
+      <div className="footer-brand-meta">
+        <div className="footer-brand-copy">
+          {FOOTER_BRAND_COPY.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         </div>
       </div>
     </section>

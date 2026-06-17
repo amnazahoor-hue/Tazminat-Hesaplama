@@ -74,6 +74,7 @@ export default function Preloader() {
             width={100}
             height={100}
             priority
+            unoptimized
             className="site-preloader-logo"
           />
         </div>

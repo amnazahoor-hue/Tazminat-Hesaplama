@@ -56,7 +56,7 @@ export default function AboutPageShell({
         <span className="about-shell-hero-bg" aria-hidden="true" />
         <span className="about-shell-hero-glow about-shell-hero-glow--lime" aria-hidden="true" />
         <span className="about-shell-hero-glow about-shell-hero-glow--white" aria-hidden="true" />
-        <div className="container about-shell-hero-inner">
+        <div className="container about-shell-hero-inner legal-shell-hero-inner--boxed">
           <nav className="about-breadcrumb" aria-label="Breadcrumb">
             {breadcrumb.map((item, index) => (
               <span key={item.path} className="about-breadcrumb-item">
@@ -85,7 +85,7 @@ export default function AboutPageShell({
       </header>
 
       <section className="about-intro-band">
-        <div className="container about-intro-grid">
+        <div className="container legal-page-container--boxed about-intro-grid">
           <div className="about-intro-copy">
             <span className="about-section-eyebrow">Platform Hikâyesi</span>
             <h2>{capitalizeHeadingText(intro.title)}</h2>
@@ -105,7 +105,7 @@ export default function AboutPageShell({
       </section>
 
       <section className="about-section">
-        <div className="container">
+        <div className="container legal-page-container--boxed">
           <div className="about-section-head">
             <span className="about-section-eyebrow">Temel İlkeler</span>
             <h2>Misyon &amp; Vizyon</h2>
@@ -129,7 +129,7 @@ export default function AboutPageShell({
       </section>
 
       <section className="about-section about-section--tint">
-        <div className="container">
+        <div className="container legal-page-container--boxed">
           <div className="about-section-head">
             <span className="about-section-eyebrow">Değerlerimiz</span>
             <h2>Güven, Şeffaflık ve Erişilebilirlik</h2>
@@ -152,7 +152,7 @@ export default function AboutPageShell({
       </section>
 
       <section className="about-section">
-        <div className="container">
+        <div className="container legal-page-container--boxed">
           <div className="about-offerings-panel">
             <div className="about-offerings-copy">
               <span className="about-section-eyebrow">Neler Sunuyoruz?</span>
@@ -175,7 +175,7 @@ export default function AboutPageShell({
       </section>
 
       <section className="about-section about-section--tint">
-        <div className="container">
+        <div className="container legal-page-container--boxed">
           <div className="about-section-head">
             <span className="about-section-eyebrow">Editoryal Yaklaşım</span>
             <h2>{capitalizeHeadingText(approach.title)}</h2>
@@ -195,7 +195,7 @@ export default function AboutPageShell({
       </section>
 
       <section className="about-section">
-        <div className="container">
+        <div className="container legal-page-container--boxed">
           <div className="about-principles-grid">
             {principles.map((item) => (
               <article key={item.title} className="about-principle-card">
@@ -208,7 +208,7 @@ export default function AboutPageShell({
       </section>
 
       <section className="about-closing-band">
-        <div className="container about-closing-inner">
+        <div className="container legal-page-container--boxed about-closing-inner">
           <div className="about-closing-copy">
             <h2>{capitalizeHeadingText(closing.title)}</h2>
             <p>{closing.body}</p>

@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, siteUrl } from "@/config/site";
-import { getRelatedToolLinks } from "@/config/internalLinks";
+import { HOME_PATH, IHBAR_NEDIR_PATH } from "@/config/site";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
   COMPARISON_ROWS,
@@ -20,11 +19,8 @@ import {
 } from "@/data/ihbarGuideContent";
 import GuideFaqSection from "../GuideFaqSection";
 import { IHBAR_FAQ_ITEMS } from "@/data/ihbarGuideContent";
-import GuidePageFooter from "../GuidePageFooter";
-import TableOfContents from "../TableOfContents";
 import {
   EligibilityCards,
-  IHBAR_TOC_ITEMS,
   InsolvencyCallout,
   NoticeComparisonTable,
   NoticeHero,
@@ -68,12 +64,6 @@ export default function IhbarTazminatGuide() {
 
       <NoticeHero image={IHBAR_IMAGES.hero} />
 
-      <section className="guide-pre-tool guide-pre-tool--after-hero">
-        <div className="container guide-pre-tool-inner">
-          <TableOfContents items={IHBAR_TOC_ITEMS} />
-        </div>
-      </section>
-
       <GuideSection id="ihbar-kidem" alt>
         <TwoColumnImageBlock image={IHBAR_IMAGES.kidem}>
           <SectionHeading>
@@ -107,7 +97,7 @@ export default function IhbarTazminatGuide() {
       <GuideSection id="ihbar-ornekler" alt>
         <SectionHeading id="ornekler">İhbar Ödeme Örnekleri</SectionHeading>
         <p>{linkInternalTerms("Aşağıdaki örnekler, ihbar tazminatının pratikte nasıl işlediğini göstermektedir.")}</p>
-        <NoticeScenarioCards examples={NOTICE_EXAMPLES} accentImage={IHBAR_IMAGES.examples} />
+        <NoticeScenarioCards examples={NOTICE_EXAMPLES} />
       </GuideSection>
 
       <GuideSection id="ihbar-fark">
@@ -166,12 +156,6 @@ export default function IhbarTazminatGuide() {
       </GuideSection>
 
       <GuideFaqSection id="ihbar-sss" items={IHBAR_FAQ_ITEMS} includeFormula />
-
-      <GuidePageFooter
-        relatedLinks={getRelatedToolLinks(IHBAR_NEDIR_PATH)}
-        shareUrl={siteUrl(IHBAR_NEDIR_PATH)}
-        shareTitle="İhbar Tazminatı Nedir ve Nasıl Hesaplanır?"
-      />
     </GuidePageShell>
   );
 }

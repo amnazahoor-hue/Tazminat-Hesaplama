@@ -4,23 +4,11 @@ import {
   KIDEM_TAVANI_PATH,
   TAZMINAT_HESAPLAMA_PATH
 } from "@/config/site";
-import { resolvePagePath } from "@/config/pageNav";
-
-export const ALL_TOOL_LINKS = [
-  { href: HOME_PATH, label: "Kıdem Tazminatı Hesaplayıcısı — Ana Sayfa" },
-  { href: TAZMINAT_HESAPLAMA_PATH, label: "Toplam Tazminat Hesaplama Rehberi" },
-  { href: IHBAR_NEDIR_PATH, label: "İhbar Tazminatı Nedir ve Nasıl Hesaplanır?" },
-  { href: KIDEM_TAVANI_PATH, label: "Kıdem Tazminatı Tavanı 2026 — Güncel Bilgi ve Hesaplama" }
-];
-
-/** Footer / related-tools: all main tools except the current page */
-export function getRelatedToolLinks(currentPath) {
-  const current = resolvePagePath(currentPath);
-  return ALL_TOOL_LINKS.filter((link) => resolvePagePath(link.href) !== current);
-}
 
 /** Longest phrases first — first match per rule per text block */
 export const INTERNAL_LINK_RULES = [
+  { key: "kidem-hesaplama-araci", term: "Kıdem Tazminatı Hesaplama", href: `${HOME_PATH}#hesapla` },
+  { key: "hesaplayicimiz", term: "hesaplayıcımızı", href: `${TAZMINAT_HESAPLAMA_PATH}#hesapla` },
   { key: "kidem-tavani-heading", term: "Kıdem Tazminatı Tavanı", href: KIDEM_TAVANI_PATH },
   { key: "kidem-tavani-hesap", term: "kıdem tazminatı tavanını", href: `${KIDEM_TAVANI_PATH}#tavan-hesaplama` },
   { key: "kidem-tavani-mechanism", term: "kıdem tazminatı tavanı hesaplama", href: `${KIDEM_TAVANI_PATH}#tavan-hesaplama` },

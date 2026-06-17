@@ -4,6 +4,8 @@ import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { HOME_PATH } from "@/config/site";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { LEGAL_NAV } from "@/config/legalPages";
+import { buildSpeakableSchema, SPEAKABLE_SELECTORS } from "@/utils/seo";
+import { siteUrl } from "@/config/site";
 
 /**
  * @param {{
@@ -17,14 +19,21 @@ import { LEGAL_NAV } from "@/config/legalPages";
  * }} props
  */
 export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sections, highlights }) {
+  const speakableSchema = buildSpeakableSchema({
+    name: title,
+    url: siteUrl(path),
+    cssSelector: SPEAKABLE_SELECTORS.legal
+  });
+
   return (
     <div className="legal-shell">
       <BreadcrumbSchema items={breadcrumb} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }} />
 
       <header className="legal-shell-hero">
         <span className="legal-shell-hero-bg" aria-hidden="true" />
         <span className="legal-shell-hero-overlay" aria-hidden="true" />
-        <div className="container legal-shell-hero-inner">
+        <div className="container legal-shell-hero-inner legal-shell-hero-inner--boxed">
           <nav className="legal-breadcrumb" aria-label="Breadcrumb">
             {breadcrumb.map((item, index) => (
               <span key={item.path} className="legal-breadcrumb-item">
@@ -39,11 +48,12 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
           </nav>
           <span className="legal-shell-tag">{tag}</span>
           <h1>{capitalizeHeadingText(title)}</h1>
-          <p className="legal-shell-lead">{lead}</p>
+          <p className="legal-shell-lead legal-speakable">{lead}</p>
         </div>
       </header>
 
-      <div className="container legal-shell-body">
+      <div className="legal-shell-outer">
+        <div className="container legal-shell-body legal-shell-body--boxed">
         <aside className="legal-shell-sidebar">
           <p className="legal-sidebar-title">Yasal Sayfalar</p>
           <nav className="legal-sidebar-nav" aria-label="Yasal sayfalar">
@@ -93,6 +103,7 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
               </article>
             ))}
           </div>
+        </div>
         </div>
       </div>
     </div>

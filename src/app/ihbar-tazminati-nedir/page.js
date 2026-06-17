@@ -1,6 +1,11 @@
 import IhbarTazminatGuide from "@/components/guide/ihbar/IhbarTazminatGuide";
-import { IHBAR_NEDIR_PATH, IHBAR_PAGE_SEO } from "@/config/site";
-import { buildArticleSchema, buildPageMetadata, buildSpeakableSchema } from "@/utils/seo";
+import { IHBAR_NEDIR_PATH, IHBAR_PAGE_SEO, siteUrl } from "@/config/site";
+import {
+  buildArticleSchema,
+  buildPageMetadata,
+  buildSpeakableSchema,
+  SPEAKABLE_SELECTORS
+} from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: IHBAR_PAGE_SEO.title,
@@ -14,7 +19,11 @@ export default function IhbarTazminatGuidePage() {
     headline: IHBAR_PAGE_SEO.title,
     path: IHBAR_NEDIR_PATH
   });
-  const speakableSchema = buildSpeakableSchema();
+  const speakableSchema = buildSpeakableSchema({
+    name: IHBAR_PAGE_SEO.title,
+    url: siteUrl(IHBAR_NEDIR_PATH),
+    cssSelector: SPEAKABLE_SELECTORS.guide
+  });
 
   return (
     <>

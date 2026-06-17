@@ -1,14 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { useMotionPrefs } from "@/components/guide/motion/useMotionPrefs";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 
+const FOOTER_GAP = 24;
+const CLAMP_TOLERANCE_PX = 12;
+
+function measureOpenAnswer(answerEl, isLastOpen) {
+  const prevMax = answerEl.style.maxHeight;
+  const prevOverflow = answerEl.style.overflowY;
+  answerEl.style.maxHeight = "none";
+  answerEl.style.overflowY = "visible";
+  const fullHeight = Math.ceil(answerEl.scrollHeight);
+  answerEl.style.maxHeight = prevMax;
+  answerEl.style.overflowY = prevOverflow;
+
+  if (!isLastOpen) {
+    return { offset: fullHeight, maxHeight: null, clamped: false };
+  }
+
+  const footer = document.querySelector(".site-footer");
+  if (!footer) {
+    return { offset: fullHeight, maxHeight: null, clamped: false };
+  }
+
+  const answerTop = answerEl.getBoundingClientRect().top;
+  const footerTop = footer.getBoundingClientRect().top;
+  const available = Math.floor(footerTop - answerTop - FOOTER_GAP);
+  const needsClamp = available + CLAMP_TOLERANCE_PX < fullHeight;
+
+  if (!needsClamp) {
+    return { offset: fullHeight, maxHeight: null, clamped: false };
+  }
+
+  const visibleHeight = Math.max(64, Math.min(fullHeight, available));
+  return {
+    offset: visibleHeight,
+    maxHeight: visibleHeight,
+    clamped: true
+  };
+}
+
 export default function FaqAccordion({ items, className = "", variant = "guide" }) {
   const [openId, setOpenId] = useState(null);
+  const [answerOffset, setAnswerOffset] = useState(0);
+  const [answerMaxHeight, setAnswerMaxHeight] = useState(null);
+  const [isAnswerClamped, setIsAnswerClamped] = useState(false);
+  const [isLastOpen, setIsLastOpen] = useState(false);
+  const answerRef = useRef(null);
+  const wrapRef = useRef(null);
   const { reduceMotion, viewport, ease } = useMotionPrefs();
   const isHome = variant === "home";
 
@@ -16,11 +60,80 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
     setOpenId((current) => (current === id ? null : id));
   };
 
+  const updateMeasurements = useCallback(() => {
+    const el = answerRef.current;
+    if (!el || !openId) {
+      setAnswerOffset(0);
+      setAnswerMaxHeight(null);
+      setIsAnswerClamped(false);
+      setIsLastOpen(false);
+      return;
+    }
+
+    const lastOpen = items.findIndex((item) => item.id === openId) === items.length - 1;
+    setIsLastOpen(lastOpen);
+
+    const { offset, maxHeight, clamped } = measureOpenAnswer(el, lastOpen);
+    setAnswerOffset(offset);
+    setAnswerMaxHeight(maxHeight);
+    setIsAnswerClamped(clamped);
+  }, [openId, items]);
+
+  useLayoutEffect(() => {
+    if (!openId) {
+      setAnswerOffset(0);
+      setAnswerMaxHeight(null);
+      setIsAnswerClamped(false);
+      setIsLastOpen(false);
+      return;
+    }
+
+    updateMeasurements();
+
+    const rafId = requestAnimationFrame(() => {
+      updateMeasurements();
+    });
+
+    const observer = new ResizeObserver(() => {
+      updateMeasurements();
+    });
+
+    if (answerRef.current) {
+      observer.observe(answerRef.current);
+    }
+
+    window.addEventListener("resize", updateMeasurements);
+    window.addEventListener("scroll", updateMeasurements, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      observer.disconnect();
+      window.removeEventListener("resize", updateMeasurements);
+      window.removeEventListener("scroll", updateMeasurements);
+    };
+  }, [openId, updateMeasurements]);
+
   const listClassName = isHome ? "faq-list" : `guide-accordion ${className}`.trim();
-  const wrapClassName = isHome ? "faq-panel-wrap" : "guide-accordion-wrap";
+  const wrapClassName = [
+    isHome ? "faq-panel-wrap" : "guide-accordion-wrap",
+    openId ? "is-faq-open" : "",
+    openId && isLastOpen ? "is-faq-open-last" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const wrapStyle = openId
+    ? {
+        "--faq-answer-offset": `${answerOffset}px`,
+        ...(answerMaxHeight ? { "--faq-answer-max-height": `${answerMaxHeight}px` } : {})
+      }
+    : undefined;
+
+  const answerStyle = answerMaxHeight ? { maxHeight: `${answerMaxHeight}px` } : undefined;
+  const answerClampClass = isAnswerClamped ? " is-clamped" : "";
 
   return (
-    <div className={wrapClassName}>
+    <div className={wrapClassName} style={wrapStyle} ref={wrapRef}>
       <div className={listClassName} role="list">
         {items.map((item, index) => {
           const isOpen = openId === item.id;
@@ -68,7 +181,12 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
 
               <div
                 id={panelId}
-                className={isHome ? "faq-answer-wrap" : "guide-accordion-answer-wrap"}
+                ref={isOpen ? answerRef : undefined}
+                className={
+                  (isHome ? "faq-answer-wrap" : "guide-accordion-answer-wrap") +
+                  (isOpen ? answerClampClass : "")
+                }
+                style={isOpen ? answerStyle : undefined}
                 role="region"
                 aria-labelledby={buttonId}
                 hidden={!isOpen}

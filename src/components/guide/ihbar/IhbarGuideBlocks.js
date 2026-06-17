@@ -30,16 +30,6 @@ import TiltCard from "../ui/TiltCard";
 import { Reveal, RevealItem, RevealStagger } from "../motion/Reveal";
 import { useMotionPrefs } from "../motion/useMotionPrefs";
 
-const TOC_ITEMS = [
-  { id: "ihbar-nedir", label: "İhbar Tazminatı Nedir?" },
-  { id: "ihbar-suresi", label: "İhbar Süreleri" },
-  { id: "nasil-hesaplanir", label: "İhbar Süresi ve Ücret Farkı" },
-  { id: "ornekler", label: "Hesaplama Örnekleri" },
-  { id: "ihbar-sss", label: "Sık Sorulan Sorular" }
-];
-
-export { TOC_ITEMS as IHBAR_TOC_ITEMS };
-
 export function GuideImage({ src, alt, priority = false, className = "" }) {
   return (
     <div className={`ihbar-guide-image${className ? ` ${className}` : ""}`}>
@@ -64,9 +54,6 @@ export function NoticeHero({ image }) {
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
           <h1 id="ihbar-nedir">İhbar Tazminatı Nedir?</h1>
-          <p className="author-attribution">
-            Yazan: Tazminat Hesaplama Uzmanı &nbsp;|&nbsp; Son güncelleme: Haziran 2026
-          </p>
           <p className="hero-copy">
             İhbar tazminatı, bir tarafın yasal olarak gerekli ihbar süresine uymadan iş sözleşmesini feshetmesi
             durumunda ortaya çıkan tutardır. İhbar tazminatına ilişkin yasal çerçeve, 4857 sayılı{" "}
@@ -184,14 +171,10 @@ export function NoticeWarningCallout({ items }) {
 
 const EXAMPLE_ICONS = [Briefcase, UserMinus, Scale];
 
-export function NoticeScenarioCards({ examples, accentImage }) {
+export function NoticeScenarioCards({ examples }) {
   return (
-    <div className="ihbar-examples-layout">
-      <Reveal className="ihbar-examples-accent">
-        <GuideImage src={accentImage.src} alt={accentImage.alt} className="ihbar-guide-image--accent" />
-      </Reveal>
-      <RevealStagger className="ihbar-examples-grid">
-        {examples.map((example, index) => {
+    <RevealStagger className="ihbar-examples-grid">
+      {examples.map((example, index) => {
           const Icon = EXAMPLE_ICONS[index] ?? FileText;
           return (
             <RevealItem key={example.title}>
@@ -210,8 +193,7 @@ export function NoticeScenarioCards({ examples, accentImage }) {
             </RevealItem>
           );
         })}
-      </RevealStagger>
-    </div>
+    </RevealStagger>
   );
 }
 

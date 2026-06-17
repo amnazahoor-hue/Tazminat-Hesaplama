@@ -25,7 +25,7 @@ export default function GuideFaqSection({ id, items, includeFormula = false, hea
 
   return (
     <GuideSection id={id} className="guide-section--faq">
-      <SectionHeading id={headingId}>SSS</SectionHeading>
+      <SectionHeading id={headingId}>Sıkça Sorulan Sorular</SectionHeading>
       <Accordion items={items} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </GuideSection>

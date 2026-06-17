@@ -36,14 +36,23 @@ export function buildShareReport({ form, result, activeTab }) {
   }
 
   const outputLines = [
-    `Çalışma Süresi: ${formatDurationText(result.calismaSuresi)}`,
-    `Düzenlenmiş Brüt Maaş: ₺${TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)}`,
+    `Çalışma Süresi: ${formatDurationText(result.calismaSuresi)} (${result.totalDays} gün)`,
+    `Entegre Brüt Maaş: ₺${TR.money(result.entegreBrutMaas ?? result.duzenlenmisBrutMaas ?? result.brutMaas)}`,
     `Günlük Ücret: ₺${TR.money(result.gunlukUcret ?? result.brutMaas / 30)}`,
-    `Haftalık Ücret: ₺${TR.money(result.haftalikUcret ?? (result.brutMaas * 12) / 52)}`,
-    `Kıdem Tazminatı: ₺${TR.money(result.kidemTazminati)}`,
-    `İhbar Tazminatı (${result.ihbarSuresiLabel || ""}): ₺${TR.money(result.ihbarTazminati)}`,
-    `Toplam Tazminat: ₺${TR.money(result.toplamTazminat)}`
+    `Kıdem Tazminatı (Brüt): ₺${TR.money(result.brutKidemTazminati ?? result.kidemTazminati)}`,
+    `Kıdem Tazminatı (Net): ₺${TR.money(result.netKidemTazminati)}`,
+    `İhbar Tazminatı (Brüt) (${result.ihbarSuresiLabel || ""}): ₺${TR.money(result.brutIhbarTazminati ?? result.ihbarTazminati)}`,
+    `İhbar Tazminatı (Net): ₺${TR.money(result.netIhbarTazminati)}`,
+    `Toplam Tazminat (Net): ₺${TR.money(result.toplamTazminat)} (net kıdem + net ihbar)`
   ];
+
+  if (result.ekAlacaklarToplami > 0) {
+    outputLines.push(`Ek alacaklar (pakete dahil değil): ₺${TR.money(result.ekAlacaklarToplami)}`);
+  }
+
+  if (result.compensationWarning) {
+    outputLines.unshift(`Uyarı: ${result.compensationWarning}`);
+  }
 
   if (activeTab === "detayli" && result.unusedLeaveDays > 0) {
     outputLines.splice(3, 0, `Kullanılmamış İzin: ₺${TR.money(result.unusedLeavePay)}`);
@@ -71,16 +80,15 @@ export function buildTotalCompensationShareReport({ form, result, activeTab }) {
   if (form.travelAllowance) extraInputs.push(`Aylık Ulaşım Ödeneği: ₺${form.travelAllowance}`);
 
   const extraOutputs = [
-    `Maaş (yıllık): ₺${TR.money(result.yillikMaas)}`,
-    `Bonuslar: ₺${TR.money(result.bonuslar)}`,
-    `Yemek Harcırahı: ₺${TR.money(result.yillikYemek)}`,
-    `Ulaşım Ödeneği: ₺${TR.money(result.yillikUlasim)}`,
-    `Kıdem Tazminatı: ₺${TR.money(result.kidemTazminati)}`,
-    `Toplam Tazminat Değeri: ₺${TR.money(result.toplamTazminatDegeri)}`,
+    `Entegre brüt maaş: ₺${TR.money(result.entegreBrutMaas)}`,
+    `Kıdem (Net): ₺${TR.money(result.netKidemTazminati)}`,
+    `İhbar (Net): ₺${TR.money(result.netIhbarTazminati)}`,
+    `Toplam Tazminat Değeri: ₺${TR.money(result.toplamTazminatDegeri)} (net kıdem + net ihbar)`,
     "",
-    `Ek çıkış ödemeleri (toplam değere dahil değil):`,
-    `İhbar Tazminatı: ₺${TR.money(result.ihbarTazminati)}`,
-    `Toplam Çıkış Paketi: ₺${TR.money(result.cikisOdemePaketi)}`
+    "Bilgi amaçlı (çıkış paketine dahil değil):",
+    `Yıllık maaş: ₺${TR.money(result.yillikMaas)}`,
+    `Bonuslar: ₺${TR.money(result.bonuslar)}`,
+    `Ek alacaklar: ₺${TR.money(result.ekAlacaklarToplami)}`
   ];
 
   const allInputs = [...inputLines, ...extraInputs];

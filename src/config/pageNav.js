@@ -41,6 +41,9 @@ export const MAIN_HEADER_PAGES = [
   }
 ];
 
+/** Header pill nav — home calculator link omitted (logo covers anasayfa). */
+export const HEADER_NAV_PAGES = MAIN_HEADER_PAGES.filter((page) => page.path !== HOME_PATH);
+
 /** @type {Record<string, { cta: { path: string, section?: string, focusInput?: string }, items: { id: string, label: string, long?: boolean }[] }>} */
 export const PAGE_NAV = {
   [HOME_PATH]: {
@@ -49,7 +52,7 @@ export const PAGE_NAV = {
       { id: "hesapla", label: "Kıdem Tazminatı Hesaplayıcısı", long: true },
       { id: "nasil-hesaplanir", label: "Nasıl Hesaplanır?" },
       { id: "tazminat-turleri", label: "Türler" },
-      { id: "sss", label: "SSS" }
+      { id: "sss", label: "Sıkça Sorulan Sorular", long: true }
     ]
   },
   [TAZMINAT_HESAPLAMA_PATH]: {
@@ -60,7 +63,7 @@ export const PAGE_NAV = {
       { id: "guide-adimlar", label: "Nasıl Hesaplanır?" },
       { id: "guide-faktorler", label: "Faktörler" },
       { id: "guide-2026", label: "2026 Kılavuzu" },
-      { id: "guide-sss", label: "SSS" }
+      { id: "guide-sss", label: "Sıkça Sorulan Sorular", long: true }
     ]
   },
   [IHBAR_NEDIR_PATH]: {
@@ -70,7 +73,7 @@ export const PAGE_NAV = {
       { id: "ihbar-sure", label: "İhbar Süresi" },
       { id: "ihbar-ornekler", label: "Örnekler" },
       { id: "ihbar-haklar", label: "Haklar" },
-      { id: "ihbar-sss", label: "SSS" }
+      { id: "ihbar-sss", label: "Sıkça Sorulan Sorular", long: true }
     ]
   },
   [KIDEM_TAVANI_PATH]: {
@@ -80,7 +83,7 @@ export const PAGE_NAV = {
       { id: "tavan-nedir", label: "Nedir?" },
       { id: "tavan-2026", label: "Oranlar" },
       { id: "tavan-hesaplama", label: "Hesaplama" },
-      { id: "tavan-sss", label: "SSS" }
+      { id: "tavan-sss", label: "Sıkça Sorulan Sorular", long: true }
     ]
   }
 };
@@ -104,12 +107,6 @@ export function getPageNav(pathname) {
 export function isMainHeaderPage(pathname) {
   const pagePath = resolvePagePath(pathname);
   return MAIN_HEADER_PAGES.some((page) => page.path === pagePath);
-}
-
-export function getMainPageSections(pathname) {
-  if (!isMainHeaderPage(pathname)) return null;
-  const pagePath = resolvePagePath(pathname);
-  return PAGE_NAV[pagePath]?.items ?? null;
 }
 
 export function getMainPageMeta(pathname) {

@@ -1,4 +1,4 @@
-import { TR } from "@/utils/helpers";
+import { SEVERANCE_DAYS_DIVISOR, TR } from "@/utils/helpers";
 import { formatDurationText, REASON_LABELS } from "@/utils/shareReport";
 
 const TITLES = {
@@ -10,117 +10,10 @@ function PdfDisclaimer() {
   return (
     <footer className="pdf-report-footer">
       <p>
-        Hayır, hesaplayıcı sonuçları yalnızca bilgilendirme amaçlıdır. Yasal olarak kabul edilmemelidirler. Çalışanlar
-        nihai ödemelerini İK departmanlarından ve işverenlerinden teyit etmelidir.
+        Hesaplayıcı sonuçları yalnızca bilgilendirme amaçlıdır. Yasal olarak bağlayıcı değildir. Çalışanlar nihai
+        ödemelerini İK departmanlarından ve işverenlerinden teyit etmelidir.
       </p>
     </footer>
-  );
-}
-
-function SeveranceBreakdown({ result, activeTab, dailyWage, kidemBase }) {
-  return (
-    <>
-      <tr>
-        <td>Düzenlenmiş Brüt Maaş</td>
-        <td>Maaş + ödenekler + prim</td>
-        <td>₺{TR.money(result.duzenlenmisBrutMaas ?? result.brutMaas)}</td>
-      </tr>
-      <tr>
-        <td>Günlük Ücret</td>
-        <td>Brüt / 30</td>
-        <td>₺{TR.money(dailyWage)}</td>
-      </tr>
-      <tr>
-        <td>Haftalık Ücret</td>
-        <td>Brüt × 12 / 52</td>
-        <td>₺{TR.money(result.haftalikUcret ?? (result.brutMaas * 12) / 52)}</td>
-      </tr>
-      <tr>
-        <td>Kıdem Tazminatı</td>
-        <td>
-          30 günlük brüt (₺{TR.money(kidemBase)}) × {result.totalYears.toFixed(2)} yıl
-        </td>
-        <td>₺{TR.money(result.kidemTazminati)}</td>
-      </tr>
-      <tr>
-        <td>İhbar Tazminatı</td>
-        <td>
-          ₺{TR.money(dailyWage)} × {result.ihbarSuresi} gün ({result.ihbarSuresiLabel || ""})
-        </td>
-        <td>₺{TR.money(result.ihbarTazminati)}</td>
-      </tr>
-      {activeTab === "detayli" && result.unusedLeaveDays > 0 && (
-        <tr>
-          <td>Kullanılmamış İzin</td>
-          <td>
-            ₺{TR.money(dailyWage)} × {result.unusedLeaveDays} gün
-          </td>
-          <td>₺{TR.money(result.unusedLeavePay)}</td>
-        </tr>
-      )}
-      <tr className="is-total-row">
-        <td>Toplam</td>
-        <td />
-        <td>₺{TR.money(result.toplamTazminat)}</td>
-      </tr>
-    </>
-  );
-}
-
-function TotalCompensationBreakdown({ result }) {
-  const kidemBase = result.kidemBazTutari ?? Math.min(result.brutMaas, result.tavanTutari);
-  return (
-    <>
-      <tr>
-        <td>Maaş</td>
-        <td>₺{TR.money(result.brutMaas)} x 12 ay</td>
-        <td>₺{TR.money(result.yillikMaas)}</td>
-      </tr>
-      {result.bonuslar > 0 && (
-        <tr>
-          <td>Bonuslar</td>
-          <td>
-            ₺{TR.money(result.performanceBonus)} x {result.bonusPaymentsPerYear} ödeme
-          </td>
-          <td>₺{TR.money(result.bonuslar)}</td>
-        </tr>
-      )}
-      {result.yillikYemek > 0 && (
-        <tr>
-          <td>Yemek Harcırahı</td>
-          <td>₺{TR.money(result.monthlyMeal)} x 12 ay</td>
-          <td>₺{TR.money(result.yillikYemek)}</td>
-        </tr>
-      )}
-      {result.yillikUlasim > 0 && (
-        <tr>
-          <td>Ulaşım Ödeneği</td>
-          <td>₺{TR.money(result.monthlyTravel)} x 12 ay</td>
-          <td>₺{TR.money(result.yillikUlasim)}</td>
-        </tr>
-      )}
-      <tr>
-        <td>Kıdem Tazminatı</td>
-        <td>
-          30 günlük brüt (₺{TR.money(kidemBase)}) × {result.totalYears.toFixed(2)} yıl
-        </td>
-        <td>₺{TR.money(result.kidemTazminati)}</td>
-      </tr>
-      <tr className="is-total-row">
-        <td>Toplam Tazminat Değeri</td>
-        <td>Maaş + Bonuslar + Ödenekler + Kıdem</td>
-        <td>₺{TR.money(result.toplamTazminatDegeri)}</td>
-      </tr>
-      {result.ihbarTazminati > 0 && (
-        <tr>
-          <td>İhbar Tazminatı</td>
-          <td>
-            ₺{TR.money(result.gunlukUcret)} × {result.ihbarSuresi} gün ({result.ihbarSuresiLabel})
-          </td>
-          <td>₺{TR.money(result.ihbarTazminati)}</td>
-        </tr>
-      )}
-    </>
   );
 }
 
@@ -130,8 +23,7 @@ export default function ResultPdfTemplate({ form, result, activeTab, variant = "
   const isTotal = variant === "total";
   const reasonLabel = REASON_LABELS[form.reason] || form.reason;
   const weeklyLabel = form.weeklyDays === "6" ? "6 gün" : "5 gün";
-  const kidemBase = result.kidemBazTutari ?? Math.min(result.brutMaas, result.tavanTutari);
-  const dailyWage = result.gunlukUcret ?? result.brutMaas / 30;
+  const divisorLabel = String(SEVERANCE_DAYS_DIVISOR).replace(".", ",");
   const showBenefits = isTotal || activeTab === "detayli";
 
   return (
@@ -140,7 +32,7 @@ export default function ResultPdfTemplate({ form, result, activeTab, variant = "
         <header className="pdf-report-header">
           <div className="pdf-report-brand">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/logo.webp" alt="" width={52} height={52} />
+            <img src="/images/logo.svg" alt="" width={52} height={52} />
             <div>
               <strong>{TITLES[variant]}</strong>
             </div>
@@ -186,22 +78,6 @@ export default function ResultPdfTemplate({ form, result, activeTab, variant = "
                   </tr>
                 </>
               )}
-              {activeTab === "detayli" && (
-                <>
-                  <tr>
-                    <td>Kullanılmamış Yıllık İzin (gün)</td>
-                    <td>{form.unusedLeaveDays || "0"}</td>
-                  </tr>
-                  <tr>
-                    <td>Fazla Mesai Alacağı (₺)</td>
-                    <td>₺{form.overtime || TR.money(0)}</td>
-                  </tr>
-                  <tr>
-                    <td>Diğer Alacaklar (₺)</td>
-                    <td>₺{form.otherReceivables || TR.money(0)}</td>
-                  </tr>
-                </>
-              )}
             </tbody>
           </table>
         </section>
@@ -209,40 +85,23 @@ export default function ResultPdfTemplate({ form, result, activeTab, variant = "
         <section className="pdf-report-block">
           <h4>Hesaplama Sonuçları</h4>
           <p className="pdf-report-period">
-            {result.iseGirisTarihi} - {result.istenCikisTarihi} / {formatDurationText(result.calismaSuresi)}
+            {result.iseGirisTarihi} - {result.istenCikisTarihi} / {formatDurationText(result.calismaSuresi)} (
+            {result.totalDays} gün)
           </p>
+          {result.compensationWarning && <p className="pdf-report-warning">{result.compensationWarning}</p>}
           <div className="pdf-report-cards">
-            {isTotal ? (
-              <>
-                <article>
-                  <span>Maaş (Yıllık)</span>
-                  <strong>₺{TR.money(result.yillikMaas)}</strong>
-                </article>
-                <article>
-                  <span>Kıdem Tazminatı</span>
-                  <strong>₺{TR.money(result.kidemTazminati)}</strong>
-                </article>
-                <article className="is-total">
-                  <span>Toplam Tazminat Değeri</span>
-                  <strong>₺{TR.money(result.toplamTazminatDegeri)}</strong>
-                </article>
-              </>
-            ) : (
-              <>
-                <article>
-                  <span>Kıdem Tazminatı</span>
-                  <strong>₺{TR.money(result.kidemTazminati)}</strong>
-                </article>
-                <article>
-                  <span>İhbar Tazminatı</span>
-                  <strong>₺{TR.money(result.ihbarTazminati)}</strong>
-                </article>
-                <article className="is-total">
-                  <span>Toplam Tazminat</span>
-                  <strong>₺{TR.money(result.toplamTazminat)}</strong>
-                </article>
-              </>
-            )}
+            <article>
+              <span>Kıdem (Net)</span>
+              <strong>₺{TR.money(result.netKidemTazminati)}</strong>
+            </article>
+            <article>
+              <span>İhbar (Net)</span>
+              <strong>₺{TR.money(result.netIhbarTazminati)}</strong>
+            </article>
+            <article className="is-total">
+              <span>{isTotal ? "Toplam Tazminat Değeri" : "Toplam Tazminat (Net)"}</span>
+              <strong>₺{TR.money(isTotal ? result.toplamTazminatDegeri : result.toplamTazminat)}</strong>
+            </article>
           </div>
           <table className="pdf-report-breakdown">
             <thead>
@@ -253,11 +112,45 @@ export default function ResultPdfTemplate({ form, result, activeTab, variant = "
               </tr>
             </thead>
             <tbody>
-              {isTotal ? (
-                <TotalCompensationBreakdown result={result} />
-              ) : (
-                <SeveranceBreakdown result={result} activeTab={activeTab} dailyWage={dailyWage} kidemBase={kidemBase} />
-              )}
+              <tr>
+                <td>Entegre Brüt Maaş</td>
+                <td>Maaş + ödenekler + (yıllık prim / 12)</td>
+                <td>₺{TR.money(result.entegreBrutMaas)}</td>
+              </tr>
+              <tr>
+                <td>Günlük Ücret</td>
+                <td>₺{TR.money(result.entegreBrutMaas)} / 30</td>
+                <td>₺{TR.money(result.gunlukUcret)}</td>
+              </tr>
+              <tr>
+                <td>Kıdem (Brüt)</td>
+                <td>
+                  (₺{TR.money(result.kidemBazTutari)} × {result.totalDays} gün) / {divisorLabel}
+                </td>
+                <td>₺{TR.money(result.brutKidemTazminati)}</td>
+              </tr>
+              <tr>
+                <td>Kıdem (Net)</td>
+                <td>Brüt − %0,759 damga</td>
+                <td>₺{TR.money(result.netKidemTazminati)}</td>
+              </tr>
+              <tr>
+                <td>İhbar (Brüt)</td>
+                <td>
+                  ₺{TR.money(result.gunlukUcret)} × {result.ihbarSuresi} gün
+                </td>
+                <td>₺{TR.money(result.brutIhbarTazminati)}</td>
+              </tr>
+              <tr>
+                <td>İhbar (Net)</td>
+                <td>Brüt − damga − %15 gelir</td>
+                <td>₺{TR.money(result.netIhbarTazminati)}</td>
+              </tr>
+              <tr className="is-total-row">
+                <td>Toplam</td>
+                <td>Net kıdem + net ihbar</td>
+                <td>₺{TR.money(isTotal ? result.toplamTazminatDegeri : result.toplamTazminat)}</td>
+              </tr>
             </tbody>
           </table>
         </section>

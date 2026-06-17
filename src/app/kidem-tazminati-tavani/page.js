@@ -1,6 +1,11 @@
 import TavanGuide from "@/components/guide/tavan/TavanGuide";
-import { KIDEM_TAVANI_PAGE_SEO, KIDEM_TAVANI_PATH } from "@/config/site";
-import { buildArticleSchema, buildPageMetadata, buildSpeakableSchema } from "@/utils/seo";
+import { KIDEM_TAVANI_PAGE_SEO, KIDEM_TAVANI_PATH, siteUrl } from "@/config/site";
+import {
+  buildArticleSchema,
+  buildPageMetadata,
+  buildSpeakableSchema,
+  SPEAKABLE_SELECTORS
+} from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: KIDEM_TAVANI_PAGE_SEO.title,
@@ -14,7 +19,11 @@ export default function TavanGuidePage() {
     headline: KIDEM_TAVANI_PAGE_SEO.title,
     path: KIDEM_TAVANI_PATH
   });
-  const speakableSchema = buildSpeakableSchema();
+  const speakableSchema = buildSpeakableSchema({
+    name: KIDEM_TAVANI_PAGE_SEO.title,
+    url: siteUrl(KIDEM_TAVANI_PATH),
+    cssSelector: SPEAKABLE_SELECTORS.guide
+  });
 
   return (
     <>

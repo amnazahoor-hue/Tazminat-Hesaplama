@@ -1,5 +1,5 @@
 import LegalPageShell from "@/components/legal/LegalPageShell";
-import { buildPageMetadata } from "@/utils/seo";
+import { buildPageMetadata, ROBOTS_NOINDEX_FOLLOW } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: "Kullanım Şartları | Tazminat Hesaplama Hizmet Koşulları",
@@ -7,7 +7,7 @@ export const metadata = buildPageMetadata({
     "Tazminat Hesaplama kullanım şartları: hizmet kapsamı, hesaplama sonuçlarının niteliği, sorumluluk sınırları ve platform güncellemelerine ilişkin koşullar.",
   path: "/kullanim-sartlari",
   keywords: ["kullanım şartları", "hukuki koşullar", "tazminat hesaplama kullanımı"],
-  robots: { index: false, follow: true }
+  robots: ROBOTS_NOINDEX_FOLLOW
 });
 
 const SECTIONS = [
