@@ -151,7 +151,7 @@ body.is-preloading {
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  width: min(100%, 320px);
+  width: min(100%, 380px);
   padding: 0 16px;
   border-radius: 0;
   background: transparent;
@@ -164,6 +164,7 @@ body.is-preloading {
   justify-content: center;
   align-items: center;
   cursor: default;
+  align-self: center;
 }
 
 .site-preloader-brand .brand-mark {
@@ -205,7 +206,8 @@ body.is-preloading {
 }
 
 .site-preloader-bar {
-  width: min(100%, 192px);
+  width: 100%;
+  max-width: 300px;
   height: 4px;
   margin-top: 0;
   border-radius: 999px;

@@ -1,5 +1,15 @@
 export const SITE_URL = "https://kıdemtazminatıhesaplama.tr";
 
+const SITE_UNICODE_HOST = "kıdemtazminatıhesaplama.tr";
+
+/** Known Punycode / ASCII host variants that must map to SITE_UNICODE_HOST. */
+const LEGACY_SITE_HOSTS = [
+  "xn--kdemtazminathesaplama-kgdl.tr",
+  "xn--kdemtazminathesaplama-kgd.tr",
+  "kidemtazminatihesaplama.tr",
+  "kidentazminatihesaplama.tr"
+];
+
 /** Punycode hostname for SITE_URL (Node/URL normalizes IDN to this form). */
 export function getSitePunycodeHost() {
   return new URL(SITE_URL).hostname;
@@ -7,22 +17,36 @@ export function getSitePunycodeHost() {
 
 /** Unicode hostname as written in SITE_URL. */
 export function getSiteUnicodeHost() {
-  const match = SITE_URL.match(/^https?:\/\/([^/]+)/);
-  return match?.[1] ?? getSitePunycodeHost();
+  return SITE_UNICODE_HOST;
+}
+
+function replaceLegacySiteHosts(value) {
+  let result = value;
+
+  for (const host of LEGACY_SITE_HOSTS) {
+    if (result.includes(host)) {
+      result = result.replaceAll(host, SITE_UNICODE_HOST);
+    }
+  }
+
+  const punycodeHost = getSitePunycodeHost();
+  if (punycodeHost !== SITE_UNICODE_HOST && result.includes(punycodeHost)) {
+    result = result.replaceAll(punycodeHost, SITE_UNICODE_HOST);
+  }
+
+  return result;
 }
 
 /** Force site URLs in strings to use the Unicode domain (not xn-- Punycode). */
 export function toUnicodeSiteUrl(url) {
   if (typeof url !== "string" || !url) return url;
+  return replaceLegacySiteHosts(url);
+}
 
-  const punycodeHost = getSitePunycodeHost();
-  const unicodeHost = getSiteUnicodeHost();
-
-  if (punycodeHost === unicodeHost || !url.includes(punycodeHost)) {
-    return url;
-  }
-
-  return url.replaceAll(punycodeHost, unicodeHost);
+/** Post-process JSON-LD text so every site origin uses the Unicode domain. */
+export function normalizeJsonLdSiteUrls(json) {
+  if (typeof json !== "string" || !json) return json;
+  return replaceLegacySiteHosts(json);
 }
 export const HOME_PATH = "/";
 export const HOME_SLUG = "kıdem-tazminatı-hesaplaması";

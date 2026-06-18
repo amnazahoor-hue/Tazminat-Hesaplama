@@ -1,5 +1,5 @@
 import { FOOTER_SOCIAL_LINKS } from "@/config/footer";
-import { SITE_URL, siteUrl, toUnicodeSiteUrl } from "@/config/site";
+import { SITE_URL, normalizeJsonLdSiteUrls, siteUrl, toUnicodeSiteUrl } from "@/config/site";
 
 export { SITE_URL };
 
@@ -22,7 +22,7 @@ export function normalizeSchemaUrls(value) {
 
 /** JSON-LD output with Unicode site domain preserved (avoids xn-- Punycode). */
 export function serializeStructuredData(schema) {
-  return JSON.stringify(normalizeSchemaUrls(schema));
+  return normalizeJsonLdSiteUrls(JSON.stringify(normalizeSchemaUrls(schema)));
 }
 
 /** Legal & author pages — noindex, follow links */
