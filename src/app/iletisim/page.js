@@ -1,14 +1,13 @@
 import ContactPageShell from "@/components/contact/ContactPageShell";
 import { ILETISIM_PATH } from "@/config/site";
-import { buildPageMetadata, ROBOTS_NOINDEX_FOLLOW } from "@/utils/seo";
+import { buildPageMetadata } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: "İletişim | Tazminat Hesaplama Destek ve Bilgi Merkezi",
   description:
     "Tazminat Hesaplama iletişim: genel bilgi, teknik destek, içerik önerileri ve gizlilik talepleri için e-posta kanalları ve yanıt süreçleri hakkında bilgi.",
   path: ILETISIM_PATH,
-  keywords: ["iletişim", "destek", "tazminat hesaplama iletişim", "e-posta"],
-  robots: ROBOTS_NOINDEX_FOLLOW
+  keywords: ["iletişim", "destek", "tazminat hesaplama iletişim", "e-posta"]
 });
 
 export default function IletisimPage() {

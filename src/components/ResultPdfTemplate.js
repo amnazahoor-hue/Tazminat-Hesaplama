@@ -1,4 +1,5 @@
 import { SEVERANCE_DAYS_DIVISOR, TR } from "@/utils/helpers";
+import { getImageMeta, IMAGES } from "@/config/images";
 import { formatDurationText, REASON_LABELS } from "@/utils/shareReport";
 
 const TITLES = {
@@ -20,6 +21,8 @@ function PdfDisclaimer() {
 export default function ResultPdfTemplate({ form, result, activeTab, variant = "severance" }) {
   if (!result) return null;
 
+  const logoMeta = getImageMeta(IMAGES.logo);
+
   const isTotal = variant === "total";
   const reasonLabel = REASON_LABELS[form.reason] || form.reason;
   const weeklyLabel = form.weeklyDays === "6" ? "6 gün" : "5 gün";
@@ -32,7 +35,13 @@ export default function ResultPdfTemplate({ form, result, activeTab, variant = "
         <header className="pdf-report-header">
           <div className="pdf-report-brand">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/logo.svg" alt="" width={52} height={52} />
+            <img
+              src={IMAGES.logo}
+              alt={logoMeta?.alt ?? "Tazminat Hesaplama logosu"}
+              title={logoMeta?.title ?? "Tazminat Hesaplama"}
+              width={52}
+              height={52}
+            />
             <div>
               <strong>{TITLES[variant]}</strong>
             </div>

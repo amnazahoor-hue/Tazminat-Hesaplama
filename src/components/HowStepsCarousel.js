@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
-import { IMAGES, IMAGE_ALTS } from "@/config/images";
+import AppImage from "@/components/common/AppImage";
+import { H3 } from "@/components/common/Heading";
+import { getImageMeta, IMAGES } from "@/config/images";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,14 +15,15 @@ const STEPS = [
     keyword: "MAAŞ",
     text: "Yıllık maaşınızı veya haftalık ücretinizi girin.",
     image: IMAGES.home.freeCalcOffice,
-    imageAlt: IMAGE_ALTS.freeCalcOffice
+    imageAlt: getImageMeta(IMAGES.home.freeCalcOffice)?.alt
   },
   {
     id: 2,
     className: "how-steps-card--2",
     keyword: "SÜRE",
     text: "Şirketteki toplam hizmet sürenizi ekleyin.",
-    image: IMAGES.home.employerWhyBg
+    image: IMAGES.home.employerWhyBg,
+    imageAlt: getImageMeta(IMAGES.home.employerWhyBg)?.alt
   },
   {
     id: 3,
@@ -29,21 +31,23 @@ const STEPS = [
     keyword: "YAŞ",
     text: "Yaşa bağlı düzenlemeler uygulanıyorsa, yaşınızı girin.",
     image: IMAGES.home.howStepsAge,
-    imageAlt: "Mavi hesap makinesi kullanan çalışan"
+    imageAlt: getImageMeta(IMAGES.home.howStepsAge)?.alt
   },
   {
     id: 4,
     className: "how-steps-card--4",
     keyword: "EKLER",
     text: "Bonuslar veya kullanılmamış izinler gibi ek tazminatları ekleyin.",
-    image: IMAGES.home.featureTaxCoin
+    image: IMAGES.home.featureTaxCoin,
+    imageAlt: getImageMeta(IMAGES.home.featureTaxCoin)?.alt
   },
   {
     id: 5,
     className: "how-steps-card--5",
     keyword: "POLİTİKA",
     text: "Biliniyorsa, şirketinizin kıdem tazminatı politikasını seçin.",
-    image: IMAGES.home.diffPurpleSalary
+    image: IMAGES.home.diffPurpleSalary,
+    imageAlt: getImageMeta(IMAGES.home.diffPurpleSalary)?.alt
   },
   {
     id: 6,
@@ -51,7 +55,7 @@ const STEPS = [
     keyword: "HESAPLA",
     text: "Tahmini tutarınızı anında oluşturmak için hesapla düğmesine tıklayın.",
     image: IMAGES.home.introSeveranceBg,
-    imageAlt: IMAGE_ALTS.introSeveranceBg
+    imageAlt: getImageMeta(IMAGES.home.introSeveranceBg)?.alt
   }
 ];
 
@@ -415,7 +419,7 @@ export default function HowStepsCarousel() {
               >
                 <motion.div className="how-steps-orbit-center" variants={centerVariants}>
                   <div className="how-steps-orbit-center-glow" aria-hidden="true" />
-                  <Image
+                  <AppImage
                     src={IMAGES.logo}
                     alt="Tazminat Hesaplama logosu"
                     width={160}
@@ -484,9 +488,10 @@ export default function HowStepsCarousel() {
               <div className="how-steps-detail-card-accent" aria-hidden="true" />
 
               <div className="how-steps-detail-media">
-                <Image
+                <AppImage
                   src={activeStep.image}
-                  alt={activeStep.imageAlt || ""}
+                  alt={activeStep.imageAlt || getImageMeta(activeStep.image)?.alt || ""}
+                  title={getImageMeta(activeStep.image)?.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 480px"
                   className="how-steps-detail-image"
@@ -501,7 +506,7 @@ export default function HowStepsCarousel() {
               <div className="how-steps-detail-body">
                 <span className="how-steps-detail-number">{padStepNumber(activeStep.id)}</span>
                 {cardTitle !== activeStep.text ? (
-                  <h3 className="how-steps-detail-title">{cardTitle}</h3>
+                  <H3 className="how-steps-detail-title">{cardTitle}</H3>
                 ) : null}
                 <p className="how-steps-detail-text">{activeStep.text}</p>
               </div>

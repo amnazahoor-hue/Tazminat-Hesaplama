@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import CalcCta from "@/components/common/CalcCta";
+import { H2, H3, H4 } from "@/components/common/Heading";
 import SeveranceBreakdownTable from "@/components/calculator/SeveranceBreakdownTable";
 import ResultPdfTemplate from "@/components/ResultPdfTemplate";
 import ResultShareBar from "@/components/ResultShareBar";
@@ -129,7 +130,7 @@ export default function TotalCompensationCalculatorPanel() {
   return (
     <section className="section calc-section" id="hesapla">
       <div className="container calc-wrap scroll-reveal scroll-reveal--up">
-        <h2 className="calc-section-heading">Toplam Tazminat Hesaplayıcısı</h2>
+        <H2 className="calc-section-heading">Toplam Tazminat Hesaplayıcısı</H2>
         <div className="calc-panel scroll-reveal scroll-reveal--scale" data-scroll-reveal>
           <div className="calc-panel-top" aria-hidden="true" />
           <div className="calc-panel-head">
@@ -299,7 +300,7 @@ export default function TotalCompensationCalculatorPanel() {
           >
             <div className="result-results-top" aria-hidden="true" />
             <div className="result-results-head">
-              <h3>Hesaplama Sonuçları</h3>
+              <H3>Hesaplama Sonuçları</H3>
               <p className="result-period">
                 {result.iseGirisTarihi} - {result.istenCikisTarihi} / {formatDuration(result.calismaSuresi)}
               </p>
@@ -317,15 +318,15 @@ export default function TotalCompensationCalculatorPanel() {
             </div>
             <div className="result-cards scroll-reveal-stagger">
               <article>
-                <h4>Kıdem Tazminatı (Net)</h4>
+                <H4>Kıdem Tazminatı (Net)</H4>
                 <strong>₺{TR.money(result.netKidemTazminati)}</strong>
               </article>
               <article>
-                <h4>İhbar Tazminatı (Net)</h4>
+                <H4>İhbar Tazminatı (Net)</H4>
                 <strong>₺{TR.money(result.netIhbarTazminati)}</strong>
               </article>
               <article>
-                <h4>Toplam Tazminat Değeri</h4>
+                <H4>Toplam Tazminat Değeri</H4>
                 <strong>₺{TR.money(result.toplamTazminatDegeri)}</strong>
               </article>
             </div>

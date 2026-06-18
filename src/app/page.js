@@ -1,11 +1,16 @@
 import CompensationCalculator from "@/components/CompensationCalculator";
-import { HOME_PAGE_SEO, HOME_PATH, siteUrl } from "@/config/site";
+import StructuredDataScript from "@/components/seo/StructuredDataScript";
+import { HOME_FAQ_ITEMS } from "@/data/homeFaqItems";
+import { HOME_PAGE_SEO, HOME_PATH } from "@/config/site";
+import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import {
+  buildBreadcrumbListSchema,
+  buildFaqPageSchema,
   buildOrganizationSchema,
   buildPageMetadata,
-  buildSpeakableSchema,
+  buildSchemaGraph,
   buildWebApplicationSchema,
-  SPEAKABLE_SELECTORS
+  buildWebPageSchema
 } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
@@ -15,20 +20,24 @@ export const metadata = buildPageMetadata({
   keywords: HOME_PAGE_SEO.keywords
 });
 
-export default function HomePage() {
-  const organizationSchema = buildOrganizationSchema();
-  const webApplicationSchema = buildWebApplicationSchema();
-  const speakableSchema = buildSpeakableSchema({
-    name: HOME_PAGE_SEO.title,
-    url: siteUrl(HOME_PATH),
-    cssSelector: SPEAKABLE_SELECTORS.tool
-  });
+const homeBreadcrumb = [{ name: "Anasayfa", path: HOME_PATH }];
 
+const homeStructuredData = buildSchemaGraph(
+  buildWebPageSchema({
+    name: HOME_PAGE_SEO.title,
+    description: HOME_PAGE_SEO.description,
+    path: HOME_PATH
+  }),
+  buildBreadcrumbListSchema(homeBreadcrumb),
+  buildOrganizationSchema(),
+  buildWebApplicationSchema(),
+  buildFaqPageSchema(HOME_FAQ_ITEMS, { transformQuestion: capitalizeHeadingText })
+);
+
+export default function HomePage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webApplicationSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }} />
+      <StructuredDataScript schema={homeStructuredData} />
       <CompensationCalculator />
     </>
   );

@@ -11,18 +11,19 @@ export function capitalizeHeadingText(text) {
     .map((segment) => {
       if (!/\S/.test(segment)) return segment;
 
-      const chars = [...segment];
-      let capitalized = false;
+      // Keep locative suffixes after years lowercase: 2026'da, 2025'te
+      if (/^\d+'\p{L}+$/u.test(segment)) {
+        return segment;
+      }
 
-      return chars
-        .map((char) => {
-          if (!capitalized && /\p{L}/u.test(char)) {
-            capitalized = true;
-            return char.toLocaleUpperCase("tr-TR");
-          }
-          return char;
-        })
-        .join("");
+      const chars = [...segment];
+      for (let i = 0; i < chars.length; i++) {
+        if (/\p{L}/u.test(chars[i])) {
+          chars[i] = chars[i].toLocaleUpperCase("tr-TR");
+          break;
+        }
+      }
+      return chars.join("");
     })
     .join("");
 }

@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
+import BrandLogo from "@/components/common/BrandLogo";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import CalcCta from "@/components/common/CalcCta";
-import { IMAGES } from "@/config/images";
 import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import {
   buildSectionHref,
@@ -93,14 +92,10 @@ export default function Navbar() {
         <div className="container header-inner site-chrome-inner">
           <Link href={HOME_PATH} className="brand" aria-label="Anasayfaya dön" onClick={handleLogoClick}>
             <span className="brand-mark">
-              <Image src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} priority unoptimized />
+              <BrandLogo />
             </span>
             <span className="brand-text">
               <span className="brand-title">Tazminat Hesaplama</span>
-              <span className="brand-sub">
-                <span className="brand-dot" aria-hidden="true" />
-                İş Kanunu 4857
-              </span>
             </span>
           </Link>
 

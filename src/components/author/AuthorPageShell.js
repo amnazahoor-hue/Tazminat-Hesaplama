@@ -1,10 +1,9 @@
-import Image from "next/image";
+import AppImage from "@/components/common/AppImage";
+import { H1, H2 } from "@/components/common/Heading";
 import Link from "next/link";
 import { ArrowRight, BookOpen, ChevronRight, Scale } from "lucide-react";
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { IMAGES } from "@/config/images";
 import { HOME_PATH } from "@/config/site";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 
 /**
  * @param {{
@@ -36,8 +35,6 @@ export default function AuthorPageShell({
 
   return (
     <div className="author-shell legal-shell">
-      <BreadcrumbSchema items={breadcrumb} />
-
       <header className="legal-shell-hero">
         <span className="legal-shell-hero-bg" aria-hidden="true" />
         <span className="legal-shell-hero-overlay" aria-hidden="true" />
@@ -55,7 +52,7 @@ export default function AuthorPageShell({
             ))}
           </nav>
           <span className="legal-shell-tag">Yazar</span>
-          <h1>{capitalizeHeadingText(name)}</h1>
+          <H1>{name}</H1>
           <p className="legal-shell-lead author-shell-lead">{title}</p>
           <p className="author-shell-tagline">{tagline}</p>
         </div>
@@ -67,7 +64,7 @@ export default function AuthorPageShell({
             <div className="author-profile-card">
               {portraitSrc ? (
                 <div className="author-profile-photo">
-                  <Image
+                  <AppImage
                     src={portraitSrc}
                     alt={imageAlt ?? name}
                     width={240}
@@ -79,7 +76,7 @@ export default function AuthorPageShell({
                   />
                 </div>
               ) : null}
-              <h2>{name}</h2>
+              <H2>{name}</H2>
               <p>{title}</p>
               <ul className="author-expertise-list">
                 {expertise.map((item) => (
@@ -123,7 +120,7 @@ export default function AuthorPageShell({
                   <Scale size={16} strokeWidth={2} />
                 </span>
                 <div className="legal-section-copy">
-                  <h2>Yasal Not</h2>
+                  <H2>Yasal Not</H2>
                   <div className="legal-section-body author-speakable">
                     <p>{disclaimer}</p>
                   </div>

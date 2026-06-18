@@ -1,10 +1,14 @@
 import TotalCompensationGuide from "@/components/guide/TotalCompensationGuide";
-import { TAZMINAT_HESAPLAMA_PATH, TAZMINAT_PAGE_SEO, siteUrl } from "@/config/site";
+import StructuredDataScript from "@/components/seo/StructuredDataScript";
+import { TAZMINAT_GUIDE_FAQ_ITEMS } from "@/data/tazminatGuideFaqItems";
+import { HOME_PATH, TAZMINAT_HESAPLAMA_PATH, TAZMINAT_PAGE_SEO } from "@/config/site";
 import {
   buildArticleSchema,
+  buildBreadcrumbListSchema,
+  buildFaqPageSchema,
   buildPageMetadata,
-  buildSpeakableSchema,
-  SPEAKABLE_SELECTORS
+  buildSchemaGraph,
+  buildWebPageSchema
 } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
@@ -14,21 +18,29 @@ export const metadata = buildPageMetadata({
   keywords: TAZMINAT_PAGE_SEO.keywords
 });
 
-export default function TotalCompensationGuidePage() {
-  const articleSchema = buildArticleSchema({
+const guideBreadcrumb = [
+  { name: "Anasayfa", path: HOME_PATH },
+  { name: "Tazminat Hesaplama", path: TAZMINAT_HESAPLAMA_PATH }
+];
+
+const guideStructuredData = buildSchemaGraph(
+  buildWebPageSchema({
+    name: TAZMINAT_PAGE_SEO.title,
+    description: TAZMINAT_PAGE_SEO.description,
+    path: TAZMINAT_HESAPLAMA_PATH
+  }),
+  buildBreadcrumbListSchema(guideBreadcrumb),
+  buildArticleSchema({
     headline: TAZMINAT_PAGE_SEO.title,
     path: TAZMINAT_HESAPLAMA_PATH
-  });
-  const speakableSchema = buildSpeakableSchema({
-    name: TAZMINAT_PAGE_SEO.title,
-    url: siteUrl(TAZMINAT_HESAPLAMA_PATH),
-    cssSelector: SPEAKABLE_SELECTORS.guide
-  });
+  }),
+  buildFaqPageSchema(TAZMINAT_GUIDE_FAQ_ITEMS)
+);
 
+export default function TotalCompensationGuidePage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }} />
+      <StructuredDataScript schema={guideStructuredData} />
       <TotalCompensationGuide />
     </>
   );

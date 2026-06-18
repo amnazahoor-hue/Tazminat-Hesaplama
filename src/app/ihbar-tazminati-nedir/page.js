@@ -1,10 +1,14 @@
 import IhbarTazminatGuide from "@/components/guide/ihbar/IhbarTazminatGuide";
-import { IHBAR_NEDIR_PATH, IHBAR_PAGE_SEO, siteUrl } from "@/config/site";
+import StructuredDataScript from "@/components/seo/StructuredDataScript";
+import { IHBAR_FAQ_ITEMS } from "@/data/ihbarGuideContent";
+import { HOME_PATH, IHBAR_NEDIR_PATH, IHBAR_PAGE_SEO } from "@/config/site";
 import {
   buildArticleSchema,
+  buildBreadcrumbListSchema,
+  buildFaqPageSchema,
   buildPageMetadata,
-  buildSpeakableSchema,
-  SPEAKABLE_SELECTORS
+  buildSchemaGraph,
+  buildWebPageSchema
 } from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
@@ -14,21 +18,29 @@ export const metadata = buildPageMetadata({
   keywords: IHBAR_PAGE_SEO.keywords
 });
 
-export default function IhbarTazminatGuidePage() {
-  const articleSchema = buildArticleSchema({
+const guideBreadcrumb = [
+  { name: "Anasayfa", path: HOME_PATH },
+  { name: "İhbar Tazminatı Nedir?", path: IHBAR_NEDIR_PATH }
+];
+
+const guideStructuredData = buildSchemaGraph(
+  buildWebPageSchema({
+    name: IHBAR_PAGE_SEO.title,
+    description: IHBAR_PAGE_SEO.description,
+    path: IHBAR_NEDIR_PATH
+  }),
+  buildBreadcrumbListSchema(guideBreadcrumb),
+  buildArticleSchema({
     headline: IHBAR_PAGE_SEO.title,
     path: IHBAR_NEDIR_PATH
-  });
-  const speakableSchema = buildSpeakableSchema({
-    name: IHBAR_PAGE_SEO.title,
-    url: siteUrl(IHBAR_NEDIR_PATH),
-    cssSelector: SPEAKABLE_SELECTORS.guide
-  });
+  }),
+  buildFaqPageSchema(IHBAR_FAQ_ITEMS, { includeFormula: true })
+);
 
+export default function IhbarTazminatGuidePage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }} />
+      <StructuredDataScript schema={guideStructuredData} />
       <IhbarTazminatGuide />
     </>
   );

@@ -1,9 +1,10 @@
 "use client";
 
-import Image from "next/image";
+import AppImage from "@/components/common/AppImage";
+import { H1, H3 } from "@/components/common/Heading";
 import Link from "next/link";
 import { IMAGES } from "@/config/images";
-import { HOME_PATH, IHBAR_NEDIR_PATH, KIDEM_TAVANI_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
+import { KIDEM_TAVANI_PATH } from "@/config/site";
 import { CARD_TITLE_LINKS } from "@/config/internalLinks";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
@@ -30,7 +31,6 @@ import {
 } from "lucide-react";
 import CalcCta from "@/components/common/CalcCta";
 import TotalCompensationCalculatorPanel from "@/components/TotalCompensationCalculatorPanel";
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import GuideFaq from "./GuideFaq";
 import {
   ChecklistTable,
@@ -240,7 +240,7 @@ function IconCard({ icon: Icon, title, body, badgeClass = "guide-icon-card-badge
         >
           <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
         </motion.span>
-        <h3>
+        <H3>
           {CARD_TITLE_LINKS[title] ? (
             <Link href={CARD_TITLE_LINKS[title]} className="text-internal-link">
               {capitalizeHeadingText(title)}
@@ -248,7 +248,7 @@ function IconCard({ icon: Icon, title, body, badgeClass = "guide-icon-card-badge
           ) : (
             capitalizeHeadingText(title)
           )}
-        </h3>
+        </H3>
         <p>{linkInternalTerms(body)}</p>
       </article>
     </TiltCard>
@@ -273,16 +273,9 @@ function GuidePageShell({ children }) {
 export default function TotalCompensationGuide() {
   return (
     <GuidePageShell>
-      <BreadcrumbSchema
-        items={[
-          { name: "Anasayfa", path: HOME_PATH },
-          { name: "Toplam Tazminat Hesaplama Kılavuzu", path: TAZMINAT_HESAPLAMA_PATH }
-        ]}
-      />
-
       <header className="guide-page-hero">
         <span className="guide-page-hero-bg" aria-hidden="true">
-          <Image
+          <AppImage
             src={IMAGES.tazminatHesaplama.hero}
             alt="Toplam tazminat hesaplama rehberi arka plan görseli"
             width={1920}
@@ -294,7 +287,17 @@ export default function TotalCompensationGuide() {
         <span className="guide-page-hero-overlay" aria-hidden="true" />
         <div className="container guide-page-hero-content">
           <Reveal>
-            <h1>2026 Yılı İçin Ücret Hesaplaması</h1>
+            <H1>2026&apos;da Maaşınız Nasıl Belirlenecek?</H1>
+            <p className="hero-copy">
+              &apos;Tazminat hesaplaması&apos;, Türk İş Kanunu&apos;na göre bir çalışanın alması gereken toplam tutarı
+              bulmak anlamına gelir. Buna kıdem tazminatı, ihbar tazminatı, kullanılmamış yıllık izin, ikramiyeler,
+              fazla mesai ve diğer yan haklar dahildir. Ücret hesaplayıcımız, size saniyeler içinde kesin bir ödeme
+              tahmini vermek için resmi 2026 formülünü kullanır.
+            </p>
+            <p className="hero-copy">
+              Ücret hesaplaması, aylık maaş, ikramiyeler, fazla mesai ücretleri, yıllık izin ücreti, kıdem tazminatı,
+              ihbar tazminatı, seyahat ve yemek ödenekleri ile hisse senedi opsiyonları veya ek yan hakları içerebilir.
+            </p>
             <div className="guide-page-hero-actions">
               <CalcCta
                 href="#hesapla"
@@ -305,9 +308,6 @@ export default function TotalCompensationGuide() {
               >
                 Şimdi Hesapla
               </CalcCta>
-              <Link href={`${HOME_PATH}#hesapla`} className="guide-page-secondary-link">
-                Kıdem Tazminatı Hesaplayıcısı
-              </Link>
             </div>
           </Reveal>
         </div>
@@ -317,7 +317,9 @@ export default function TotalCompensationGuide() {
 
       <GuideSection id="guide-tanim">
         <IntroBlock>
-          <SectionHeading id="tazminat-nedir">Tazminat Hesaplaması Nedir?</SectionHeading>
+          <SectionHeading id="tazminat-nedir">
+            Türkiye&apos;de Tazminat Hesaplama Yöntemi: Formül + Adım Adım Kılavuz 2026
+          </SectionHeading>
           <p>
             {linkInternalTerms(
               "Tazminat hesaplaması, bir çalışanın Türk İş Hukuku kapsamında hak kazandığı toplam ödemelerin belirlenmesi sürecidir. Bu ödemeler; kıdem tazminatı, ihbar tazminatı, kullanılmamış yıllık izin ücretleri, primler (bonuslar) ve diğer yan hakları kapsar."
@@ -416,7 +418,7 @@ export default function TotalCompensationGuide() {
                         <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
                       </span>
                       <div>
-                        <h3>{capitalizeHeadingText(item.title)}</h3>
+                        <H3>{capitalizeHeadingText(item.title)}</H3>
                         <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
                       </div>
                     </article>
@@ -438,11 +440,11 @@ export default function TotalCompensationGuide() {
             <Info size={22} strokeWidth={1.8} aria-hidden="true" />
           </span>
           <div>
-            <h3>
+            <H3>
               <Link href={KIDEM_TAVANI_PATH} className="text-internal-link">
                 Kıdem Tazminatı Tavanı
               </Link>
-            </h3>
+            </H3>
             <p>{linkInternalTerms("Türk hukukunda kıdem tazminatlarının hesaplanmasında azami bir üst sınır uygulanmaktadır")}</p>
           </div>
         </InfoCalloutBlock>
@@ -459,7 +461,7 @@ export default function TotalCompensationGuide() {
                     <span className="guide-featured-card-icon">
                       <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
                     </span>
-                    <h3>{capitalizeHeadingText(item.title)}</h3>
+                    <H3>{capitalizeHeadingText(item.title)}</H3>
                     <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
                   </article>
                 </TiltCard>
@@ -521,7 +523,7 @@ export default function TotalCompensationGuide() {
                     <span className="guide-type-icon">
                       <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
                     </span>
-                    <h3>{capitalizeHeadingText(item.title)}</h3>
+                    <H3>{capitalizeHeadingText(item.title)}</H3>
                     <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
                   </article>
                 </TiltCard>

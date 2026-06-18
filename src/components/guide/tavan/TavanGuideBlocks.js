@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
+import { H1, H3, H4 } from "@/components/common/Heading";
+import AppImage from "@/components/common/AppImage";
 import { motion } from "framer-motion";
 import { HOME_PATH } from "@/config/site";
 import {
@@ -129,7 +130,7 @@ export function TavanHero({ stat, image }) {
           viewport={viewport}
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
-          <h1>2026 Türkiye Kıdem Tazminatı Tavanı: Güncellenmiş Oranlar, Hesaplama ve İş Hukuku Rehberi</h1>
+          <H1>Kıdem Tazminatı Tavanı: 2026 Güncellenmiş Oranlar, Hesaplama ve İş Kanunları</H1>
           <div className="tavan-guide-hero-lead">
             <p>
               İşten ayrılma tazminatı tavanı, ücret hesaplamasında en önemli faktörlerden biridir. İnsan kaynakları
@@ -154,9 +155,10 @@ export function TavanHero({ stat, image }) {
         >
           <div className="tavan-guide-hero-media">
             <div className="tavan-guide-hero-image">
-              <Image
+              <AppImage
                 src={image.src}
                 alt={image.alt}
+                title={image.title}
                 fill
                 sizes="(max-width: 900px) 100vw, 50vw"
                 priority
@@ -311,7 +313,7 @@ export function TavanBarChart({ rows }) {
         <div className="tavan-mobile-cards" aria-label="Yıllık tavan tutarı karşılaştırması">
           {rows.map((row) => (
             <article key={row.period} className="tavan-mobile-card">
-              <h4>{capitalizeHeadingText(row.period)}</h4>
+              <H4>{capitalizeHeadingText(row.period)}</H4>
               <p>{row.amount}</p>
             </article>
           ))}
@@ -351,7 +353,7 @@ export function HistoryTable({ rows }) {
         <div className="tavan-mobile-cards tavan-mobile-cards--history" aria-label="Kıdem tazminatı tavanı geçmişi">
           {rows.map((row) => (
             <article key={row.period} className="tavan-mobile-card">
-              <h4>{capitalizeHeadingText(row.period)}</h4>
+              <H4>{capitalizeHeadingText(row.period)}</H4>
               <p>{row.amount}</p>
             </article>
           ))}
@@ -392,7 +394,7 @@ export function CeilingMechanismCards({ belowItems, aboveItems }) {
       <Reveal direction="left">
         <TiltCard className="tavan-mechanism-wrap" tiltMax={6} scale={1.02}>
           <article className="tavan-mechanism-card tavan-mechanism-card--below">
-            <h3>Tavanın Altında Çalışan</h3>
+            <H3>Tavanın Altında Çalışan</H3>
             <ul>
               {belowItems.map((item) => (
                 <li key={item}>{item}</li>
@@ -404,7 +406,7 @@ export function CeilingMechanismCards({ belowItems, aboveItems }) {
       <Reveal direction="right" delay={0.08}>
         <TiltCard className="tavan-mechanism-wrap" tiltMax={6} scale={1.02}>
           <article className="tavan-mechanism-card tavan-mechanism-card--above">
-            <h3>Tavanın Üstündeki Çalışan</h3>
+            <H3>Tavanın Üstündeki Çalışan</H3>
             <ul>
               {aboveItems.map((item) => (
                 <li key={item}>{item}</li>
@@ -424,7 +426,7 @@ export function ExampleCalculationCards({ examples }) {
         <RevealItem key={example.id}>
           <TiltCard className="tavan-example-wrap" tiltMax={7} scale={1.02}>
             <article className="tavan-example-card">
-              <h3>{capitalizeHeadingText(example.title)}</h3>
+              <H3>{capitalizeHeadingText(example.title)}</H3>
               <ul>
                 {example.items.map((item) => (
                   <li key={item}>{item}</li>
@@ -465,7 +467,7 @@ export function EligibilityScenarioGrid({ scenarios }) {
                 <span className="tavan-eligibility-icon" aria-hidden="true">
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
-                <h3>{capitalizeHeadingText(scenario.title)}</h3>
+                <H3>{capitalizeHeadingText(scenario.title)}</H3>
                 <p>{linkLawReferences(scenario.intro, linkedTermsRef.current)}</p>
                 {scenario.list.length > 0 ? (
                   <ul className="tavan-checklist tavan-checklist--inline">
@@ -539,10 +541,10 @@ export function MistakesTable({ rows }) {
         <div className="tavan-mobile-cards tavan-mobile-cards--mistakes" aria-label="İşveren hataları">
           {rows.map((row) => (
             <article key={row.mistake} className="tavan-mobile-card tavan-mobile-card--warning">
-              <h4>
+              <H4>
                 <AlertTriangle size={16} strokeWidth={2} aria-hidden="true" />
-                {row.mistake}
-              </h4>
+                {capitalizeHeadingText(row.mistake)}
+              </H4>
               <p>{row.consequence}</p>
             </article>
           ))}

@@ -1,7 +1,15 @@
 import AuthorPageShell from "@/components/author/AuthorPageShell";
+import StructuredDataScript from "@/components/seo/StructuredDataScript";
 import { SITE_AUTHOR } from "@/config/author";
 import { AUTHOR_PATH, HOME_PATH } from "@/config/site";
-import { buildAuthorPageSchema, buildPageMetadata, ROBOTS_NOINDEX_FOLLOW } from "@/utils/seo";
+import {
+  buildAuthorPageSchema,
+  buildBreadcrumbListSchema,
+  buildPageMetadata,
+  buildSchemaGraph,
+  buildWebPageSchema,
+  ROBOTS_NOINDEX_FOLLOW
+} from "@/utils/seo";
 
 export const metadata = buildPageMetadata({
   title: "Yazar | Doç. Dr. Evren Mazı — İş Hukuku Uzmanı",
@@ -12,20 +20,30 @@ export const metadata = buildPageMetadata({
   robots: ROBOTS_NOINDEX_FOLLOW
 });
 
-export default function AuthorPage() {
-  const authorPageSchema = buildAuthorPageSchema({
+const authorBreadcrumb = [
+  { name: "Anasayfa", path: HOME_PATH },
+  { name: "Yazar", path: AUTHOR_PATH }
+];
+
+const authorStructuredData = buildSchemaGraph(
+  buildWebPageSchema({
+    name: "Yazar | Doç. Dr. Evren Mazı — İş Hukuku Uzmanı",
+    description: SITE_AUTHOR.tagline,
+    path: AUTHOR_PATH
+  }),
+  buildBreadcrumbListSchema(authorBreadcrumb),
+  buildAuthorPageSchema({
     author: SITE_AUTHOR,
     path: AUTHOR_PATH
-  });
+  })
+);
 
+export default function AuthorPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(authorPageSchema) }} />
+      <StructuredDataScript schema={authorStructuredData} />
       <AuthorPageShell
-        breadcrumb={[
-          { name: "Anasayfa", path: HOME_PATH },
-          { name: "Yazar", path: AUTHOR_PATH }
-        ]}
+        breadcrumb={authorBreadcrumb}
         name={SITE_AUTHOR.name}
         title={SITE_AUTHOR.title}
         tagline={SITE_AUTHOR.tagline}

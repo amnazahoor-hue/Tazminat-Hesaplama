@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { H1, H2 } from "@/components/common/Heading";
+import PageSchema from "@/components/seo/PageSchema";
 import { HOME_PATH } from "@/config/site";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { LEGAL_NAV } from "@/config/legalPages";
-import { buildSpeakableSchema, SPEAKABLE_SELECTORS } from "@/utils/seo";
-import { siteUrl } from "@/config/site";
 
 /**
  * @param {{
@@ -19,16 +17,14 @@ import { siteUrl } from "@/config/site";
  * }} props
  */
 export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sections, highlights }) {
-  const speakableSchema = buildSpeakableSchema({
-    name: title,
-    url: siteUrl(path),
-    cssSelector: SPEAKABLE_SELECTORS.legal
-  });
-
   return (
     <div className="legal-shell">
-      <BreadcrumbSchema items={breadcrumb} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }} />
+      <PageSchema
+        name={title}
+        description={lead}
+        path={path}
+        breadcrumb={breadcrumb}
+      />
 
       <header className="legal-shell-hero">
         <span className="legal-shell-hero-bg" aria-hidden="true" />
@@ -47,7 +43,7 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
             ))}
           </nav>
           <span className="legal-shell-tag">{tag}</span>
-          <h1>{capitalizeHeadingText(title)}</h1>
+          <H1>{title}</H1>
           <p className="legal-shell-lead legal-speakable">{lead}</p>
         </div>
       </header>
@@ -97,7 +93,7 @@ export default function LegalPageShell({ path, breadcrumb, tag, title, lead, sec
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <div className="legal-section-copy">
-                  <h2>{capitalizeHeadingText(section.title)}</h2>
+                  <H2>{section.title}</H2>
                   <div className="legal-section-body">{section.body}</div>
                 </div>
               </article>

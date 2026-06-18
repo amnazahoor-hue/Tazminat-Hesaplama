@@ -1,3 +1,5 @@
+import { getImageMeta } from "@/config/images";
+
 export const TAVAN_HERO_STAT = {
   value: "64.948,77 TL",
   label: "Ocak–Haziran 2026"
@@ -6,7 +8,7 @@ export const TAVAN_HERO_STAT = {
 export const TAVAN_IMAGES = {
   hero: {
     src: "/images/tavan/hero.webp",
-    alt: "Severance Pay yazılı not ve dolar banknotları — kıdem tazminatı görseli"
+    ...getImageMeta("/images/tavan/hero.webp")
   }
 };
 

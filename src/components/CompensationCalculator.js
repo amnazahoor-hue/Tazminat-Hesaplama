@@ -1,14 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import AppImage from "@/components/common/AppImage";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import FaqAccordion from "@/components/common/FaqAccordion";
 import CalcCta from "@/components/common/CalcCta";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
+import { H1, H2, H3, H4 } from "@/components/common/Heading";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
-import { IMAGES, IMAGE_ALTS } from "@/config/images";
+import { getImageMeta, IMAGES, IMAGE_ALTS } from "@/config/images";
 import { HOME_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
 import HowStepsCarousel from "@/components/HowStepsCarousel";
 import ResultPdfTemplate from "@/components/ResultPdfTemplate";
@@ -56,79 +56,7 @@ const initialForm = {
   travelAllowance: ""
 };
 
-const faqItems = [
-  {
-    id: "q1",
-    question: "Kıdem tazminatı ve ihbar tazminatı nasıl hesaplanır?",
-    answer:
-      "İşten ayrılma tazminatı genellikle çalışanın 30 günlük brüt ücretinin, tamamlanan toplam hizmet yılıyla çarpılmasıyla hesaplanır. İhbar tazminatı ise haftalık maaş ve yasal olarak zorunlu olan 2, 4, 6 veya 8 haftalık ihbar süresi esas alınarak hesaplanır."
-  },
-  {
-    id: "q2",
-    question: "2026 yılı için tazminat hesaplamasında tavan değeri nedir?",
-    answer:
-      "2026 kıdem tazminatı tavanı, bu sınırın üzerindeki tazminat hesaplamalarının iş hukuku düzenlemelerine ve Resmî Gazete güncellemelerine göre sınırlandırıldığı anlamına gelir."
-  },
-  {
-    id: "q3",
-    question: "Net maaştan kıdem tazminatını nasıl hesaplayabilirim?",
-    answer:
-      "Çalışanın net maaşını brüt maaş karşılığına çevirin. Ardından, kıdem tazminatı brüt maaşa dayalı tazminat formülü ve yasal kesintiler kullanılarak hesaplanır."
-  },
-  {
-    id: "q4",
-    question: "Brüt maaştan kıdem tazminatı nasıl hesaplanır?",
-    answer: "Brüt maaşa dayalı kıdem tazminatı, çalışanın brüt maaşının toplam hizmet yılı ile çarpılmasıyla hesaplanır."
-  },
-  {
-    id: "q5",
-    question: "Tazminatımdan ne kadar vergi kesilecek?",
-    answer:
-      "Birçok durumda, kıdem tazminatından %0,759 oranında vergi kesilir. Ayrıca ihbar tazminatı ve diğer tazminatlar da gelir vergisi kesintilerinin bir parçasıdır."
-  },
-  {
-    id: "q6",
-    question: "Seyahat ve yemek ödenekleri maaşıma dahil mi?",
-    answer: "Evet, seyahat ödenekleri, yemek ödemeleri, ikramiyeler ve teşvik ödemeleri genellikle brüt ücrete dahildir."
-  },
-  {
-    id: "q7",
-    question: "İhbar süresi nedir?",
-    answer:
-      "İhbar süreleri, çalışanın toplam hizmet yılına bağlı olarak, yasal olarak zorunlu olan işten çıkarma öncesi sürelerdir."
-  },
-  {
-    id: "q8",
-    question: "Kendi isteğimle ayrılırsam tazminat alabilir miyim?",
-    answer:
-      "Çalışanlar, emeklilik, askerlik hizmeti veya yasal olarak korunan diğer işten çıkarma durumlarında kıdem tazminatı alabilirler."
-  },
-  {
-    id: "q9",
-    question: "Kıdem tazminatı ve ihbar tazminatı aynı anda alınabilir mi?",
-    answer:
-      "Evet. Çalışanlar, iş kanunları kapsamında hak kazanmaları durumunda hem kıdem tazminatını hem de ihbar tazminatını birlikte alabilirler."
-  },
-  {
-    id: "q10",
-    question: "Tazminat hesaplama aracı ne kadar doğru?",
-    answer:
-      "Bir kıdem tazminatı hesaplayıcısı, sağladığınız doğru iş bilgilerine dayanarak tahmini sonuçlar verir. Ancak nihai tazminat, yasal koşullara bağlı olarak değişebilir."
-  },
-  {
-    id: "q11",
-    question: "Tazminatımı ne zaman almalıyım?",
-    answer:
-      "Tazminat tutarı genellikle çalışana mümkün olan en kısa sürede ödenir ve çalışan yeni bir iş bulana kadar geçerlidir."
-  },
-  {
-    id: "q12",
-    question: "Araçtan elde edilen sonuçlar resmi olarak kabul ediliyor mu?",
-    answer:
-      "Hayır, hesaplayıcı sonuçları yalnızca bilgilendirme amacıyla verilen tahminlerdir. Yasal olarak kabul edilmemelidirler. Çalışanlar nihai ödemelerini İK departmanlarından ve işverenlerinden teyit etmelidir."
-  }
-];
-
+import { HOME_FAQ_ITEMS } from "@/data/homeFaqItems";
 const HERO_CAROUSEL_IMAGES = [
   IMAGES.home.heroCarouselLira,
   IMAGES.home.heroCarousel1,
@@ -206,22 +134,6 @@ export default function CompensationCalculator() {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
-
-  const faqSchema = useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqItems.map((faq) => ({
-        "@type": "Question",
-        name: capitalizeHeadingText(faq.question),
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: faq.answer
-        }
-      }))
-    }),
-    []
-  );
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -330,13 +242,14 @@ export default function CompensationCalculator() {
           <div className="hero-card">
             <div className="hero-grid">
               <div className="hero-head scroll-reveal scroll-reveal--left scroll-reveal--instant">
-                <h1>Kıdem Tazminatı Hesaplayıcısı ve Kıdem Tazminatı Hakkında Kapsamlı Kılavuz</h1>
+                <H1>Kıdem Tazminatı Hesaplayıcısı: Açıklama, Kullanım ve Önemi</H1>
               </div>
               <div className="hero-foot scroll-reveal scroll-reveal--left scroll-reveal--instant">
                 <p className="hero-copy">
-                  İşten ayrılma tazminatını anlamak hem çalışanlar hem de işverenler için çok önemlidir. Hak ettiğiniz
-                  tazminatı doğru bir şekilde tahmin etmek için İşten Ayrılma Tazminatı Hesaplayıcımızı kullanın ve
-                  işten ayrılma tazminatının nasıl hesaplandığını öğrenmek için kapsamlı kılavuzumuzu inceleyin.
+                  Kıdem tazminatı, Türkiye&apos;de en az 1 yıl hizmet vermiş çalışanlar için yasal bir haktır. 2026
+                  tavanına göre hak ettiğiniz tazminatı tahmin etmek için resmi kıdem tazminatı hesaplayıcımızı kullanın
+                  ve formüller ve gerçek örneklerle dolu kapsamlı kılavuzumuzu inceleyin. Kıdem tazminatı hem çalışanlar
+                  hem de işverenler için önemlidir.
                 </p>
                 <CalcCta
                   href="#hesapla"
@@ -352,13 +265,15 @@ export default function CompensationCalculator() {
               </div>
               <div className="hero-visual scroll-reveal scroll-reveal--right scroll-reveal--instant" aria-hidden="true">
                 <div className="hero-visual-mobile">
-                  <Image
+                  <AppImage
                     src={HERO_CAROUSEL_IMAGES[activeHeroSlide]}
-                    alt="Kıdem tazminatı hesaplama aracı tanıtım görseli"
+                    alt={getImageMeta(HERO_CAROUSEL_IMAGES[activeHeroSlide])?.alt}
+                    title={getImageMeta(HERO_CAROUSEL_IMAGES[activeHeroSlide])?.title}
                     width={280}
                     height={280}
                     sizes="280px"
-                    priority
+                    priority={activeHeroSlide === 0}
+                    loading="eager"
                     className="hero-visual-mobile-img"
                   />
                   <div className="hero-slider-dots hero-slider-dots--mobile" aria-hidden="true">
@@ -556,17 +471,16 @@ export default function CompensationCalculator() {
                               key={src}
                               className={`hero-carousel-slide${activeHeroSlide === index ? " is-active" : ""}`}
                             >
-                              {activeHeroSlide === index ? (
-                                <Image
+                                <AppImage
                                   src={src}
-                                  alt="Kıdem tazminatı hesaplama aracı tanıtım slayt görseli"
-                                  fill
-                                  sizes="(max-width: 900px) 84vw, 480px"
-                                  priority={index === 0}
-                                  loading="eager"
-                                  className="hero-carousel-img"
-                                />
-                              ) : null}
+                                  alt={getImageMeta(src)?.alt}
+                                  title={getImageMeta(src)?.title}
+                                fill
+                                sizes="(max-width: 900px) 84vw, 480px"
+                                priority={index === 0}
+                                loading="eager"
+                                className="hero-carousel-img"
+                              />
                             </div>
                           ))}
                         </div>
@@ -587,7 +501,7 @@ export default function CompensationCalculator() {
 
       <section className="section calc-section" id="hesapla">
         <div className="container calc-wrap scroll-reveal scroll-reveal--up">
-          <h2 className="calc-section-heading">Kıdem Tazminatı Hesaplayıcısı</h2>
+          <H2 className="calc-section-heading">Kıdem Tazminatı Hesaplayıcısı</H2>
           <div className="calc-panel scroll-reveal scroll-reveal--scale" data-scroll-reveal>
             <div className="calc-panel-top" aria-hidden="true" />
             <div className="calc-panel-head">
@@ -769,7 +683,7 @@ export default function CompensationCalculator() {
             >
               <div className="result-results-top" aria-hidden="true" />
               <div className="result-results-head">
-                <h3>Hesaplama Sonuçları</h3>
+                <H3>Hesaplama Sonuçları</H3>
                 <p className="result-period">
                   {result.iseGirisTarihi} - {result.istenCikisTarihi} / {formatDuration(result.calismaSuresi)}
                 </p>
@@ -787,15 +701,15 @@ export default function CompensationCalculator() {
               </div>
               <div className="result-cards scroll-reveal-stagger">
                 <article>
-                  <h4>Kıdem Tazminatı (Net)</h4>
+                  <H4>Kıdem Tazminatı (Net)</H4>
                   <strong>₺{TR.money(result.netKidemTazminati)}</strong>
                 </article>
                 <article>
-                  <h4>İhbar Tazminatı (Net)</h4>
+                  <H4>İhbar Tazminatı (Net)</H4>
                   <strong>₺{TR.money(result.netIhbarTazminati)}</strong>
                 </article>
                 <article>
-                  <h4>Toplam Tazminat (Net)</h4>
+                  <H4>Toplam Tazminat (Net)</H4>
                   <strong>₺{TR.money(result.toplamTazminat)}</strong>
                 </article>
               </div>
@@ -822,13 +736,12 @@ export default function CompensationCalculator() {
 
       <section className="section content-section" id="tazminat-turleri">
         <div className="intro-section-bg" aria-hidden="true">
-          <Image
+          <AppImage
             src={IMAGES.home.introSeveranceBg}
             alt={IMAGE_ALTS.introSeveranceBg}
             fill
             sizes="(min-width: 821px) 100vw, 1px"
             className="intro-section-image"
-            priority
           />
           <span className="intro-section-overlay" />
         </div>
@@ -837,7 +750,7 @@ export default function CompensationCalculator() {
           <div className="intro-section">
             <div className="intro-showcase">
             <div className="intro-showcase-top-image" aria-hidden="true">
-              <Image
+              <AppImage
                 src={IMAGES.home.introSeveranceBg}
                 alt={IMAGE_ALTS.introSeveranceBg}
                 fill
@@ -846,7 +759,7 @@ export default function CompensationCalculator() {
               />
             </div>
             <div className="intro-showcase-copy scroll-reveal scroll-reveal--left scroll-reveal--instant" data-scroll-reveal>
-              <h2>İşten Çıkarma Tazminatı Nedir?</h2>
+              <H2>Kıdem Tazminatı: Anlamı, Uygunluk Şartları ve Hesaplanması</H2>
               <p>
                 İşten çıkarma tazminatı, belirli yasal veya sözleşmesel koşullar altında iş ilişkisinin sona ermesi
                 durumunda işveren tarafından çalışana ödenen mali tazminattır. Birçok ülkede, işten çıkarma tazminatı
@@ -885,18 +798,17 @@ export default function CompensationCalculator() {
       <ContentSection alt id="ucretsiz-hesaplayici">
         <div className="free-calc-showcase scroll-reveal-stagger">
           <div className="free-calc-visual">
-            <Image
+            <AppImage
               src={IMAGES.home.freeCalcOffice}
               alt={IMAGE_ALTS.freeCalcOffice}
               width={612}
               height={612}
-              priority
               unoptimized
               className="free-calc-image"
             />
           </div>
           <div className="free-calc-copy">
-            <h2>Ücretsiz Kıdem Tazminatı Hesaplayıcısı</h2>
+            <H2>Ücretsiz Kıdem Tazminatı Hesaplayıcısı</H2>
             <p>
               Bu çevrimiçi kıdem tazminatı hesaplayıcısı, çalışanların, insan kaynakları uzmanlarının ve işverenlerin
               maaş, hizmet süresi, yaş, şirket politikası ve diğer önemli faktörlere dayanarak kıdem tazminatını hızlı
@@ -914,7 +826,7 @@ export default function CompensationCalculator() {
               <span className="audience-deco audience-deco--blob" aria-hidden="true" />
               <span className="audience-deco audience-deco--wave" aria-hidden="true" />
               <header className="audience-head">
-                <h2>İşten Ayrılma Tazminatını Kimler Kullanabilir?</h2>
+                <H2>İşten Çıkarma Tazminatı Hesaplayıcısından Kimler Yararlanabilir?</H2>
                 <p className="audience-lead">Bu çevrimiçi kıdem tazminatı hesaplayıcısı yardımcı olur.</p>
               </header>
               <ul className="audience-cards scroll-reveal-stagger">
@@ -972,7 +884,7 @@ export default function CompensationCalculator() {
           <div className="guide-block guide-block--instant">
             <div className="instant-calc-showcase">
               <div className="instant-calc-copy-card scroll-reveal scroll-reveal--left" data-scroll-reveal>
-                <h3>İşten Çıkarma Tazminatınızı Anında Hesaplayın</h3>
+                <H3>İşten Çıkarma Tazminatınızı Anında Hesaplayın</H3>
                 <p>
                   Hesap makinesi veya bir araç kullanmadan kıdem tazminatını manuel olarak hesaplamak zordur. Bu yöntemde
                   hatalar ve yanlışlıklar olma olasılığı yüksektir; ayrıca gelişmiş hesaplamalar için nihai formüle ve ödemeye
@@ -995,7 +907,7 @@ export default function CompensationCalculator() {
 
           <div className="guide-block guide-block--inputs">
             <div className="required-inputs-showcase" ref={gerekliGirisRef}>
-          <h3 className="required-inputs-heading">Hesap Makinesi İçin Gerekli Girişler</h3>
+          <H3 className="required-inputs-heading">Hesap Makinesi İçin Gerekli Girişler</H3>
           <p className="required-inputs-intro">
             İşten çıkarılmanız veya işten atılmanız durumunda alacağınız kıdem tazminatını belirlerken bazı faktörler
             önemlidir. Daha iyi bir tazminat alabilmeniz için her zaman doğru bilgiler vermeniz çok önemlidir.
@@ -1166,7 +1078,7 @@ export default function CompensationCalculator() {
             <span className="how-steps-head-glow how-steps-head-glow--left" aria-hidden="true" />
             <span className="how-steps-head-glow how-steps-head-glow--right" aria-hidden="true" />
             <div className="how-steps-head-inner">
-              <h2 className="how-steps-title">Kıdem Tazminatı Hesaplayıcısı Nasıl Kullanılır?</h2>
+              <H2 className="how-steps-title">Kıdem Tazminatı Hesaplayıcısı Nasıl Kullanılır?</H2>
               <p className="how-steps-lead">
                 Bu kıdem tazminatı hesaplayıcısını kolayca kullanabilirsiniz ve sadece birkaç adım gerektirir. Araç,
                 finansal veya hukuki uzmanlığa ihtiyaç duymadan kullanıcılara hızlı sonuçlar vermek üzere tasarlanmıştır.
@@ -1187,7 +1099,7 @@ export default function CompensationCalculator() {
           <div className="how-feature-cards scroll-reveal-stagger">
             <article className="how-feature-card">
               <div className="how-feature-card-content">
-                <h3>İşten Çıkarma Tazminatınızın Sonuçlarını Anlamak</h3>
+                <H3>İşten Çıkarma Tazminatınızın Sonuçlarını Anlamak</H3>
                 <p>
                   Hesaplamadan sonra, her sonucun ne anlama geldiğini anlamak önemlidir. Kıdem tazminatı paketleri genellikle
                   nihai ödeme tutarınızı etkileyebilecek çeşitli tazminat bileşenlerini içerir. Sonuçlarınız şunları
@@ -1209,7 +1121,7 @@ export default function CompensationCalculator() {
               </div>
               <div className="how-feature-card-visual">
                 <div className="how-feature-card-art how-feature-card-art--photo">
-                  <Image
+                  <AppImage
                     src={IMAGES.home.featureResultsSalary}
                     alt="Maaş bordrosu ve nakit ödeme belgeleri"
                     width={600}
@@ -1223,7 +1135,7 @@ export default function CompensationCalculator() {
 
             <article className="how-feature-card how-feature-card--reverse">
               <div className="how-feature-card-content">
-                <h3>Vergi Tahmini ve Nihai Ödeme</h3>
+                <H3>Vergi Tahmini ve Nihai Ödeme</H3>
                 <p>
                   Kıdem tazminatı birçok ülkede genellikle vergilendirilebilir gelir olarak kabul edilir; bu da kesintilerin
                   aslında alacağınız tutarı azaltabileceği anlamına gelir. Hesaplayıcımız vergileri tahmin etmenize ve
@@ -1240,7 +1152,7 @@ export default function CompensationCalculator() {
               </div>
               <div className="how-feature-card-visual">
                 <div className="how-feature-card-art how-feature-card-art--photo">
-                  <Image
+                  <AppImage
                     src={IMAGES.home.featureTaxWallet}
                     alt="Kırmızı cüzdandan Türk Lirası banknotları çıkaran kişi"
                     width={600}
@@ -1259,7 +1171,7 @@ export default function CompensationCalculator() {
         <div className="employer-why">
           <div className="employer-why-panel">
             <div className="employer-why-panel-media" aria-hidden="true">
-              <Image
+              <AppImage
                 src={IMAGES.home.employerWhyCalculatorBg}
                 alt={IMAGE_ALTS.employerWhyCalculatorBg}
                 fill
@@ -1275,7 +1187,7 @@ export default function CompensationCalculator() {
 
             <div className="employer-why-container employer-why-stack">
               <header className="employer-why-header scroll-reveal scroll-reveal--up" data-scroll-reveal>
-                <h2>İşverenler Neden Kıdem Tazminatı Öder?</h2>
+                <H2>İşverenler Neden Kıdem Tazminatı Öder?</H2>
                 <p className="employer-why-intro">
                   İşverenler, iş kanunlarına uymak, yasal anlaşmazlıkları azaltmak ve çalışanları iş değiştirme
                   süreçlerinde desteklemek için kıdem tazminatı öderler. Birçok durumda, kıdem tazminatı çalışanlar için
@@ -1364,7 +1276,7 @@ export default function CompensationCalculator() {
           <div className="diff-showcase-layout">
             <div className="diff-showcase-main scroll-reveal scroll-reveal--left" data-scroll-reveal>
               <span className="diff-showcase-main-glow" aria-hidden="true" />
-              <h2>Kıdem Tazminatı ile İşten Çıkarma Tazminatı Arasındaki Fark</h2>
+              <H2>Kıdem Tazminatı ile İşten Çıkarma Tazminatı Arasındaki Fark</H2>
               <p>
                 İki terim de yaklaşık olarak aynı kabul edilir, ancak bu doğru değildir. Kıdem tazminatı genellikle
                 kıdem, hizmet süresi ve fesih koşullarına dayalı tazminatı ifade eder. İşten çıkarma tazminatı ise
@@ -1455,7 +1367,7 @@ export default function CompensationCalculator() {
 
             <div className="diff-showcase-aside scroll-reveal scroll-reveal--right" data-scroll-reveal>
               <div className="diff-showcase-visual">
-                <Image
+                <AppImage
                   src={IMAGES.home.diffPurpleSalary}
                   alt="Maaş ve tazminat ödemesi görseli"
                   fill
@@ -1471,7 +1383,7 @@ export default function CompensationCalculator() {
 
               <article className="diff-package-card scroll-reveal scroll-reveal--up" data-scroll-reveal>
                 <span className="diff-package-card-accent" aria-hidden="true" />
-                <h3>İşten Çıkarma Tazminat Paketine Neler Dahildir?</h3>
+                <H3>İşten Çıkarma Tazminat Paketine Neler Dahildir?</H3>
                 <p>
                   İşten ayrılma tazminatı paketi, kıdem tazminatının ötesinde birden fazla finansal bileşeni içerebilir.
                   Nihai paket, iş kanunlarına, şirket politikasına, iş sözleşmelerine ve fesih nedenine bağlıdır.
@@ -1523,7 +1435,7 @@ export default function CompensationCalculator() {
         <div className="calc-guide-showcase">
           <div className="page-content-wrap calc-guide-stack scroll-reveal-stagger">
             <section className="calc-guide-panel calc-guide-panel--hero">
-              <h2>Kıdem Tazminatı Nasıl Hesaplanır?</h2>
+              <H2>Kıdem Tazminatı Nasıl Hesaplanır?</H2>
               <p>
                 İşten ayrılma tazminatı hesaplaması, hizmet süresi, brüt maaş, ihbar süresi hakları, ek haklar ve
                 geçerli yasal tavanlar dahil olmak üzere birçok önemli faktöre dayanmaktadır. İşverenler genellikle
@@ -1575,7 +1487,7 @@ export default function CompensationCalculator() {
             </section>
 
             <section className="calc-guide-panel">
-              <h3>Standart Kıdem Tazminatı Formülü</h3>
+              <H3>Standart Kıdem Tazminatı Formülü</H3>
               <p>
                 Standart kıdem tazminatı formülü genellikle çalışanın brüt aylık maaşı ve toplam hizmet yılı
                 kullanılarak hesaplanır. En yaygın kıdem tazminatı formülü şöyledir:
@@ -1615,7 +1527,7 @@ export default function CompensationCalculator() {
 
             <div className="calc-guide-duo">
               <section className="calc-guide-panel">
-                <h3>Haftalık Maaş ve Günlük Ücret Hesaplamaları</h3>
+                <H3>Haftalık Maaş ve Günlük Ücret Hesaplamaları</H3>
                 <p>
                   İşten ayrılma tazminatı ve ihbar tazminatını doğru hesaplamak için, çalışanın aylık maaşı öncelikle
                   haftalık ve günlük ücret değerlerine dönüştürülmelidir. Günlük ücret hesaplamaları, ihbar tazminatı
@@ -1656,7 +1568,7 @@ export default function CompensationCalculator() {
 
               <div className="calc-guide-duo-side">
                 <section className="calc-guide-panel">
-                  <h3>Bildirim Süresi</h3>
+                  <H3>Bildirim Süresi</H3>
                   <p>
                     Uygun ihbar yapılmadan işten çıkarılan çalışanlar, yasal ihbar sürelerine göre ihbar tazminatına hak
                     kazanabilirler. İş Kanunu&apos;nun 17. maddesi uyarınca ihbar süreleri genellikle şunlardır:
@@ -1674,7 +1586,7 @@ export default function CompensationCalculator() {
                 </section>
 
                 <section className="calc-guide-panel">
-                  <h3>Temel Kıdem Tazminatı Hesaplaması</h3>
+                  <H3>Temel Kıdem Tazminatı Hesaplaması</H3>
                   <p>
                     İşten ayrılma tazminatı, çalışanın brüt kazanç maaşı üzerinden hesaplanır. Bu, işveren tarafından
                     sağlanan düzenli ücret ve tekrarlayan yan hakları içerir. İşten ayrılma tazminatı, aylık maaş ve
@@ -1700,7 +1612,7 @@ export default function CompensationCalculator() {
           <div className="page-content-wrap">
             <div className="factors-showcase-shell">
               <header className="factors-showcase-head scroll-reveal scroll-reveal--left" data-scroll-reveal>
-                <h2>Kıdem Tazminatını Etkileyen Faktörler</h2>
+                <H2>Kıdem Tazminatını Etkileyen Faktörler</H2>
                 <p>İşte kıdem tazminatının hesaplanmasında önemli rol oynayan bazı faktörler.</p>
               </header>
 
@@ -1756,7 +1668,7 @@ export default function CompensationCalculator() {
         <div className="benefits-showcase">
           <div className="page-content-wrap">
             <header className="benefits-showcase-head scroll-reveal scroll-reveal--left" data-scroll-reveal>
-              <h2>İşten Ayrılma Tazminatı Hesaplayıcımızı Kullanmanın Faydaları Nelerdir?</h2>
+              <H2>İşten Ayrılma Tazminatı Hesaplayıcımızı Kullanmanın Faydaları Nelerdir?</H2>
               <p className="benefits-showcase-lead">Dönüştürücümüzü kullanmanız için bazı nedenler şunlardır:</p>
             </header>
 
@@ -1804,7 +1716,7 @@ export default function CompensationCalculator() {
               <div className="summary-showcase-layout scroll-reveal-stagger">
                 <div className="summary-showcase-content">
                   <header className="summary-showcase-head">
-                    <h2>Özet</h2>
+                    <H2>Özet</H2>
                   </header>
 
                   <div className="summary-showcase-glass">
@@ -1856,12 +1768,11 @@ export default function CompensationCalculator() {
           <span className="faq-showcase-glow faq-showcase-glow--left" aria-hidden="true" />
           <span className="faq-showcase-glow faq-showcase-glow--right" aria-hidden="true" />
           <div className="faq-wrap">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <header className="faq-head">
-              <h2>Sıkça Sorulan Sorular</h2>
+              <H2>Sıkça Sorulan Sorular</H2>
             </header>
 
-            <FaqAccordion items={faqItems} variant="home" />
+            <FaqAccordion items={HOME_FAQ_ITEMS} variant="home" />
           </div>
         </div>
       </ContentSection>

@@ -1,19 +1,52 @@
+import fs from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
-const out = path.resolve("public/images/og-image.webp");
+const root = path.resolve(import.meta.dirname, "..");
+const outWebp = path.join(root, "public", "images", "og-image.webp");
+const outPng = path.join(root, "public", "images", "og-image.png");
+const opengraphPng = path.join(root, "src", "app", "opengraph-image.png");
+const twitterPng = path.join(root, "src", "app", "twitter-image.png");
+const source = process.env.OG_SOURCE
+  ? path.resolve(process.env.OG_SOURCE)
+  : path.join(root, "public", "images", "og-source.png");
 
-const svg = `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#312e81"/>
-      <stop offset="100%" stop-color="#4f46e5"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="url(#g)"/>
-  <text x="600" y="300" text-anchor="middle" fill="#ffffff" font-family="Arial,sans-serif" font-size="56" font-weight="700">Tazminat Hesaplama</text>
-  <text x="600" y="370" text-anchor="middle" fill="#c6f24e" font-family="Arial,sans-serif" font-size="28">İş Kanunu 4857 · Ücretsiz Araç</text>
-</svg>`;
+const MAX_KB = 100;
+const WIDTH = 1200;
+const HEIGHT = 630;
 
-const stat = await sharp(Buffer.from(svg)).webp({ quality: 85 }).toFile(out);
-console.log(`Created ${out} (${Math.round(stat.size / 1024)}KB)`);
+async function writeOg(sourcePath, quality) {
+  const resized = sharp(sourcePath).resize(WIDTH, HEIGHT, { fit: "cover", position: "top" });
+
+  await resized.clone().webp({ quality, effort: 6 }).toFile(outWebp);
+  await resized.clone().png({ compressionLevel: 9 }).toFile(outPng);
+  await fs.copyFile(outPng, opengraphPng);
+  await fs.copyFile(outPng, twitterPng);
+
+  const stat = await fs.stat(outWebp);
+  return Math.round(stat.size / 1024);
+}
+
+try {
+  await fs.access(source);
+} catch {
+  console.error(`Source image not found: ${source}`);
+  console.error("Place og-source.png in public/images/ or set OG_SOURCE.");
+  process.exit(1);
+}
+
+let quality = 82;
+let kb = await writeOg(source, quality);
+
+while (kb > MAX_KB && quality >= 52) {
+  quality -= 6;
+  kb = await writeOg(source, quality);
+}
+
+console.log(`Created ${outWebp} (${kb}KB, ${WIDTH}x${HEIGHT}, quality ${quality})`);
+console.log(`Synced PNG OG assets to ${outPng}, ${opengraphPng}, ${twitterPng}`);
+
+if (kb > MAX_KB) {
+  console.warn(`Warning: output is still above ${MAX_KB}KB`);
+  process.exit(1);
+}

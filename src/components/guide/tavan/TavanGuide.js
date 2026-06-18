@@ -1,7 +1,7 @@
 "use client";
 
+import { H3 } from "@/components/common/Heading";
 import { motion, useScroll, useTransform } from "framer-motion";
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { HOME_PATH, KIDEM_TAVANI_PATH } from "@/config/site";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
@@ -60,17 +60,10 @@ function GuidePageShell({ children }) {
 export default function TavanGuide() {
   return (
     <GuidePageShell>
-      <BreadcrumbSchema
-        items={[
-          { name: "Anasayfa", path: HOME_PATH },
-          { name: "Kıdem Tazminatı Tavanı 2026", path: KIDEM_TAVANI_PATH }
-        ]}
-      />
-
       <TavanHero stat={TAVAN_HERO_STAT} image={TAVAN_IMAGES.hero} />
 
       <GuideSection id="tavan-nedir" alt>
-        <SectionHeading>Türkiye&apos;de Kıdem Tazminatı Tavanı Nedir?</SectionHeading>
+        <SectionHeading>Türkiye&apos;de Kıdem Tazminatı Tavanı Nasıl İşliyor?</SectionHeading>
         <p>
           İşten çıkarma tazminatı tavanı, bir çalışanın işten çıkarma tazminatının hesaplanmasında önemli bir rol
           oynayan maksimum gelir olarak tanımlanır. İşte dikkate almanız gereken 2 nokta:
@@ -90,18 +83,18 @@ export default function TavanGuide() {
         <SectionHeading>2026 İlk Dönem Kıdem Tazminatı Tavanı</SectionHeading>
         <p>Yılın ilk yarısı için 2026 yılı kıdem tazminatı tavanı resmen açıklandı.</p>
 
-        <h3>2026 Yılı İçin Resmi Tavan Tutarı</h3>
+        <H3>2026 Yılı İçin Resmi Tavan Tutarı</H3>
         <OfficialTavanStat row={OFFICIAL_TAVAN_ROW} />
 
-        <h3>Yeni Tavan Sınırlamasından Kimler Etkileniyor?</h3>
+        <H3>Yeni Tavan Sınırlamasından Kimler Etkileniyor?</H3>
         <p>Yeni tavan kıdem tazminatı tutarı esas olarak aşağıdaki alanları etkiliyor:</p>
         <AffectedGroupChips items={AFFECTED_GROUPS} />
 
-        <h3>Yıllık Karşılaştırma</h3>
+        <H3>Yıllık Karşılaştırma</H3>
         <p>Aşağıda, mevcut ve önceki yıllara ait tavan tutarları karşılaştırmalı olarak verilmiştir.</p>
         <TavanBarChart rows={YEARLY_COMPARISON_ROWS} />
 
-        <h3>Kıdem Tazminatı Tavan Oranları (2022–2026)</h3>
+        <H3>Kıdem Tazminatı Tavan Oranları (2022–2026)</H3>
         <p>
           Çatışmaları önlemek için değişen tavan oranlarına dikkat etmek önemlidir. Aşağıda geçmiş yıllara ait tavan
           oranları yer almaktadır.
@@ -121,23 +114,23 @@ export default function TavanGuide() {
           önemlidir.
         </p>
 
-        <h3>Kıdem Tazminatı Formülü</h3>
+        <H3>Kıdem Tazminatı Formülü</H3>
         <p>Temel formül şöyledir:</p>
         <FormulaCallout />
 
-        <h3>Brüt Maaş vs. Düzeltilmiş Brüt Maaş</h3>
+        <H3>Brüt Maaş vs. Düzeltilmiş Brüt Maaş</H3>
         <p>Brüt maaş esas olarak hesaplamalarda kullanılır.</p>
         <p>Bu şunları içerir:</p>
         <GrossIncludesList items={GROSS_INCLUDES} />
         <p>{linkInternalTerms("Brüt maaş, kıdem tazminatı hesaplamaları için gerçek temeli oluşturur.")}</p>
 
-        <h3>Hesaplamaya Dahil Edilen Faydalar</h3>
+        <H3>Hesaplamaya Dahil Edilen Faydalar</H3>
         <p>
           İyi tarafı şu ki, temel maaş, yemek ödeneği, düzenli ikramiyeler ve ulaşım ödeneği dahil edilmiştir. Tüm bu
           değerleri hesaplamalarınıza eklediğinizde, nihai tutar önemli ölçüde artar.
         </p>
 
-        <h3>Kıdem Tazminatı Tavanının Etkisi</h3>
+        <H3>Kıdem Tazminatı Tavanının Etkisi</H3>
         <p>{linkInternalTerms("İşten çıkarma tazminatı tavanı, tazminatı doğrudan sınırlandırır.")}</p>
 
         <CeilingMechanismCards belowItems={BELOW_CEILING_ITEMS} aboveItems={ABOVE_CEILING_ITEMS} />
@@ -179,7 +172,7 @@ export default function TavanGuide() {
           </p>
         </TaxInfoNote>
 
-        <h3>İşverenlerin Sık Yaptığı Hatalar</h3>
+        <H3>Çalışanların Sık Yaptığı Hatalar</H3>
         <p>
           İşverenler, yabancı işçiler için kıdem tazminatı hesaplarken zaman zaman hatalar yapmaktadır. Sık yapılan
           hatalardan bazıları şunlardır:

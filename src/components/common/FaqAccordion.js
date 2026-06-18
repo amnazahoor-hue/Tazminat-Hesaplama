@@ -7,59 +7,41 @@ import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { useMotionPrefs } from "@/components/guide/motion/useMotionPrefs";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 
-const CLAMP_TOLERANCE_PX = 8;
-const MOBILE_FAQ_MQ = "(max-width: 900px)";
-
-function getFooterGap() {
-  if (typeof window === "undefined") return 32;
-  return window.matchMedia(MOBILE_FAQ_MQ).matches ? 40 : 32;
-}
+const FOOTER_GAP = 24;
+const CLAMP_TOLERANCE_PX = 12;
 
 function measureAnswerHeight(answerEl) {
-  const inner = answerEl.querySelector(".faq-content-inner, .guide-accordion-panel-inner");
-  const measureTarget = inner || answerEl;
-
   const prevMax = answerEl.style.maxHeight;
+  const prevOverflow = answerEl.style.overflowY;
   answerEl.style.maxHeight = "none";
   answerEl.style.overflowY = "visible";
-
-  const fullHeight = Math.ceil(measureTarget.scrollHeight + 2);
+  const fullHeight = Math.ceil(answerEl.scrollHeight);
   answerEl.style.maxHeight = prevMax;
-  answerEl.style.overflowY = "";
-
+  answerEl.style.overflowY = prevOverflow;
   return fullHeight;
 }
 
 function measureOpenAnswer(answerEl, isLastOpen) {
   const fullHeight = measureAnswerHeight(answerEl);
 
+  if (!isLastOpen) {
+    return { offset: fullHeight, maxHeight: null, clamped: false };
+  }
+
   const footer = document.querySelector(".site-footer");
   if (!footer) {
-    return { offset: fullHeight, maxHeight: null, clamped: false };
+    return { offset: 0, maxHeight: null, clamped: false };
   }
 
   const answerTop = answerEl.getBoundingClientRect().top;
   const footerTop = footer.getBoundingClientRect().top;
-  const available = Math.floor(footerTop - answerTop - getFooterGap());
-
-  if (available <= 0) {
-    return { offset: 72, maxHeight: 72, clamped: true };
-  }
-
-  const needsClamp = available + CLAMP_TOLERANCE_PX < fullHeight;
-  const visibleHeight = needsClamp ? Math.max(72, available) : fullHeight;
-
-  if (isLastOpen) {
-    return {
-      offset: visibleHeight,
-      maxHeight: needsClamp ? visibleHeight : null,
-      clamped: needsClamp
-    };
-  }
+  const available = Math.floor(footerTop - answerTop - FOOTER_GAP);
+  const clampedHeight = Math.max(96, Math.min(fullHeight, available));
+  const needsClamp = clampedHeight + CLAMP_TOLERANCE_PX < fullHeight;
 
   return {
-    offset: visibleHeight,
-    maxHeight: needsClamp ? visibleHeight : null,
+    offset: 0,
+    maxHeight: needsClamp ? clampedHeight : null,
     clamped: needsClamp
   };
 }
@@ -68,7 +50,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
   const [openId, setOpenId] = useState(null);
   const [answerOffset, setAnswerOffset] = useState(0);
   const [answerMaxHeight, setAnswerMaxHeight] = useState(null);
-  const [isAnswerClamped, setIsAnswerClamped] = useState(false);
+  const [isClamped, setIsClamped] = useState(false);
   const [isLastOpen, setIsLastOpen] = useState(false);
   const answerRef = useRef(null);
   const { reduceMotion, viewport, ease } = useMotionPrefs();
@@ -78,57 +60,52 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
     setOpenId((current) => (current === id ? null : id));
   };
 
-  const applyMetrics = useCallback((metrics, lastOpen) => {
-    const { offset, maxHeight, clamped } = metrics;
-    setIsLastOpen(lastOpen);
-    setAnswerOffset((prev) => (prev === offset ? prev : offset));
-    setAnswerMaxHeight((prev) => (prev === maxHeight ? prev : maxHeight));
-    setIsAnswerClamped((prev) => (prev === clamped ? prev : clamped));
-  }, []);
-
   const updateMeasurements = useCallback(() => {
     const el = answerRef.current;
     if (!el || !openId) {
-      setIsLastOpen(false);
       setAnswerOffset(0);
       setAnswerMaxHeight(null);
-      setIsAnswerClamped(false);
+      setIsClamped(false);
+      setIsLastOpen(false);
       return;
     }
 
-    const lastOpen = items.findIndex((item) => item.id === openId) === items.length - 1;
-    applyMetrics(measureOpenAnswer(el, lastOpen), lastOpen);
-  }, [openId, items, applyMetrics]);
+    const openIndex = items.findIndex((item) => item.id === openId);
+    const lastOpen = openIndex === items.length - 1;
+    setIsLastOpen(lastOpen);
+
+    const { offset, maxHeight, clamped } = measureOpenAnswer(el, lastOpen);
+    setAnswerOffset(offset);
+    setAnswerMaxHeight(maxHeight);
+    setIsClamped(clamped);
+  }, [openId, items]);
 
   useLayoutEffect(() => {
     if (!openId) {
-      setIsLastOpen(false);
       setAnswerOffset(0);
       setAnswerMaxHeight(null);
-      setIsAnswerClamped(false);
+      setIsClamped(false);
+      setIsLastOpen(false);
       return;
     }
 
     updateMeasurements();
-    const raf1 = requestAnimationFrame(() => {
-      updateMeasurements();
-      requestAnimationFrame(updateMeasurements);
-    });
+
+    const rafId = requestAnimationFrame(updateMeasurements);
 
     const observer = new ResizeObserver(updateMeasurements);
     if (answerRef.current) {
       observer.observe(answerRef.current);
     }
 
-    const onViewportChange = () => updateMeasurements();
-    window.addEventListener("resize", onViewportChange);
-    window.visualViewport?.addEventListener("resize", onViewportChange);
+    window.addEventListener("resize", updateMeasurements);
+    window.addEventListener("scroll", updateMeasurements, { passive: true });
 
     return () => {
-      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(rafId);
       observer.disconnect();
-      window.removeEventListener("resize", onViewportChange);
-      window.visualViewport?.removeEventListener("resize", onViewportChange);
+      window.removeEventListener("resize", updateMeasurements);
+      window.removeEventListener("scroll", updateMeasurements);
     };
   }, [openId, updateMeasurements]);
 
@@ -141,33 +118,32 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
     .filter(Boolean)
     .join(" ");
 
-  const wrapStyle = openId
-    ? {
-        "--faq-answer-offset": `${answerOffset}px`,
-        ...(answerMaxHeight ? { "--faq-answer-max-height": `${answerMaxHeight}px` } : {})
-      }
-    : undefined;
+  const wrapStyle =
+    openId && answerOffset > 0
+      ? {
+          "--faq-answer-offset": `${answerOffset}px`,
+          ...(answerMaxHeight ? { "--faq-answer-max-height": `${answerMaxHeight}px` } : {})
+        }
+      : answerMaxHeight
+        ? { "--faq-answer-max-height": `${answerMaxHeight}px` }
+        : undefined;
 
   const answerStyle = answerMaxHeight ? { maxHeight: `${answerMaxHeight}px` } : undefined;
-  const answerClampClass = isAnswerClamped ? " is-clamped" : "";
 
   return (
     <div className={wrapClassName} style={wrapStyle}>
       <div className={listClassName} role="list">
         {items.map((item, index) => {
           const isOpen = openId === item.id;
-          const isLastItem = index === items.length - 1;
-          const isLastOpenItem = isOpen && isLastItem;
           const prefix = isHome ? "faq" : "guide-accordion";
           const buttonId = `${prefix}-button-${item.id}`;
           const panelId = `${prefix}-panel-${item.id}`;
           const number = String(index + 1).padStart(2, "0");
-          const question = isHome ? capitalizeHeadingText(item.question) : item.question;
+          const question = capitalizeHeadingText(item.question);
 
-          const itemClassName = [
-            isHome ? "faq-item" : "guide-accordion-item",
-            isOpen ? "is-open" : "",
-            isLastOpenItem ? "is-open-last" : ""
+          const answerWrapClass = [
+            isHome ? "faq-answer-wrap" : "guide-accordion-answer-wrap",
+            isOpen && isClamped ? "is-clamped" : ""
           ]
             .filter(Boolean)
             .join(" ");
@@ -211,13 +187,11 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
               <div
                 id={panelId}
                 ref={isOpen ? answerRef : undefined}
-                className={
-                  (isHome ? "faq-answer-wrap" : "guide-accordion-answer-wrap") + (isOpen ? answerClampClass : "")
-                }
+                className={answerWrapClass}
                 style={isOpen ? answerStyle : undefined}
                 role="region"
                 aria-labelledby={buttonId}
-                aria-hidden={!isOpen}
+                hidden={!isOpen}
               >
                 <div className={isHome ? "faq-content-inner" : "guide-accordion-panel-inner"}>
                   <p>{linkInternalTerms(item.answer)}</p>
@@ -233,7 +207,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
 
           if (isHome) {
             return (
-              <article key={item.id} className={itemClassName} role="listitem">
+              <article key={item.id} className={`faq-item${isOpen ? " is-open" : ""}`} role="listitem">
                 {content}
               </article>
             );
@@ -242,7 +216,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
           return (
             <motion.article
               key={item.id}
-              className={itemClassName}
+              className={`guide-accordion-item${isOpen ? " is-open" : ""}`}
               role="listitem"
               initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 14 }}
               whileInView={{ opacity: 1, y: 0 }}

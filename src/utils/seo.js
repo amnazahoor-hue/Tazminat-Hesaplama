@@ -3,7 +3,7 @@ import { SITE_URL, siteUrl } from "@/config/site";
 
 export { SITE_URL };
 
-/** Legal, corporate & author pages — noindex, follow links */
+/** Legal & author pages — noindex, follow links */
 export const ROBOTS_NOINDEX_FOLLOW = {
   index: false,
   follow: true,
@@ -11,13 +11,6 @@ export const ROBOTS_NOINDEX_FOLLOW = {
     index: false,
     follow: true
   }
-};
-
-const OG_IMAGE = {
-  url: "/images/og-image.webp",
-  width: 1200,
-  height: 630,
-  alt: "Tazminat Hesaplama"
 };
 
 function withTrailingSlash(path) {
@@ -43,14 +36,12 @@ export function buildPageMetadata({ title, description, path, keywords = [], rob
       title,
       description,
       url,
-      siteName: "Tazminat Hesaplama",
-      images: [OG_IMAGE]
+      siteName: "Tazminat Hesaplama"
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description,
-      images: [OG_IMAGE.url]
+      description
     }
   };
 }
@@ -58,14 +49,91 @@ export function buildPageMetadata({ title, description, path, keywords = [], rob
 export function buildBreadcrumbSchema(items) {
   return {
     "@context": "https://schema.org",
+    ...buildBreadcrumbListSchema(items)
+  };
+}
+
+export function buildBreadcrumbListSchema(items) {
+  return {
     "@type": "BreadcrumbList",
-    itemListElement: items.map((item, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: item.name,
-      item: siteUrl(item.path)
+    itemListElement: buildBreadcrumbListElements(items)
+  };
+}
+
+function buildBreadcrumbListElements(items) {
+  return items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.name,
+    item: siteUrl(item.path)
+  }));
+}
+
+/** WebPage node — use standalone or inside @graph via buildPageSchemaGraph */
+export function buildWebPageSchema({ name, description, path, type = "WebPage" }) {
+  return {
+    "@type": type,
+    name,
+    description,
+    url: siteUrl(path),
+    inLanguage: "tr",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Tazminat Hesaplama",
+      url: SITE_URL
+    }
+  };
+}
+
+function stripSchemaContext(schema) {
+  if (!schema || typeof schema !== "object") return schema;
+  const { "@context": _context, ...rest } = schema;
+  return rest;
+}
+
+function toSchemaNodes(schema) {
+  const stripped = stripSchemaContext(schema);
+  if (stripped?.["@graph"]) return stripped["@graph"];
+  return [stripped];
+}
+
+/** Merge multiple schema nodes into one JSON-LD document for SEO tools. */
+export function buildSchemaGraph(...schemas) {
+  const nodes = schemas.filter(Boolean).flatMap(toSchemaNodes);
+
+  if (nodes.length === 0) return null;
+  if (nodes.length === 1) {
+    return {
+      "@context": "https://schema.org",
+      ...nodes[0]
+    };
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": nodes
+  };
+}
+
+export function buildFaqPageSchema(items, { includeFormula = false, transformQuestion } = {}) {
+  return {
+    "@type": "FAQPage",
+    mainEntity: items.map((faq) => ({
+      "@type": "Question",
+      name: transformQuestion ? transformQuestion(faq.question) : faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: includeFormula && faq.formula ? `${faq.answer} ${faq.formula}` : faq.answer
+      }
     }))
   };
+}
+
+export function buildPageSchemaGraph({ name, description, path, breadcrumb, type = "WebPage" }) {
+  return buildSchemaGraph(
+    buildWebPageSchema({ name, description, path, type }),
+    breadcrumb?.length ? buildBreadcrumbListSchema(breadcrumb) : null
+  );
 }
 
 export function buildOrganizationSchema() {
@@ -118,44 +186,6 @@ export function buildArticleSchema({ headline, path }) {
   };
 }
 
-/** CSS selectors for Google SpeakableSpecification — must match live DOM classes */
-export const SPEAKABLE_SELECTORS = {
-  tool: [
-    ".hero-copy",
-    ".intro-showcase-copy p",
-    ".faq-question-text",
-    ".faq-content-inner p"
-  ],
-  guide: [
-    ".hero-copy",
-    ".ihbar-guide-hero-copy p",
-    ".tavan-guide-hero-lead p",
-    ".guide-intro-copy p",
-    ".guide-accordion-question",
-    ".guide-accordion-panel-inner p"
-  ],
-  author: [".author-shell-lead", ".author-shell-tagline", ".author-speakable p"],
-  legal: [".legal-shell-lead", ".legal-section-body p"]
-};
-
-export function buildSpeakableSchema({
-  name,
-  url,
-  cssSelector = SPEAKABLE_SELECTORS.tool
-} = {}) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    ...(name ? { name } : {}),
-    ...(url ? { url } : {}),
-    inLanguage: "tr",
-    speakable: {
-      "@type": "SpeakableSpecification",
-      cssSelector
-    }
-  };
-}
-
 export function buildPersonSchema({ name, jobTitle, description, url, image, knowsAbout = [] }) {
   return {
     "@context": "https://schema.org",
@@ -178,7 +208,7 @@ export function buildPersonSchema({ name, jobTitle, description, url, image, kno
   };
 }
 
-export function buildAuthorPageSchema({ author, path, cssSelector = SPEAKABLE_SELECTORS.author }) {
+export function buildAuthorPageSchema({ author, path }) {
   const url = siteUrl(path);
   const imageUrl = author.image ? `${SITE_URL}${author.image}` : undefined;
 
@@ -205,10 +235,6 @@ export function buildAuthorPageSchema({ author, path, cssSelector = SPEAKABLE_SE
         "@type": "Country",
         name: "Türkiye"
       }
-    },
-    speakable: {
-      "@type": "SpeakableSpecification",
-      cssSelector
     }
   };
 }

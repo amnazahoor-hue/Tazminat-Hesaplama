@@ -1,9 +1,6 @@
 "use client";
 
-import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-import { HOME_PATH, IHBAR_NEDIR_PATH } from "@/config/site";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
   COMPARISON_ROWS,
@@ -55,22 +52,11 @@ function GuidePageShell({ children }) {
 export default function IhbarTazminatGuide() {
   return (
     <GuidePageShell>
-      <BreadcrumbSchema
-        items={[
-          { name: "Anasayfa", path: HOME_PATH },
-          { name: "İhbar Tazminatı Nedir?", path: IHBAR_NEDIR_PATH }
-        ]}
-      />
-
       <NoticeHero image={IHBAR_IMAGES.hero} />
 
       <GuideSection id="ihbar-kidem" alt>
         <TwoColumnImageBlock image={IHBAR_IMAGES.kidem}>
-          <SectionHeading>
-            <Link href={HOME_PATH} className="text-internal-link">
-              Kıdem Tazminatı Nedir
-            </Link>
-          </SectionHeading>
+          <SectionHeading>Kıdem Tazminatı Ne Anlama Geliyor?</SectionHeading>
           <p>
             {linkInternalTerms(
               "İşten ayrılma tazminatı, belirli yasal veya sözleşmesel koşullar altında iş ilişkisinin sona ermesi durumunda işveren tarafından çalışana ödenen mali tazminattır. Birçok ülkede, işten ayrılma tazminatının hesaplanması iş kanunları, iş sözleşmeleri, toplu iş sözleşmeleri ve şirket politikaları ile düzenlenir."
@@ -80,7 +66,9 @@ export default function IhbarTazminatGuide() {
       </GuideSection>
 
       <GuideSection id="ihbar-sure">
-        <SectionHeading id="ihbar-suresi">İhbar Süresi Nedir?</SectionHeading>
+        <SectionHeading id="ihbar-suresi">
+          İşten ayrılma bildirim süreleri çalışanlar ve işverenler için nasıl işler?
+        </SectionHeading>
         <p>
           İhbar süresi, işten çıkarma bildiriminin verilmesi ile iş ilişkisinin fiilen sona ermesi arasında yasal olarak
           zorunlu olan süredir. Amacı, çalışanlara yeni iş aramak ve işverenlere yerlerine yeni eleman bulmak için makul
@@ -111,7 +99,7 @@ export default function IhbarTazminatGuide() {
       </GuideSection>
 
       <GuideSection id="ihbar-uygunluk" alt>
-        <SectionHeading>Bildirim Ücreti Uygunluğu</SectionHeading>
+        <SectionHeading>Türkiye&apos;de Kimler İhbar Tazminatına Hak Kazanır? 2026 Şartları</SectionHeading>
         <p>
           {linkInternalTerms(
             "Herkes ihbar tazminatına hak kazanmaz, bu nedenle kimlerin bu tazminatı alabileceğini bilmek önemlidir. İhbar tazminatı alma hakkı, iş sözleşmesine, fesih nedenine ve çalışanın performans raporuna bağlıdır."

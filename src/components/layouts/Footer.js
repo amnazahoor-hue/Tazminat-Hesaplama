@@ -1,6 +1,7 @@
 "use client";
 
-import Image from "next/image";
+import AppImage from "@/components/common/AppImage";
+import { H4 } from "@/components/common/Heading";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
@@ -9,14 +10,13 @@ import { IMAGES } from "@/config/images";
 import { FOOTER_BRAND_COPY, FOOTER_SOCIAL_LINKS } from "@/config/footer";
 import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { MAIN_HEADER_PAGES, resolvePagePath } from "@/config/pageNav";
 import { FOOTER_SOCIAL_ICON_MAP } from "@/components/layouts/FooterSocialIcon";
 
 function FooterLinkList({ title, children, panelClass = "", lead = "" }) {
   return (
     <section className={`footer-panel${panelClass ? ` ${panelClass}` : ""}`}>
-      <h4 className="footer-panel-title">{capitalizeHeadingText(title)}</h4>
+      <H4 className="footer-panel-title">{title}</H4>
       {lead ? <p className="footer-panel-lead">{lead}</p> : null}
       <ul className="footer-panel-list">{children}</ul>
     </section>
@@ -46,14 +46,10 @@ function FooterBrandColumn() {
     <section className="footer-panel footer-panel--brand">
       <Link href={HOME_PATH} className="brand footer-brand" aria-label="Anasayfaya dön">
         <span className="brand-mark">
-          <Image src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} unoptimized />
+          <AppImage src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} unoptimized />
         </span>
         <span className="brand-text">
           <span className="brand-title">Tazminat Hesaplama</span>
-          <span className="brand-sub">
-            <span className="brand-dot" aria-hidden="true" />
-            İş Kanunu 4857
-          </span>
         </span>
       </Link>
 

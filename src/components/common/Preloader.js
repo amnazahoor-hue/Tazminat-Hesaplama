@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import BrandLogo from "@/components/common/BrandLogo";
 import { IMAGES } from "@/config/images";
 import { useEffect, useState } from "react";
 
@@ -68,19 +68,10 @@ export default function Preloader() {
 
       <div className="site-preloader-panel">
         <div className="site-preloader-logo-stage">
-          <Image
-            src={IMAGES.logo}
-            alt="Tazminat Hesaplama logosu"
-            width={100}
-            height={100}
-            priority
-            unoptimized
-            className="site-preloader-logo"
-          />
+          <BrandLogo width={100} height={100} className="site-preloader-logo" />
         </div>
 
         <p className="site-preloader-title">Tazminat Hesaplama</p>
-        <span className="site-preloader-tag">İŞ KANUNU 4857</span>
 
         <span className="site-preloader-bar" aria-hidden="true">
           <span className="site-preloader-bar-fill" />

@@ -1,15 +1,17 @@
+import { getImageMeta } from "@/config/images";
+
 export const IHBAR_IMAGES = {
   hero: {
     src: "/images/ihbar/hero.webp",
-    alt: "Şehir manzaralı modern ofiste çalışan profesyonel ekip görseli"
+    ...getImageMeta("/images/ihbar/hero.webp")
   },
   kidem: {
     src: "/images/ihbar/kidem.webp",
-    alt: "Finans hesaplama masası ve hesap makinesi görseli"
+    ...getImageMeta("/images/ihbar/kidem.webp")
   },
   rights: {
     src: "/images/ihbar/rights.webp",
-    alt: "İhbar süresi boyunca ofiste çalışan profesyonel ekip görseli"
+    ...getImageMeta("/images/ihbar/rights.webp")
   }
 };
 

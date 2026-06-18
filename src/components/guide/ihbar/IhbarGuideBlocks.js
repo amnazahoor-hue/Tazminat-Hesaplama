@@ -1,6 +1,7 @@
 "use client";
 
-import Image from "next/image";
+import AppImage from "@/components/common/AppImage";
+import { H1, H3, H4 } from "@/components/common/Heading";
 import { motion } from "framer-motion";
 import CalcCta from "@/components/common/CalcCta";
 import { HOME_PATH } from "@/config/site";
@@ -30,10 +31,10 @@ import TiltCard from "../ui/TiltCard";
 import { Reveal, RevealItem, RevealStagger } from "../motion/Reveal";
 import { useMotionPrefs } from "../motion/useMotionPrefs";
 
-export function GuideImage({ src, alt, priority = false, className = "" }) {
+export function GuideImage({ src, alt, title, priority = false, className = "" }) {
   return (
     <div className={`ihbar-guide-image${className ? ` ${className}` : ""}`}>
-      <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 50vw" priority={priority} />
+      <AppImage src={src} alt={alt} title={title} fill sizes="(max-width: 768px) 100vw, 50vw" priority={priority} />
       <span className="ihbar-guide-image-overlay" aria-hidden="true" />
     </div>
   );
@@ -53,7 +54,7 @@ export function NoticeHero({ image }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
         >
-          <h1 id="ihbar-nedir">İhbar Tazminatı Nedir?</h1>
+          <H1 id="ihbar-nedir">İhbar Tazminatı Hesaplaması: Örnekler, İhbar Süreleri ve Uygunluk Kriterleri 2026</H1>
           <p className="hero-copy">
             İhbar tazminatı, bir tarafın yasal olarak gerekli ihbar süresine uymadan iş sözleşmesini feshetmesi
             durumunda ortaya çıkan tutardır. İhbar tazminatına ilişkin yasal çerçeve, 4857 sayılı{" "}
@@ -82,7 +83,13 @@ export function NoticeHero({ image }) {
         >
           <div className="ihbar-guide-hero-frame">
             <span className="ihbar-guide-hero-frame-ring" aria-hidden="true" />
-            <GuideImage src={image.src} alt={image.alt} priority className="ihbar-guide-image--hero" />
+            <GuideImage
+              src={image.src}
+              alt={image.alt}
+              title={image.title}
+              priority
+              className="ihbar-guide-image--hero"
+            />
           </div>
         </motion.div>
       </div>
@@ -102,7 +109,7 @@ export function TwoColumnImageBlock({ image, children }) {
         viewport={viewport}
         transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
       >
-        <GuideImage src={image.src} alt={image.alt} className="ihbar-guide-image--compact" />
+        <GuideImage src={image.src} alt={image.alt} title={image.title} className="ihbar-guide-image--compact" />
       </motion.aside>
       <motion.div
         className="ihbar-guide-split-copy"
@@ -186,7 +193,7 @@ export function NoticeScenarioCards({ examples }) {
                   <span className="ihbar-example-icon" aria-hidden="true">
                     <Icon size={20} strokeWidth={1.8} />
                   </span>
-                  <h4>{capitalizeHeadingText(example.title)}</h4>
+                  <H4>{capitalizeHeadingText(example.title)}</H4>
                   <p>{linkInternalTerms(example.body)}</p>
                 </article>
               </TiltCard>
@@ -227,7 +234,7 @@ export function NoticeComparisonTable({ rows }) {
         <div className="ihbar-compare-cards" aria-label="İhbar süresi ve bildirim ödemesi karşılaştırması">
           {rows.map((row) => (
             <article key={row.feature} className="ihbar-compare-card">
-              <h4>{capitalizeHeadingText(row.feature)}</h4>
+              <H4>{capitalizeHeadingText(row.feature)}</H4>
               <div className="ihbar-compare-card-row">
                 <span className="ihbar-compare-card-label ihbar-compare-card-label--indigo">İhbar Süresi</span>
                 <p>{row.noticePeriod}</p>
@@ -253,7 +260,7 @@ export function EligibilityCards({ notEligibleItems }) {
             <span className="ihbar-eligibility-icon" aria-hidden="true">
               <CheckCircle2 size={24} strokeWidth={1.8} />
             </span>
-            <h3>Kimler İhbar Tazminatına Hak Kazanır?</h3>
+            <H3>Kimler İhbar Tazminatına Hak Kazanır?</H3>
             <p>
               İş sözleşmesiyle çalışanlar genellikle ihbar tazminatına hak kazanırlar. Özellikle de işveren, yasal
               olarak gerekli ihbar süresini vermeden iş ilişkisini sonlandırdığında bu hak daha da artar.
@@ -267,7 +274,7 @@ export function EligibilityCards({ notEligibleItems }) {
             <span className="ihbar-eligibility-icon" aria-hidden="true">
               <XCircle size={24} strokeWidth={1.8} />
             </span>
-            <h3>Bir Çalışanın İhbar Tazminatına Hak Kazanmadığı Durumlar</h3>
+            <H3>Bir Çalışanın İhbar Tazminatına Hak Kazanmadığı Durumlar</H3>
             <p>
               Bazı durumlarda çalışanlar ihbar tazminatı talep edemezler. Bir çalışan genellikle aşağıdaki durumlarda
               ihbar tazminatına hak kazanamaz:
@@ -293,7 +300,12 @@ export function RightsSectionLayout({ cards, accentImage }) {
   return (
     <div className="ihbar-rights-layout">
       <Reveal className="ihbar-rights-accent">
-        <GuideImage src={accentImage.src} alt={accentImage.alt} className="ihbar-guide-image--accent" />
+        <GuideImage
+          src={accentImage.src}
+          alt={accentImage.alt}
+          title={accentImage.title}
+          className="ihbar-guide-image--accent"
+        />
       </Reveal>
       <RightsGrid cards={cards} />
     </div>
@@ -312,7 +324,7 @@ export function RightsGrid({ cards }) {
                 <span className="ihbar-rights-icon" aria-hidden="true">
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
-                <h3>{capitalizeHeadingText(card.title)}</h3>
+                <H3>{capitalizeHeadingText(card.title)}</H3>
                 {card.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -379,7 +391,7 @@ export function ProsConsGrid({ pros, cons }) {
             <span className="ihbar-pros-cons-heading-icon" aria-hidden="true">
               <ThumbsUp size={20} strokeWidth={1.8} />
             </span>
-            <h3>Avantajları</h3>
+            <H3>Avantajları</H3>
             <ul>
               {pros.map((item) => (
                 <li key={item}>
@@ -397,7 +409,7 @@ export function ProsConsGrid({ pros, cons }) {
             <span className="ihbar-pros-cons-heading-icon" aria-hidden="true">
               <ThumbsDown size={20} strokeWidth={1.8} />
             </span>
-            <h3>Dezavantajlar</h3>
+            <H3>Dezavantajlar</H3>
             <ul>
               {cons.map((item) => (
                 <li key={item}>
@@ -416,7 +428,7 @@ export function ProsConsGrid({ pros, cons }) {
 export function TaxCallout() {
   return (
     <InfoCalloutStyled icon={Receipt}>
-      <h3>Bildirim Ücreti Vergiye Tabi Midir?</h3>
+      <H3>Bildirim Ücreti Vergiye Tabi Midir?</H3>
       <p>
         Evet, ihbar tazminatı, müşterinizle yaptığınız sözleşmede belirtilmişse vergilendirilebilir gelir olarak kabul
         edilir. Çünkü ihbar tazminatı, ihbar süresi boyunca alınacak kazançların yerini alır. Kesin vergi uygulaması,

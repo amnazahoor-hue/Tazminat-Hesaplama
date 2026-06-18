@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { ChevronRight, Mail, MessageCircle, ShieldQuestion } from "lucide-react";
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { H1, H2 } from "@/components/common/Heading";
+import PageSchema from "@/components/seo/PageSchema";
 import { FOOTER_COMPANY_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 
 /**
  * @param {{
@@ -20,7 +20,13 @@ import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 export default function ContactPageShell({ breadcrumb, path, tag, title, lead, channels, sections, notice }) {
   return (
     <div className="legal-shell contact-shell">
-      <BreadcrumbSchema items={breadcrumb} />
+      <PageSchema
+        name={title}
+        description={lead}
+        path={path}
+        breadcrumb={breadcrumb}
+        type="ContactPage"
+      />
 
       <header className="legal-shell-hero">
         <span className="legal-shell-hero-bg" aria-hidden="true" />
@@ -39,7 +45,7 @@ export default function ContactPageShell({ breadcrumb, path, tag, title, lead, c
             ))}
           </nav>
           <span className="legal-shell-tag">{tag}</span>
-          <h1>{capitalizeHeadingText(title)}</h1>
+          <H1>{title}</H1>
           <p className="legal-shell-lead">{lead}</p>
         </div>
       </header>
@@ -93,7 +99,7 @@ export default function ContactPageShell({ breadcrumb, path, tag, title, lead, c
                     {index === 0 ? <MessageCircle size={18} /> : <ShieldQuestion size={18} />}
                   </span>
                   <div>
-                    <h2>{capitalizeHeadingText(section.title)}</h2>
+                    <H2>{section.title}</H2>
                     <div className="contact-section-body">{section.body}</div>
                   </div>
                 </article>

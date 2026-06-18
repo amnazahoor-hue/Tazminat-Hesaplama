@@ -10,6 +10,7 @@ import CountUp from "./ui/CountUp";
 import TiltCard from "./ui/TiltCard";
 import Scene3D from "./three/Scene3D";
 import { Reveal, RevealItem, RevealStagger } from "./motion/Reveal";
+import { H3 } from "@/components/common/Heading";
 import SectionHeading from "./motion/SectionHeading";
 import { useMotionPrefs } from "./motion/useMotionPrefs";
 import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
@@ -251,7 +252,7 @@ export function TimelineSteps({ steps }) {
             {String(index + 1).padStart(2, "0")}
           </motion.span>
           <div className="guide-timeline-body">
-            <h3>{capitalizeHeadingText(step.title)}</h3>
+            <H3>{capitalizeHeadingText(step.title)}</H3>
             {step.formula ? (
               <motion.p
                 className="guide-step-formula"

@@ -5,7 +5,10 @@ let applied = false;
 const SUPPRESSED_WARNINGS = [
   "THREE.Clock",
   "Clock: This module has been deprecated",
-  "PCFSoftShadowMap has been deprecated"
+  "PCFSoftShadowMap has been deprecated",
+  "THREE.WebGLProgram",
+  "Program Info Log",
+  "X4122"
 ];
 
 function shouldSuppressWarn(args) {
@@ -18,9 +21,16 @@ export function applyThreeCompat() {
   applied = true;
 
   const nativeWarn = console.warn.bind(console);
+  const nativeError = console.error.bind(console);
+
   console.warn = (...args) => {
     if (shouldSuppressWarn(args)) return;
     nativeWarn(...args);
+  };
+
+  console.error = (...args) => {
+    if (shouldSuppressWarn(args)) return;
+    nativeError(...args);
   };
 }
 

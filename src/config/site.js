@@ -6,7 +6,7 @@ export const HOME_SLUG_PATH = `/${HOME_SLUG}`;
 export const HOME_PAGE_SEO = {
   title: "Kıdem Tazminatı Hesaplaması | Formül, Örnekler ve Hesaplayıcı",
   description:
-    "İşten ayrılma tazminatı hesaplaması adım adım formül ve örneklerle hesaplamayı öğrenin. Tam ödemenizi anında tahmin etmek için işten ayrılma tazminatı aracımızı kullanın.",
+    "Kıdem tazminatını hesaplamayı bir formül ve örneklerle öğrenin. Kıdem tazminatı aracımızı kullanarak tam ödemenizi anında tahmin edin.",
   slug: HOME_SLUG,
   keywords: ["kıdem tazminatı hesaplaması"]
 };
@@ -14,7 +14,7 @@ export const HOME_PAGE_SEO = {
 export const TAZMINAT_HESAPLAMA_PATH = "/tazminat-hesaplama";
 
 export const TAZMINAT_PAGE_SEO = {
-  title: "tazminat hesaplama Aracı | Çalışan Maaşını Tahmin Etme",
+  title: "Tazminat Hesaplama Aracı | Çalışan Maaşını Tahmin Etme",
   description:
     "Çalışan ücretlerini hızlı ve doğru bir şekilde hesaplayın. Kullanımı kolay tazminat hesaplama: maaş, ikramiye, yan haklar ve toplam ücreti tahmin edin.",
   slug: "tazminat-hesaplama",
