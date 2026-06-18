@@ -1,6 +1,7 @@
 export const SITE_URL = "https://kıdemtazminatıhesaplama.tr";
 
 const SITE_UNICODE_HOST = "kıdemtazminatıhesaplama.tr";
+const SITE_UNICODE_ORIGIN = `https://${SITE_UNICODE_HOST}`;
 
 /** Known Punycode / ASCII host variants that must map to SITE_UNICODE_HOST. */
 const LEGACY_SITE_HOSTS = [
@@ -9,6 +10,10 @@ const LEGACY_SITE_HOSTS = [
   "kidemtazminatihesaplama.tr",
   "kidentazminatihesaplama.tr"
 ];
+
+/** Any Punycode encoding of this site's hostname. */
+const SITE_PUNYCODE_HOST_RE = /xn--kdemtazminathesaplama-[a-z0-9]+\.tr/gi;
+const SITE_PUNYCODE_URL_RE = /https?:\/\/xn--kdemtazminathesaplama-[a-z0-9]+\.tr/gi;
 
 /** Punycode hostname for SITE_URL (Node/URL normalizes IDN to this form). */
 export function getSitePunycodeHost() {
@@ -28,6 +33,9 @@ function replaceLegacySiteHosts(value) {
       result = result.replaceAll(host, SITE_UNICODE_HOST);
     }
   }
+
+  result = result.replace(SITE_PUNYCODE_URL_RE, SITE_UNICODE_ORIGIN);
+  result = result.replace(SITE_PUNYCODE_HOST_RE, SITE_UNICODE_HOST);
 
   const punycodeHost = getSitePunycodeHost();
   if (punycodeHost !== SITE_UNICODE_HOST && result.includes(punycodeHost)) {

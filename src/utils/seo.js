@@ -20,9 +20,16 @@ export function normalizeSchemaUrls(value) {
   return value;
 }
 
-/** JSON-LD output with Unicode site domain preserved (avoids xn-- Punycode). */
+/** JSON-LD output with Unicode site domain only (never xn-- Punycode). */
 export function serializeStructuredData(schema) {
-  return normalizeJsonLdSiteUrls(JSON.stringify(normalizeSchemaUrls(schema)));
+  const json = JSON.stringify(normalizeSchemaUrls(schema));
+  const normalized = normalizeJsonLdSiteUrls(json);
+
+  if (normalized.includes("xn--kdemtazminat")) {
+    return normalizeJsonLdSiteUrls(normalized);
+  }
+
+  return normalized;
 }
 
 /** Legal & author pages — noindex, follow links */
