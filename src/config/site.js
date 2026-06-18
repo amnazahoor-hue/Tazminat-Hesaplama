@@ -1,4 +1,29 @@
 export const SITE_URL = "https://kıdemtazminatıhesaplama.tr";
+
+/** Punycode hostname for SITE_URL (Node/URL normalizes IDN to this form). */
+export function getSitePunycodeHost() {
+  return new URL(SITE_URL).hostname;
+}
+
+/** Unicode hostname as written in SITE_URL. */
+export function getSiteUnicodeHost() {
+  const match = SITE_URL.match(/^https?:\/\/([^/]+)/);
+  return match?.[1] ?? getSitePunycodeHost();
+}
+
+/** Force site URLs in strings to use the Unicode domain (not xn-- Punycode). */
+export function toUnicodeSiteUrl(url) {
+  if (typeof url !== "string" || !url) return url;
+
+  const punycodeHost = getSitePunycodeHost();
+  const unicodeHost = getSiteUnicodeHost();
+
+  if (punycodeHost === unicodeHost || !url.includes(punycodeHost)) {
+    return url;
+  }
+
+  return url.replaceAll(punycodeHost, unicodeHost);
+}
 export const HOME_PATH = "/";
 export const HOME_SLUG = "kıdem-tazminatı-hesaplaması";
 export const HOME_SLUG_PATH = `/${HOME_SLUG}`;

@@ -50,6 +50,7 @@ function FooterBrandColumn() {
         </span>
         <span className="brand-text">
           <span className="brand-title">Tazminat Hesaplama</span>
+          <span className="brand-sub">Kıdem Tazminatı</span>
         </span>
       </Link>
 

@@ -1,7 +1,29 @@
 import { FOOTER_SOCIAL_LINKS } from "@/config/footer";
-import { SITE_URL, siteUrl } from "@/config/site";
+import { SITE_URL, siteUrl, toUnicodeSiteUrl } from "@/config/site";
 
 export { SITE_URL };
+
+/** Recursively normalize any Punycode site URLs inside JSON-LD objects. */
+export function normalizeSchemaUrls(value) {
+  if (typeof value === "string") {
+    return toUnicodeSiteUrl(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(normalizeSchemaUrls);
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, normalizeSchemaUrls(entry)]));
+  }
+
+  return value;
+}
+
+/** JSON-LD output with Unicode site domain preserved (avoids xn-- Punycode). */
+export function serializeStructuredData(schema) {
+  return JSON.stringify(normalizeSchemaUrls(schema));
+}
 
 /** Legal & author pages — noindex, follow links */
 export const ROBOTS_NOINDEX_FOLLOW = {
