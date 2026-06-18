@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
-import { IMAGES } from "@/config/images";
+import { IMAGES, LOGO_INTRINSIC } from "@/config/images";
 import { FOOTER_BRAND_COPY, FOOTER_SOCIAL_LINKS } from "@/config/footer";
 import { FOOTER_COMPANY_NAV, LEGAL_NAV } from "@/config/legalPages";
 import { HOME_PATH } from "@/config/site";
@@ -46,11 +46,17 @@ function FooterBrandColumn() {
     <section className="footer-panel footer-panel--brand">
       <Link href={HOME_PATH} className="brand footer-brand" aria-label="Anasayfaya dön">
         <span className="brand-mark">
-          <AppImage src={IMAGES.logo} alt="Tazminat Hesaplama logosu" width={88} height={88} unoptimized />
+          <AppImage
+            src={IMAGES.logo}
+            alt="Kıdem Tazminatı logosu"
+            width={LOGO_INTRINSIC.width}
+            height={LOGO_INTRINSIC.height}
+            unoptimized
+            style={{ width: "100%", height: "auto" }}
+          />
         </span>
         <span className="brand-text">
-          <span className="brand-title">Tazminat Hesaplama</span>
-          <span className="brand-sub">Kıdem Tazminatı</span>
+          <span className="brand-title">Kıdem Tazminatı</span>
         </span>
       </Link>
 

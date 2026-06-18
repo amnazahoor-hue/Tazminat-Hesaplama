@@ -150,7 +150,7 @@ body.is-preloading {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 20px;
   width: min(100%, 320px);
   padding: 0 16px;
   border-radius: 0;
@@ -159,31 +159,33 @@ body.is-preloading {
   box-shadow: none;
 }
 
-.site-preloader-logo-stage {
-  display: grid;
-  place-items: center;
-  margin-bottom: -14px;
-  line-height: 0;
+.site-preloader-brand {
+  min-width: auto;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
 }
 
-.site-preloader-logo {
-  display: block;
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+.site-preloader-brand .brand-mark {
+  width: 72px;
+  height: 72px;
+  margin-top: 0;
+  border-radius: 0;
 }
 
-.site-preloader-title {
+.site-preloader-brand .brand-text {
+  align-items: flex-start;
+  text-align: left;
+  margin-left: -12px;
+}
+
+.site-preloader-brand .brand-title {
+  color: #140e2b;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
   margin: 0;
-  font-size: clamp(18px, 2.4vw, 21px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  color: var(--text-primary);
-  text-align: center;
 }
 
 .site-preloader-tag {
@@ -205,7 +207,7 @@ body.is-preloading {
 .site-preloader-bar {
   width: min(100%, 192px);
   height: 4px;
-  margin-top: 14px;
+  margin-top: 0;
   border-radius: 999px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.72);
@@ -379,7 +381,7 @@ a {
 .site-header.is-home .brand-title {
   color: #140e2b;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1;
   margin: 0;
@@ -396,10 +398,10 @@ a {
   background: transparent;
   border-radius: 0;
   padding: 0;
-  width: 88px;
-  height: 88px;
+  width: 72px;
+  height: 72px;
   flex-shrink: 0;
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
 .site-header.is-home .brand-mark img {
@@ -434,7 +436,7 @@ a {
   color: #140e2b;
   letter-spacing: -0.025em;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1;
   margin-top: -0.5rem;
 }
@@ -454,9 +456,9 @@ a {
   border: none;
   box-shadow: none;
   padding: 0;
-  width: 88px;
-  height: 88px;
-  margin-top: 10px;
+  width: 72px;
+  height: 72px;
+  margin-top: 6px;
 }
 
 .site-footer .footer-brand .brand-mark img {
@@ -474,16 +476,25 @@ a {
 .site-header.is-home .nav-pill-link {
   color: #444441;
   padding: 10px 18px;
-  border-radius: 0;
+  border-radius: 999px;
   background: transparent;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.01em;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .site-header.is-home .nav-pill-link:hover {
   color: #140e2b;
-  background: transparent;
+  background: rgba(91, 63, 224, 0.1);
+  box-shadow: 0 2px 10px rgba(91, 63, 224, 0.08);
+}
+
+.site-header.is-home .nav-pill-link.active:hover {
+  background: rgba(91, 63, 224, 0.06);
 }
 
 .site-header.is-home .nav-pill-link.active {
@@ -763,10 +774,13 @@ a {
 }
 
 .brand-mark img {
-  width: 100%;
-  height: 100%;
   object-fit: contain;
+  width: 100%;
+  height: auto;
+  max-height: 70%;
   display: block;
+  margin-top: -0.5rem;
+  margin-right: 1rem;
 }
 
 .brand-text {
@@ -1086,6 +1100,17 @@ a {
   border-color: rgba(79, 70, 229, 0.3);
   background: var(--primary-tint);
   color: var(--primary-hover);
+}
+
+.mobile-drawer-nav a:hover {
+  border-color: rgba(79, 70, 229, 0.22);
+  background: rgba(238, 242, 255, 0.92);
+  color: var(--primary-hover);
+}
+
+.mobile-drawer-nav a.active:hover {
+  border-color: rgba(79, 70, 229, 0.38);
+  background: var(--primary-tint);
 }
 
 
@@ -6357,8 +6382,10 @@ details {
 .footer-brand-copy {
   display: grid;
   gap: 6px;
-  margin: 0 0 16px;
   max-width: none;
+  margin: 0 0 16px;
+  margin-top: 2rem;
+  margin-left: -1.5rem;
 }
 
 .footer-brand-copy p {
@@ -6369,21 +6396,22 @@ details {
 }
 
 .footer-social-block {
-  padding-top: 14px;
   border-top: none;
-  margin-top: 4px;
   width: 100%;
-  max-width: 100%;
   min-width: 0;
+  max-width: 100%;
+  margin-top: 4px;
+  margin-left: -2rem;
+  padding-top: 14px;
 }
 
 .footer-social-label {
-  margin: 0 0 8px;
-  font-size: 10px;
-  font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--primary-hover);
+  margin: 0 0 8px 0.5rem;
+  font-size: 10px;
+  font-weight: 800;
 }
 
 .footer-panel--brand .footer-social {
@@ -8143,29 +8171,40 @@ details {
     letter-spacing: -0.025em;
     margin-top: -0.5rem;
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 700;
     line-height: 1;
-    margin-left: -1rem;
+    margin-left: 0;
   }
 
   .site-footer .footer-brand .brand-mark {
-    width: 80px;
-    height: 80px;
+    width: 66px;
+    height: 66px;
+    margin-top: 0;
+  }
+
+  .site-footer .footer-brand .brand-mark img {
+    margin-right: 0;
     margin-top: 0;
   }
 
   .footer-brand-meta {
     width: 100%;
     max-width: min(52ch, 100%);
-    margin: 0 auto;
+    margin: -1rem auto 0;
     padding: 0;
-    margin-top: -1rem;
+    margin-inline: auto;
   }
 
   .footer-brand-copy {
-    text-align: center;
+    display: grid;
+    gap: 6px;
+    max-width: none;
+    margin: 2rem 0 16px;
+    margin-left: 0;
     margin-inline: auto;
-    max-width: min(52ch, 100%);
+    padding-inline: 12px;
+    text-align: center;
+    box-sizing: border-box;
   }
 
   .footer-brand-copy p {
@@ -8173,16 +8212,28 @@ details {
   }
 
   .footer-social-block {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-inline: auto;
+    padding-inline: 12px;
     text-align: center;
+    box-sizing: border-box;
   }
 
   .footer-social-label {
+    margin: 0 0 8px;
     text-align: center;
   }
 
   .footer-panel--brand .footer-social {
-    justify-content: center;
+    display: flex;
     flex-wrap: nowrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-inline: auto;
   }
 
   .site-footer .footer-panel:not(.footer-panel--brand) {
@@ -20549,17 +20600,14 @@ main {
     text-align: center;
   }
 
-  .site-footer .footer-brand .brand-title {
-    margin-left: -1.5rem;
+  .site-footer .footer-brand .brand-mark {
+    width: 64px;
+    height: 64px;
+    margin-top: 0;
   }
 
   .site-footer .footer-brand .brand-mark img {
-    margin-left: -1.5rem;
-  }
-
-  .site-footer .footer-brand .brand-mark {
-    width: 72px;
-    height: 72px;
+    margin-right: 0;
     margin-top: 0;
   }
 
@@ -20568,14 +20616,20 @@ main {
     max-width: 100%;
     margin-top: -1rem;
     padding: 0;
-    margin-left: -0.25rem;
+    margin-left: 0;
+    margin-inline: auto;
   }
 
   .footer-brand-copy {
-    text-align: center;
-    max-width: 100%;
+    display: grid;
+    gap: 6px;
+    max-width: none;
+    margin: 2rem 0 16px;
+    margin-left: 0;
     margin-inline: auto;
-    margin-bottom: 14px;
+    text-align: center;
+    padding-inline: 12px;
+    box-sizing: border-box;
   }
 
   .footer-brand-copy p {
@@ -20584,10 +20638,16 @@ main {
 
   .footer-social-block {
     width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-inline: auto;
+    padding-inline: 12px;
     text-align: center;
+    box-sizing: border-box;
   }
 
   .footer-social-label {
+    margin: 0 0 8px;
     text-align: center;
   }
 
@@ -20597,6 +20657,7 @@ main {
     justify-content: center;
     width: 100%;
     max-width: 100%;
+    margin-left: 0;
     margin-inline: auto;
   }
 

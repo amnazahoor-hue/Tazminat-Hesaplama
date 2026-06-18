@@ -155,7 +155,7 @@ export function buildOrganizationSchema() {
     "@type": "Organization",
     name: "Tazminat Hesaplama",
     url: SITE_URL,
-    logo: `${SITE_URL}/images/logo.svg`,
+    logo: `${SITE_URL}/images/logo.webp`,
     sameAs: FOOTER_SOCIAL_LINKS.map((item) => item.href)
   };
 }

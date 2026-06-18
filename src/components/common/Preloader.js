@@ -1,7 +1,6 @@
 "use client";
 
 import BrandLogo from "@/components/common/BrandLogo";
-import { IMAGES } from "@/config/images";
 import { useEffect, useState } from "react";
 
 const SESSION_KEY = "tazminat-app-ready";
@@ -67,11 +66,14 @@ export default function Preloader() {
       <div className="site-preloader-backdrop" aria-hidden="true" />
 
       <div className="site-preloader-panel">
-        <div className="site-preloader-logo-stage">
-          <BrandLogo width={100} height={100} className="site-preloader-logo" />
+        <div className="site-preloader-brand brand" aria-hidden="true">
+          <span className="brand-mark">
+            <BrandLogo />
+          </span>
+          <span className="brand-text">
+            <span className="brand-title">Kıdem Tazminatı</span>
+          </span>
         </div>
-
-        <p className="site-preloader-title">Tazminat Hesaplama</p>
 
         <span className="site-preloader-bar" aria-hidden="true">
           <span className="site-preloader-bar-fill" />

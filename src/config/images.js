@@ -1,6 +1,8 @@
 /** Local assets under /public/images */
+export const LOGO_INTRINSIC = { width: 406, height: 456 };
+
 export const IMAGES = {
-  logo: "/images/logo.svg",
+  logo: "/images/logo.webp",
   icon: "/favicon-32.png",
   home: {
     heroCarouselLira: "/images/home/hero-carousel-lira.webp",
@@ -31,8 +33,8 @@ export const IMAGES = {
 /** Alt + title for every site image (accessibility, SEO, hover tooltips). */
 export const IMAGE_META = {
   [IMAGES.logo]: {
-    alt: "Tazminat Hesaplama logosu",
-    title: "Tazminat Hesaplama — Kıdem tazminatı hesaplayıcısı"
+    alt: "Kıdem Tazminatı logosu",
+    title: "Kıdem Tazminatı — Kıdem tazminatı hesaplayıcısı"
   },
   [IMAGES.home.heroCarouselLira]: {
     alt: "Türk Lirası sembolü ile kıdem tazminatı hesaplama tanıtım görseli",

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "images:convert": "node scripts/convert-images.mjs",
-    "images:optimize": "node scripts/optimize-images.mjs"
+    "images:optimize": "node scripts/optimize-images.mjs",
+    "images:logo": "node scripts/process-logo.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

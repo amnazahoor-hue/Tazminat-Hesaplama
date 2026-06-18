@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="tr" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        <link rel="preload" href="/images/logo.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/images/logo.webp" as="image" type="image/webp" />
       </head>
       <body className={inter.variable} suppressHydrationWarning>
         <CanonicalLink />
