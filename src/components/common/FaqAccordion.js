@@ -46,7 +46,7 @@ function measureOpenAnswer(answerEl, isLastOpen) {
   };
 }
 
-export default function FaqAccordion({ items, className = "", variant = "guide" }) {
+export default function FaqAccordion({ items, className = "", variant = "guide", linkExcludeKeys }) {
   const [openId, setOpenId] = useState(null);
   const [answerOffset, setAnswerOffset] = useState(0);
   const [answerMaxHeight, setAnswerMaxHeight] = useState(null);
@@ -195,7 +195,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
                 hidden={!isOpen}
               >
                 <div className={isHome ? "faq-content-inner" : "guide-accordion-panel-inner"}>
-                  <p>{linkInternalTerms(item.answer)}</p>
+                  <p>{linkInternalTerms(item.answer, new Set(), linkExcludeKeys)}</p>
                   {item.formula ? (
                     <p className="guide-accordion-formula">
                       <span className="guide-equation-pill guide-formula-chip">{item.formula}</span>

@@ -1,3 +1,4 @@
+import "@/styles/static-pages.css";
 import AppImage from "@/components/common/AppImage";
 import { H1, H2 } from "@/components/common/Heading";
 import Link from "next/link";

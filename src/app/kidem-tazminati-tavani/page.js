@@ -1,3 +1,4 @@
+import "@/styles/guide-pages.css";
 import TavanGuide from "@/components/guide/tavan/TavanGuide";
 import StructuredDataScript from "@/components/seo/StructuredDataScript";
 import { TAVAN_FAQ_ITEMS } from "@/data/tavanGuideContent";

@@ -2,9 +2,28 @@
 const nextConfig = {
   reactStrictMode: true,
   trailingSlash: true,
+  poweredByHeader: false,
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "framer-motion", "react-icons"],
+    optimizeCss: true
+  },
   images: {
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox:",
+    formats: ["image/avif", "image/webp"]
+  },
+  async headers() {
+    return [
+      {
+        source: "/images/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }]
+      },
+      {
+        source: "/_next/static/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }]
+      }
+    ];
   },
   async redirects() {
     return [

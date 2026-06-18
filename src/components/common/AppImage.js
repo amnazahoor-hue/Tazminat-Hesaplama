@@ -17,6 +17,7 @@ export default function AppImage({ priority = false, loading, alt, title, src, .
       alt={resolvedAlt}
       title={resolvedTitle}
       priority={priority}
+      fetchPriority={priority ? "high" : props.fetchPriority}
       loading={priority ? "eager" : loading ?? "lazy"}
     />
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { INTERNAL_LINK_RULES } from "@/config/internalLinks";
+import { CROSS_PAGE_LINK_RULES } from "@/config/internalLinks";
 
 export function InternalLink({ href, children }) {
   return (
@@ -9,14 +9,14 @@ export function InternalLink({ href, children }) {
   );
 }
 
-export function linkInternalTerms(text, linkedKeys = new Set()) {
+export function linkInternalTerms(text, linkedKeys = new Set(), excludeKeys = new Set()) {
   if (!text || typeof text !== "string") return text;
 
   let parts = [text];
   let changed = false;
 
-  for (const rule of INTERNAL_LINK_RULES) {
-    if (linkedKeys.has(rule.key)) continue;
+  for (const rule of CROSS_PAGE_LINK_RULES) {
+    if (linkedKeys.has(rule.key) || excludeKeys.has(rule.key)) continue;
 
     const nextParts = [];
     let linked = false;

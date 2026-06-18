@@ -1,3 +1,4 @@
+import "@/styles/static-pages.css";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -15,6 +16,7 @@ import CalcCta from "@/components/common/CalcCta";
 import { H1, H2, H3 } from "@/components/common/Heading";
 import PageSchema from "@/components/seo/PageSchema";
 import { HOME_PATH } from "@/config/site";
+import { InternalLink } from "@/utils/linkInternalTerms";
 
 const VALUE_ICONS = [ShieldCheck, Sparkles, Scale, HeartHandshake];
 
@@ -171,7 +173,14 @@ export default function AboutPageShell({
                   <span className="about-offering-index">{String(index + 1).padStart(2, "0")}</span>
                   <div>
                     <H3>{item.title}</H3>
-                    <p>{item.body}</p>
+                    {item.title === "Güncel Tavan Tabloları" ? (
+                      <p>
+                        Yıllara göre <InternalLink href={HOME_PATH}>kıdem tazminatı</InternalLink> tavan tutarları,
+                        örnek senaryolar ve hesaplamaya nasıl yansıdığına dair açıklayıcı tablolar.
+                      </p>
+                    ) : (
+                      <p>{item.body}</p>
+                    )}
                   </div>
                 </article>
               ))}

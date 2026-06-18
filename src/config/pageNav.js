@@ -1,4 +1,5 @@
 import {
+  HAKKIMIZDA_PATH,
   HOME_PATH,
   HOME_SLUG_PATH,
   IHBAR_NEDIR_PATH,
@@ -42,7 +43,16 @@ export const MAIN_HEADER_PAGES = [
 ];
 
 /** Header pill nav — home calculator link omitted (logo covers anasayfa). */
-export const HEADER_NAV_PAGES = MAIN_HEADER_PAGES.filter((page) => page.path !== HOME_PATH);
+export const HEADER_NAV_PAGES = [
+  ...MAIN_HEADER_PAGES.filter((page) => page.path !== HOME_PATH),
+  {
+    path: HAKKIMIZDA_PATH,
+    url: siteUrl(HAKKIMIZDA_PATH),
+    label: "Hakkımızda",
+    shortLabel: "Hakkımızda",
+    title: "Hakkımızda"
+  }
+];
 
 /** @type {Record<string, { cta: { path: string, section?: string, focusInput?: string }, items: { id: string, label: string, long?: boolean }[] }>} */
 export const PAGE_NAV = {

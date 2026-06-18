@@ -1,3 +1,4 @@
+import "@/styles/static-pages.css";
 import Link from "next/link";
 import { ChevronRight, Mail, MessageCircle, ShieldQuestion } from "lucide-react";
 import { H1, H2 } from "@/components/common/Heading";

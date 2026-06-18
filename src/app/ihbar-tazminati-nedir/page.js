@@ -1,3 +1,4 @@
+import "@/styles/guide-pages.css";
 import IhbarTazminatGuide from "@/components/guide/ihbar/IhbarTazminatGuide";
 import StructuredDataScript from "@/components/seo/StructuredDataScript";
 import { IHBAR_FAQ_ITEMS } from "@/data/ihbarGuideContent";

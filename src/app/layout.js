@@ -1,15 +1,15 @@
 import "./globals.css";
 import Navbar from "@/components/common/Navbar";
-import Preloader from "@/components/common/Preloader";
-import ScrollRevealInit from "@/components/common/ScrollRevealInit";
 import Footer from "@/components/layouts/Footer";
 import CanonicalLink from "@/components/seo/CanonicalLink";
+import ClientEnhancements from "@/components/common/ClientEnhancements";
 import { Inter } from "next/font/google";
 import { HOME_PAGE_SEO, HOME_PATH, SITE_URL } from "@/config/site";
 import { buildPageMetadata } from "@/utils/seo";
+import { IMAGES } from "@/config/images";
 
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
   variable: "--font-inter",
   preload: true,
@@ -40,12 +40,18 @@ export default function RootLayout({ children }) {
     <html lang="tr" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <link rel="preload" href="/images/logo.webp" as="image" type="image/webp" />
+        <link
+          rel="preload"
+          href={IMAGES.home.heroCarouselLira}
+          as="image"
+          type="image/webp"
+          fetchPriority="high"
+        />
       </head>
       <body className={inter.variable} suppressHydrationWarning>
         <CanonicalLink />
-        <Preloader />
+        <ClientEnhancements />
         <Navbar />
-        <ScrollRevealInit />
         <main>{children}</main>
         <Footer />
       </body>

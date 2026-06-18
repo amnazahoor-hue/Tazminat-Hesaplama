@@ -1,3 +1,4 @@
+import "@/styles/guide-pages.css";
 import TotalCompensationGuide from "@/components/guide/TotalCompensationGuide";
 import StructuredDataScript from "@/components/seo/StructuredDataScript";
 import { TAZMINAT_GUIDE_FAQ_ITEMS } from "@/data/tazminatGuideFaqItems";

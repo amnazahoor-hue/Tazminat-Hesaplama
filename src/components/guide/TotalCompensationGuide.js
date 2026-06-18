@@ -2,11 +2,10 @@
 
 import AppImage from "@/components/common/AppImage";
 import { H1, H3 } from "@/components/common/Heading";
-import Link from "next/link";
 import { IMAGES } from "@/config/images";
-import { KIDEM_TAVANI_PATH } from "@/config/site";
-import { CARD_TITLE_LINKS } from "@/config/internalLinks";
-import { linkInternalTerms } from "@/utils/linkInternalTerms";
+import { HOME_PATH } from "@/config/site";
+import { DISABLE_AUTO_INTERNAL_LINKS } from "@/config/internalLinks";
+import { InternalLink } from "@/utils/linkInternalTerms";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   AlertCircle,
@@ -239,16 +238,8 @@ function IconCard({ icon: Icon, title, body, badgeClass = "guide-icon-card-badge
         >
           <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
         </motion.span>
-        <H3>
-          {CARD_TITLE_LINKS[title] ? (
-            <Link href={CARD_TITLE_LINKS[title]} className="text-internal-link">
-              {title}
-            </Link>
-          ) : (
-            title
-          )}
-        </H3>
-        <p>{linkInternalTerms(body)}</p>
+        <H3>{title}</H3>
+        <p>{body}</p>
       </article>
     </TiltCard>
   );
@@ -320,14 +311,14 @@ export default function TotalCompensationGuide() {
             Türkiye&apos;de Tazminat Hesaplama Yöntemi: Formül + Adım Adım Kılavuz 2026
           </SectionHeading>
           <p>
-            {linkInternalTerms(
-              "Tazminat hesaplaması, bir çalışanın Türk İş Hukuku kapsamında hak kazandığı toplam ödemelerin belirlenmesi sürecidir. Bu ödemeler; kıdem tazminatı, ihbar tazminatı, kullanılmamış yıllık izin ücretleri, primler (bonuslar) ve diğer yan hakları kapsar."
-            )}
+            Tazminat hesaplaması, bir çalışanın Türk İş Hukuku kapsamında hak kazandığı toplam ödemelerin belirlenmesi
+            sürecidir. Bu ödemeler;{" "}
+            <InternalLink href={HOME_PATH}>kıdem tazminatı</InternalLink>, ihbar tazminatı, kullanılmamış yıllık izin
+            ücretleri, primler (bonuslar) ve diğer yan hakları kapsar.
           </p>
           <p>
-            {linkInternalTerms(
-              "Ücret hesaplaması, aylık maaş, ikramiyeler, fazla mesai ücretleri, yıllık izin ücreti, kıdem tazminatı, ihbar tazminatı, seyahat ve yemek ödenekleri ile hisse senedi opsiyonları veya ek yan hakları içerebilir."
-            )}
+            Ücret hesaplaması, aylık maaş, ikramiyeler, fazla mesai ücretleri, yıllık izin ücreti, kıdem tazminatı,
+            ihbar tazminatı, seyahat ve yemek ödenekleri ile hisse senedi opsiyonları veya ek yan hakları içerebilir.
           </p>
         </IntroBlock>
       </GuideSection>
@@ -360,9 +351,7 @@ export default function TotalCompensationGuide() {
         <SectionHeading id="kidem-tazminati">Tazminat Hesaplamasının Bileşenleri</SectionHeading>
         <Reveal>
           <p>
-            {linkInternalTerms(
-              "Ücret hesaplamaları maaş, ikramiye ve kıdem tazminatını içerebilir ve nihai ücret buna bağlı olarak değişir."
-            )}
+            Ücret hesaplamaları maaş, ikramiye ve kıdem tazminatını içerebilir ve nihai ücret buna bağlı olarak değişir.
           </p>
         </Reveal>
         <RevealStagger className="guide-card-grid guide-card-grid--3">
@@ -382,7 +371,7 @@ export default function TotalCompensationGuide() {
             tablo.
           </p>
         </Reveal>
-        <ChecklistTable rows={INCLUDED_ROWS} />
+        <ChecklistTable rows={INCLUDED_ROWS} linkExcludeKeys={DISABLE_AUTO_INTERNAL_LINKS} />
       </GuideSection>
 
       <GuideSection id="guide-adimlar">
@@ -391,12 +380,13 @@ export default function TotalCompensationGuide() {
           illustration={<GuideStepsIllustration />}
           intro={
             <p>
-              {linkInternalTerms(
-                "Türkiye'de tazminat, işveren tarafından sağlanan tüm mali haklar (ödenekler, kıdem tazminatı ve ihbar tazminatı gibi) dahil edilerek hesaplanır. Birkaç kolay adımla tazminatınızı hızlıca bulabilirsiniz:"
-              )}
+              Türkiye&apos;de tazminat, işveren tarafından sağlanan tüm mali haklar (ödenekler, kıdem tazminatı ve
+              ihbar tazminatı gibi) dahil edilerek hesaplanır. Birkaç kolay adımla tazminatınızı hızlıca
+              bulabilirsiniz:
             </p>
           }
           steps={STEPS}
+          linkExcludeKeys={DISABLE_AUTO_INTERNAL_LINKS}
         />
       </GuideSection>
 
@@ -418,7 +408,7 @@ export default function TotalCompensationGuide() {
                       </span>
                       <div>
                         <H3>{item.title}</H3>
-                        <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
+                        <p>{typeof item.body === "string" ? item.body : item.body}</p>
                       </div>
                     </article>
                   </TiltCard>
@@ -432,19 +422,15 @@ export default function TotalCompensationGuide() {
       <GuideSection id="guide-ihbar">
         <SectionHeading id="ihbar-tazminati">İhbar Süresi</SectionHeading>
         <Reveal>
-          <p>{linkInternalTerms("İhbar tazminatı, çalışanın hizmet süresine göre değişiklik gösterir.")}</p>
+          <p>İhbar tazminatı, çalışanın hizmet süresine göre değişiklik gösterir.</p>
         </Reveal>
         <InfoCalloutBlock>
           <span className="guide-info-callout-icon">
             <Info size={22} strokeWidth={1.8} aria-hidden="true" />
           </span>
           <div>
-            <H3>
-              <Link href={KIDEM_TAVANI_PATH} className="text-internal-link">
-                Kıdem Tazminatı Tavanı
-              </Link>
-            </H3>
-            <p>{linkInternalTerms("Türk hukukunda kıdem tazminatlarının hesaplanmasında azami bir üst sınır uygulanmaktadır")}</p>
+            <H3>Kıdem Tazminatı Tavanı</H3>
+            <p>Türk hukukunda kıdem tazminatlarının hesaplanmasında azami bir üst sınır uygulanmaktadır</p>
           </div>
         </InfoCalloutBlock>
       </GuideSection>
@@ -461,7 +447,7 @@ export default function TotalCompensationGuide() {
                       <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
                     </span>
                     <H3>{item.title}</H3>
-                    <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
+                    <p>{typeof item.body === "string" ? item.body : item.body}</p>
                   </article>
                 </TiltCard>
               </RevealItem>
@@ -523,7 +509,7 @@ export default function TotalCompensationGuide() {
                       <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
                     </span>
                     <H3>{item.title}</H3>
-                    <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
+                    <p>{typeof item.body === "string" ? item.body : item.body}</p>
                   </article>
                 </TiltCard>
               </RevealItem>

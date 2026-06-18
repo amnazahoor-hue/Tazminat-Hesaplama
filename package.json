@@ -9,7 +9,8 @@
     "lint": "next lint",
     "images:convert": "node scripts/convert-images.mjs",
     "images:optimize": "node scripts/optimize-images.mjs",
-    "images:logo": "node scripts/process-logo.mjs"
+    "images:logo": "node scripts/process-logo.mjs",
+    "report:schema-validator": "node scripts/generate-schema-validator-report.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -26,6 +27,14 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
+    "critters": "^0.0.23",
     "sharp": "^0.34.5"
-  }
+  },
+  "browserslist": [
+    "chrome >= 92",
+    "edge >= 92",
+    "firefox >= 90",
+    "safari >= 15.4",
+    "ios >= 15.4"
+  ]
 }

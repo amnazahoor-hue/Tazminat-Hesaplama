@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { HOME_PATH } from "@/config/site";
-import { InternalLink, linkInternalTerms } from "@/utils/linkInternalTerms";
+import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import { CheckCircle2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import CountUp from "./ui/CountUp";
@@ -66,10 +65,6 @@ export function FormulaBlock() {
               >
                 {part}
               </motion.span>
-            ) : part === "Kıdem tazminatı" ? (
-              <InternalLink key={`${part}-${index}`} href={HOME_PATH}>
-                {part}
-              </InternalLink>
             ) : (
               <span key={`${part}-${index}`}>{part}</span>
             )
@@ -175,7 +170,7 @@ export function ExampleBlock({ inputs, rows }) {
   );
 }
 
-export function ChecklistTable({ rows }) {
+export function ChecklistTable({ rows, linkExcludeKeys }) {
   return (
     <div className="guide-check-table-wrap">
       <table className="guide-check-table">
@@ -196,7 +191,7 @@ export function ChecklistTable({ rows }) {
               transition={{ duration: 0.38, delay: index * 0.05 }}
               whileHover={{ backgroundColor: "rgba(238, 242, 255, 0.65)" }}
             >
-              <th scope="row">{linkInternalTerms(row)}</th>
+              <th scope="row">{linkInternalTerms(row, new Set(), linkExcludeKeys)}</th>
               <td>
                 <motion.span
                   className="guide-check-yes"
@@ -217,7 +212,7 @@ export function ChecklistTable({ rows }) {
   );
 }
 
-export function TimelineSteps({ steps }) {
+export function TimelineSteps({ steps, linkExcludeKeys }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 40%"] });
   const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
@@ -262,7 +257,7 @@ export function TimelineSteps({ steps }) {
                 {step.formula}
               </motion.p>
             ) : null}
-            {step.body ? <p>{linkInternalTerms(step.body)}</p> : null}
+            {step.body ? <p>{linkInternalTerms(step.body, new Set(), linkExcludeKeys)}</p> : null}
           </div>
         </motion.li>
       ))}
@@ -270,7 +265,7 @@ export function TimelineSteps({ steps }) {
   );
 }
 
-export function StepsShowcase({ intro, steps, illustration }) {
+export function StepsShowcase({ intro, steps, illustration, linkExcludeKeys }) {
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(null);
 
@@ -312,7 +307,7 @@ export function StepsShowcase({ intro, steps, illustration }) {
       </Reveal>
       <div className="guide-steps-content" ref={contentRef}>
         <Reveal>{intro}</Reveal>
-        <TimelineSteps steps={steps} />
+        <TimelineSteps steps={steps} linkExcludeKeys={linkExcludeKeys} />
       </div>
     </div>
   );

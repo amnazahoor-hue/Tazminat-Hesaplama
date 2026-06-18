@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { linkInternalTerms } from "@/utils/linkInternalTerms";
+import { HOME_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
+import { DISABLE_AUTO_INTERNAL_LINKS } from "@/config/internalLinks";
+import { InternalLink } from "@/utils/linkInternalTerms";
 import {
   COMPARISON_ROWS,
   IHBAR_IMAGES,
@@ -55,12 +57,14 @@ export default function IhbarTazminatGuide() {
       <NoticeHero image={IHBAR_IMAGES.hero} />
 
       <GuideSection id="ihbar-kidem" alt>
-        <TwoColumnImageBlock image={IHBAR_IMAGES.kidem}>
+        <TwoColumnImageBlock image={IHBAR_IMAGES.kidem} priority>
           <SectionHeading>Kıdem Tazminatı Ne Anlama Geliyor?</SectionHeading>
           <p>
-            {linkInternalTerms(
-              "İşten ayrılma tazminatı, belirli yasal veya sözleşmesel koşullar altında iş ilişkisinin sona ermesi durumunda işveren tarafından çalışana ödenen mali tazminattır. Birçok ülkede, işten ayrılma tazminatının hesaplanması iş kanunları, iş sözleşmeleri, toplu iş sözleşmeleri ve şirket politikaları ile düzenlenir."
-            )}
+            <InternalLink href={HOME_PATH}>İşten ayrılma tazminatı</InternalLink>, belirli yasal veya sözleşmesel
+            koşullar altında iş ilişkisinin sona ermesi durumunda işveren tarafından çalışana ödenen mali tazminattır.
+            Birçok ülkede,{" "}
+            <InternalLink href={TAZMINAT_HESAPLAMA_PATH}>işten ayrılma tazminatının hesaplanması</InternalLink> iş
+            kanunları, iş sözleşmeleri, toplu iş sözleşmeleri ve şirket politikaları ile düzenlenir.
           </p>
         </TwoColumnImageBlock>
       </GuideSection>
@@ -84,16 +88,15 @@ export default function IhbarTazminatGuide() {
 
       <GuideSection id="ihbar-ornekler" alt>
         <SectionHeading id="ornekler">İhbar Ödeme Örnekleri</SectionHeading>
-        <p>{linkInternalTerms("Aşağıdaki örnekler, ihbar tazminatının pratikte nasıl işlediğini göstermektedir.")}</p>
+        <p>Aşağıdaki örnekler, ihbar tazminatının pratikte nasıl işlediğini göstermektedir.</p>
         <NoticeScenarioCards examples={NOTICE_EXAMPLES} />
       </GuideSection>
 
       <GuideSection id="ihbar-fark">
         <SectionHeading id="nasil-hesaplanir">İhbar Süresi ve İhbar Ücreti Arasındaki Fark</SectionHeading>
         <p>
-          {linkInternalTerms(
-            "Aşağıda, ihbar süresi ve ihbar tazminatı arasındaki bazı temel farklar yer almaktadır; bu iki kavramı daha iyi anlamanıza yardımcı olacaktır."
-          )}
+          Aşağıda, ihbar süresi ve ihbar tazminatı arasındaki bazı temel farklar yer almaktadır; bu iki kavramı daha
+          iyi anlamanıza yardımcı olacaktır.
         </p>
         <NoticeComparisonTable rows={COMPARISON_ROWS} />
       </GuideSection>
@@ -101,9 +104,8 @@ export default function IhbarTazminatGuide() {
       <GuideSection id="ihbar-uygunluk" alt>
         <SectionHeading>Türkiye&apos;de Kimler İhbar Tazminatına Hak Kazanır? 2026 Şartları</SectionHeading>
         <p>
-          {linkInternalTerms(
-            "Herkes ihbar tazminatına hak kazanmaz, bu nedenle kimlerin bu tazminatı alabileceğini bilmek önemlidir. İhbar tazminatı alma hakkı, iş sözleşmesine, fesih nedenine ve çalışanın performans raporuna bağlıdır."
-          )}
+          Herkes ihbar tazminatına hak kazanmaz, bu nedenle kimlerin bu tazminatı alabileceğini bilmek önemlidir.
+          İhbar tazminatı alma hakkı, iş sözleşmesine, fesih nedenine ve çalışanın performans raporuna bağlıdır.
         </p>
         <EligibilityCards notEligibleItems={NOT_ELIGIBLE_ITEMS} />
       </GuideSection>
@@ -143,7 +145,7 @@ export default function IhbarTazminatGuide() {
         <InsolvencyCallout />
       </GuideSection>
 
-      <GuideFaqSection id="ihbar-sss" items={IHBAR_FAQ_ITEMS} includeFormula />
+      <GuideFaqSection id="ihbar-sss" items={IHBAR_FAQ_ITEMS} linkExcludeKeys={DISABLE_AUTO_INTERNAL_LINKS} />
     </GuidePageShell>
   );
 }

@@ -29,15 +29,23 @@ export default function Navbar() {
   const isHome = pagePath === HOME_PATH;
 
   useEffect(() => {
+    let rafId = 0;
     const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 8);
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(docHeight > 0 ? Math.min(100, (y / docHeight) * 100) : 0);
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        const y = window.scrollY;
+        setScrolled(y > 8);
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        setScrollProgress(docHeight > 0 ? Math.min(100, (y / docHeight) * 100) : 0);
+      });
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
   }, [pagePath]);
 
   useEffect(() => {

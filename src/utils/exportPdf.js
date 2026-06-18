@@ -1,6 +1,3 @@
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-
 async function waitForImages(element) {
   const images = Array.from(element.querySelectorAll("img"));
   await Promise.all(
@@ -20,6 +17,8 @@ async function waitForImages(element) {
 
 export async function exportResultPdf(element, filename = "tazminat-hesaplama-raporu.pdf") {
   if (!element) return false;
+
+  const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import("html2canvas"), import("jspdf")]);
 
   await waitForImages(element);
 

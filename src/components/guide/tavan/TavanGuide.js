@@ -2,8 +2,9 @@
 
 import { H3 } from "@/components/common/Heading";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { HOME_PATH, KIDEM_TAVANI_PATH } from "@/config/site";
-import { linkInternalTerms } from "@/utils/linkInternalTerms";
+import { HOME_PATH, TAZMINAT_HESAPLAMA_PATH } from "@/config/site";
+import { DISABLE_AUTO_INTERNAL_LINKS } from "@/config/internalLinks";
+import { InternalLink } from "@/utils/linkInternalTerms";
 import {
   ABOVE_CEILING_ITEMS,
   AFFECTED_GROUPS,
@@ -65,8 +66,9 @@ export default function TavanGuide() {
       <GuideSection id="tavan-nedir" alt>
         <SectionHeading>Türkiye&apos;de Kıdem Tazminatı Tavanı Nasıl İşliyor?</SectionHeading>
         <p>
-          İşten çıkarma tazminatı tavanı, bir çalışanın işten çıkarma tazminatının hesaplanmasında önemli bir rol
-          oynayan maksimum gelir olarak tanımlanır. İşte dikkate almanız gereken 2 nokta:
+          <InternalLink href={HOME_PATH}>İşten çıkarma tazminatı</InternalLink> tavanı, bir çalışanın{" "}
+          <InternalLink href={TAZMINAT_HESAPLAMA_PATH}>işten çıkarma tazminatının hesaplanmasında</InternalLink>{" "}
+          önemli bir rol oynayan maksimum gelir olarak tanımlanır. İşte dikkate almanız gereken 2 nokta:
         </p>
         <DefinitionPointCards points={TAVAN_DEFINITION_POINTS} />
         <p>Bu durum, tazminat tavanını işten çıkarma hesaplamalarında kritik bir faktör haline getiriyor.</p>
@@ -122,7 +124,7 @@ export default function TavanGuide() {
         <p>Brüt maaş esas olarak hesaplamalarda kullanılır.</p>
         <p>Bu şunları içerir:</p>
         <GrossIncludesList items={GROSS_INCLUDES} />
-        <p>{linkInternalTerms("Brüt maaş, kıdem tazminatı hesaplamaları için gerçek temeli oluşturur.")}</p>
+        <p>Brüt maaş, kıdem tazminatı hesaplamaları için gerçek temeli oluşturur.</p>
 
         <H3>Hesaplamaya Dahil Edilen Faydalar</H3>
         <p>
@@ -131,10 +133,10 @@ export default function TavanGuide() {
         </p>
 
         <H3>Kıdem Tazminatı Tavanının Etkisi</H3>
-        <p>{linkInternalTerms("İşten çıkarma tazminatı tavanı, tazminatı doğrudan sınırlandırır.")}</p>
+        <p>İşten çıkarma tazminatı tavanı, tazminatı doğrudan sınırlandırır.</p>
 
         <CeilingMechanismCards belowItems={BELOW_CEILING_ITEMS} aboveItems={ABOVE_CEILING_ITEMS} />
-        <p>{linkInternalTerms("İşte kıdem tazminatı tavanı hesaplama mekanizmasının işleyiş şekli.")}</p>
+        <p>İşte kıdem tazminatı tavanı hesaplama mekanizmasının işleyiş şekli.</p>
       </GuideSection>
 
       <GuideSection id="tavan-ornekler">
@@ -145,14 +147,13 @@ export default function TavanGuide() {
       <GuideSection id="tavan-uygunluk" alt>
         <SectionHeading>Kıdem Tazminatına Kimler Hak Kazanır?</SectionHeading>
         <p>
-          {linkInternalTerms(
-            "Türk hukukuna göre, her çalışan kıdem tazminatı almaya hak kazanmaz. Sadece en az bir yıl hizmet süresi olan veya gerekli şartları sağlayan çalışanlar tazminat alabilir."
-          )}
+          Türk hukukuna göre, her çalışan <InternalLink href={HOME_PATH}>kıdem tazminatı</InternalLink> almaya hak
+          kazanmaz. Sadece en az bir yıl hizmet süresi olan veya gerekli şartları sağlayan çalışanlar tazminat
+          alabilir.
         </p>
         <p>
-          {linkInternalTerms(
-            "Uygunluk koşullarını anlamak önemlidir çünkü nihai olarak ödenecek tutar, iş ilişkisinin sona erdiği tarihte yürürlükte olan geçerli kıdem tazminatı tavanı, tazminat tavanı veya kıdem tavanı  etkilenir."
-          )}
+          Uygunluk koşullarını anlamak önemlidir çünkü nihai olarak ödenecek tutar, iş ilişkisinin sona erdiği
+          tarihte yürürlükte olan geçerli kıdem tazminatı tavanı, tazminat tavanı veya kıdem tavanı etkilenir.
         </p>
         <EligibilityScenarioGrid scenarios={ELIGIBILITY_SCENARIOS} />
       </GuideSection>
@@ -160,9 +161,8 @@ export default function TavanGuide() {
       <GuideSection id="tavan-vergi">
         <SectionHeading>2026 Yılında Kıdem Tazminatının Vergi Uygulaması</SectionHeading>
         <p>
-          {linkInternalTerms(
-            "Kıdem tazminatı haklarını değerlendirirken vergi kuralları da önemli bir husustur. Kıdem tazminatı belirli vergi avantajlarına sahip olsa da, ek vergi yükümlülüklerinin ortaya çıkabileceği durumlar da vardır."
-          )}
+          Kıdem tazminatı haklarını değerlendirirken vergi kuralları da önemli bir husustur. Kıdem tazminatı belirli
+          vergi avantajlarına sahip olsa da, ek vergi yükümlülüklerinin ortaya çıkabileceği durumlar da vardır.
         </p>
         <TaxInfoNote>
           <p>
@@ -180,7 +180,7 @@ export default function TavanGuide() {
         <MistakesTable rows={EMPLOYER_MISTAKES_ROWS} />
       </GuideSection>
 
-      <GuideFaqSection id="tavan-sss" items={TAVAN_FAQ_ITEMS} />
+      <GuideFaqSection id="tavan-sss" items={TAVAN_FAQ_ITEMS} linkExcludeKeys={DISABLE_AUTO_INTERNAL_LINKS} />
     </GuidePageShell>
   );
 }

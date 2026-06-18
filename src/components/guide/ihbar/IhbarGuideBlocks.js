@@ -5,7 +5,6 @@ import { H1, H3, H4 } from "@/components/common/Heading";
 import { motion } from "framer-motion";
 import CalcCta from "@/components/common/CalcCta";
 import { HOME_PATH } from "@/config/site";
-import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
   AlertTriangle,
   Briefcase,
@@ -96,7 +95,7 @@ export function NoticeHero({ image }) {
   );
 }
 
-export function TwoColumnImageBlock({ image, children }) {
+export function TwoColumnImageBlock({ image, children, priority = false }) {
   const { reduceMotion, viewport, ease } = useMotionPrefs();
 
   return (
@@ -108,7 +107,13 @@ export function TwoColumnImageBlock({ image, children }) {
         viewport={viewport}
         transition={{ duration: reduceMotion ? 0 : 0.55, ease }}
       >
-        <GuideImage src={image.src} alt={image.alt} title={image.title} className="ihbar-guide-image--compact" />
+        <GuideImage
+          src={image.src}
+          alt={image.alt}
+          title={image.title}
+          className="ihbar-guide-image--compact"
+          priority={priority}
+        />
       </motion.aside>
       <motion.div
         className="ihbar-guide-split-copy"
@@ -193,7 +198,7 @@ export function NoticeScenarioCards({ examples }) {
                     <Icon size={20} strokeWidth={1.8} />
                   </span>
                   <H4>{example.title}</H4>
-                  <p>{linkInternalTerms(example.body)}</p>
+                  <p>{example.body}</p>
                 </article>
               </TiltCard>
             </RevealItem>
