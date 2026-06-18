@@ -13,13 +13,7 @@ export const ROBOTS_NOINDEX_FOLLOW = {
   }
 };
 
-function withTrailingSlash(path) {
-  if (!path || path === "/") return path;
-  return path.endsWith("/") ? path : `${path}/`;
-}
-
 export function buildPageMetadata({ title, description, path, keywords = [], robots }) {
-  const canonicalPath = withTrailingSlash(path);
   const url = siteUrl(path);
   const keywordString = Array.isArray(keywords) ? keywords.join(", ") : keywords;
   return {
@@ -27,9 +21,6 @@ export function buildPageMetadata({ title, description, path, keywords = [], rob
     description,
     keywords: keywordString,
     ...(robots ? { robots } : {}),
-    alternates: {
-      canonical: canonicalPath
-    },
     openGraph: {
       type: "website",
       locale: "tr_TR",

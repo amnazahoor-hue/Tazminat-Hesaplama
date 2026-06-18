@@ -13,8 +13,6 @@ import { Reveal, RevealItem, RevealStagger } from "./motion/Reveal";
 import { H3 } from "@/components/common/Heading";
 import SectionHeading from "./motion/SectionHeading";
 import { useMotionPrefs } from "./motion/useMotionPrefs";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
-
 export function IntroBlock({ children }) {
   const { reduceMotion, viewport, ease } = useMotionPrefs();
 
@@ -252,7 +250,7 @@ export function TimelineSteps({ steps }) {
             {String(index + 1).padStart(2, "0")}
           </motion.span>
           <div className="guide-timeline-body">
-            <H3>{capitalizeHeadingText(step.title)}</H3>
+            <H3>{step.title}</H3>
             {step.formula ? (
               <motion.p
                 className="guide-step-formula"

@@ -1,23 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
+import { formatHeadingChildren } from "@/components/common/Heading";
+import { useCapitalizeHeadingText } from "@/hooks/useHeadingLocale";
 import { useMotionPrefs } from "./useMotionPrefs";
-
-function formatHeadingChildren(children) {
-  if (typeof children === "string") {
-    return capitalizeHeadingText(children);
-  }
-
-  if (Array.isArray(children)) {
-    return children.map((child) => (typeof child === "string" ? capitalizeHeadingText(child) : child));
-  }
-
-  return children;
-}
 
 export default function SectionHeading({ as: Tag = "h2", children, className = "", light = false, id }) {
   const { reduceMotion, viewport, ease } = useMotionPrefs();
+  const capitalize = useCapitalizeHeadingText();
 
   return (
     <motion.div
@@ -27,7 +17,7 @@ export default function SectionHeading({ as: Tag = "h2", children, className = "
       viewport={viewport}
       transition={{ duration: reduceMotion ? 0 : 0.48, ease }}
     >
-      <Tag id={id}>{formatHeadingChildren(children)}</Tag>
+      <Tag id={id}>{formatHeadingChildren(children, capitalize)}</Tag>
     </motion.div>
   );
 }

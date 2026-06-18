@@ -3,6 +3,7 @@ import Navbar from "@/components/common/Navbar";
 import Preloader from "@/components/common/Preloader";
 import ScrollRevealInit from "@/components/common/ScrollRevealInit";
 import Footer from "@/components/layouts/Footer";
+import CanonicalLink from "@/components/seo/CanonicalLink";
 import { Inter } from "next/font/google";
 import { HOME_PAGE_SEO, HOME_PATH, SITE_URL } from "@/config/site";
 import { buildPageMetadata } from "@/utils/seo";
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/images/logo.svg" as="image" type="image/svg+xml" />
       </head>
       <body className={inter.variable} suppressHydrationWarning>
+        <CanonicalLink />
         <Preloader />
         <Navbar />
         <ScrollRevealInit />

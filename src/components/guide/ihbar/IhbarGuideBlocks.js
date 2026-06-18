@@ -5,7 +5,6 @@ import { H1, H3, H4 } from "@/components/common/Heading";
 import { motion } from "framer-motion";
 import CalcCta from "@/components/common/CalcCta";
 import { HOME_PATH } from "@/config/site";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 import {
   AlertTriangle,
@@ -193,7 +192,7 @@ export function NoticeScenarioCards({ examples }) {
                   <span className="ihbar-example-icon" aria-hidden="true">
                     <Icon size={20} strokeWidth={1.8} />
                   </span>
-                  <H4>{capitalizeHeadingText(example.title)}</H4>
+                  <H4>{example.title}</H4>
                   <p>{linkInternalTerms(example.body)}</p>
                 </article>
               </TiltCard>
@@ -234,7 +233,7 @@ export function NoticeComparisonTable({ rows }) {
         <div className="ihbar-compare-cards" aria-label="İhbar süresi ve bildirim ödemesi karşılaştırması">
           {rows.map((row) => (
             <article key={row.feature} className="ihbar-compare-card">
-              <H4>{capitalizeHeadingText(row.feature)}</H4>
+              <H4>{row.feature}</H4>
               <div className="ihbar-compare-card-row">
                 <span className="ihbar-compare-card-label ihbar-compare-card-label--indigo">İhbar Süresi</span>
                 <p>{row.noticePeriod}</p>
@@ -324,7 +323,7 @@ export function RightsGrid({ cards }) {
                 <span className="ihbar-rights-icon" aria-hidden="true">
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
-                <H3>{capitalizeHeadingText(card.title)}</H3>
+                <H3>{card.title}</H3>
                 {card.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}

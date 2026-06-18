@@ -23,7 +23,6 @@ import {
   Users
 } from "lucide-react";
 import CalcCta from "@/components/common/CalcCta";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import CountUp from "../ui/CountUp";
 import TiltCard from "../ui/TiltCard";
 import { Reveal, RevealItem, RevealStagger } from "../motion/Reveal";
@@ -313,7 +312,7 @@ export function TavanBarChart({ rows }) {
         <div className="tavan-mobile-cards" aria-label="Yıllık tavan tutarı karşılaştırması">
           {rows.map((row) => (
             <article key={row.period} className="tavan-mobile-card">
-              <H4>{capitalizeHeadingText(row.period)}</H4>
+              <H4>{row.period}</H4>
               <p>{row.amount}</p>
             </article>
           ))}
@@ -353,7 +352,7 @@ export function HistoryTable({ rows }) {
         <div className="tavan-mobile-cards tavan-mobile-cards--history" aria-label="Kıdem tazminatı tavanı geçmişi">
           {rows.map((row) => (
             <article key={row.period} className="tavan-mobile-card">
-              <H4>{capitalizeHeadingText(row.period)}</H4>
+              <H4>{row.period}</H4>
               <p>{row.amount}</p>
             </article>
           ))}
@@ -426,7 +425,7 @@ export function ExampleCalculationCards({ examples }) {
         <RevealItem key={example.id}>
           <TiltCard className="tavan-example-wrap" tiltMax={7} scale={1.02}>
             <article className="tavan-example-card">
-              <H3>{capitalizeHeadingText(example.title)}</H3>
+              <H3>{example.title}</H3>
               <ul>
                 {example.items.map((item) => (
                   <li key={item}>{item}</li>
@@ -467,7 +466,7 @@ export function EligibilityScenarioGrid({ scenarios }) {
                 <span className="tavan-eligibility-icon" aria-hidden="true">
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
-                <H3>{capitalizeHeadingText(scenario.title)}</H3>
+                <H3>{scenario.title}</H3>
                 <p>{linkLawReferences(scenario.intro, linkedTermsRef.current)}</p>
                 {scenario.list.length > 0 ? (
                   <ul className="tavan-checklist tavan-checklist--inline">
@@ -543,7 +542,7 @@ export function MistakesTable({ rows }) {
             <article key={row.mistake} className="tavan-mobile-card tavan-mobile-card--warning">
               <H4>
                 <AlertTriangle size={16} strokeWidth={2} aria-hidden="true" />
-                {capitalizeHeadingText(row.mistake)}
+                {row.mistake}
               </H4>
               <p>{row.consequence}</p>
             </article>

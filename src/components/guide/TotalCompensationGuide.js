@@ -7,7 +7,6 @@ import { IMAGES } from "@/config/images";
 import { KIDEM_TAVANI_PATH } from "@/config/site";
 import { CARD_TITLE_LINKS } from "@/config/internalLinks";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   AlertCircle,
@@ -243,10 +242,10 @@ function IconCard({ icon: Icon, title, body, badgeClass = "guide-icon-card-badge
         <H3>
           {CARD_TITLE_LINKS[title] ? (
             <Link href={CARD_TITLE_LINKS[title]} className="text-internal-link">
-              {capitalizeHeadingText(title)}
+              {title}
             </Link>
           ) : (
-            capitalizeHeadingText(title)
+            title
           )}
         </H3>
         <p>{linkInternalTerms(body)}</p>
@@ -418,7 +417,7 @@ export default function TotalCompensationGuide() {
                         <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
                       </span>
                       <div>
-                        <H3>{capitalizeHeadingText(item.title)}</H3>
+                        <H3>{item.title}</H3>
                         <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
                       </div>
                     </article>
@@ -461,7 +460,7 @@ export default function TotalCompensationGuide() {
                     <span className="guide-featured-card-icon">
                       <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
                     </span>
-                    <H3>{capitalizeHeadingText(item.title)}</H3>
+                    <H3>{item.title}</H3>
                     <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
                   </article>
                 </TiltCard>
@@ -523,7 +522,7 @@ export default function TotalCompensationGuide() {
                     <span className="guide-type-icon">
                       <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
                     </span>
-                    <H3>{capitalizeHeadingText(item.title)}</H3>
+                    <H3>{item.title}</H3>
                     <p>{typeof item.body === "string" ? linkInternalTerms(item.body) : item.body}</p>
                   </article>
                 </TiltCard>

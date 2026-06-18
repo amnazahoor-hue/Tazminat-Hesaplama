@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AppImage from "@/components/common/AppImage";
 import { H3 } from "@/components/common/Heading";
 import { getImageMeta, IMAGES } from "@/config/images";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -89,7 +88,7 @@ function getCardTitle(text) {
     }
   }
 
-  return capitalizeHeadingText(title);
+  return title;
 }
 
 function getNodePosition(index, centerX, centerY, radius) {

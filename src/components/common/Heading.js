@@ -1,20 +1,36 @@
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
+"use client";
 
-function formatChildren(children) {
-  if (typeof children === "string") {
-    return capitalizeHeadingText(children);
+import { Children, cloneElement, isValidElement } from "react";
+import { useCapitalizeHeadingText } from "@/hooks/useHeadingLocale";
+
+export function formatHeadingChildren(node, capitalize) {
+  if (typeof node === "string") {
+    return capitalize(node);
   }
 
-  if (Array.isArray(children)) {
-    return children.map((child) => (typeof child === "string" ? capitalizeHeadingText(child) : child));
+  if (Array.isArray(node)) {
+    return node.map((child) => formatHeadingChildren(child, capitalize));
   }
 
-  return children;
+  if (!isValidElement(node)) {
+    return node;
+  }
+
+  if (node.props.children == null) {
+    return node;
+  }
+
+  return cloneElement(
+    node,
+    node.props,
+    Children.map(node.props.children, (child) => formatHeadingChildren(child, capitalize))
+  );
 }
 
 function createHeading(Tag) {
   return function Heading({ children, ...props }) {
-    return <Tag {...props}>{formatChildren(children)}</Tag>;
+    const capitalize = useCapitalizeHeadingText();
+    return <Tag {...props}>{formatHeadingChildren(children, capitalize)}</Tag>;
   };
 }
 

@@ -3,7 +3,7 @@
 import { useState, useRef, useLayoutEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { capitalizeHeadingText } from "@/utils/capitalizeHeading";
+import { useCapitalizeHeadingText } from "@/hooks/useHeadingLocale";
 import { useMotionPrefs } from "@/components/guide/motion/useMotionPrefs";
 import { linkInternalTerms } from "@/utils/linkInternalTerms";
 
@@ -54,6 +54,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
   const [isLastOpen, setIsLastOpen] = useState(false);
   const answerRef = useRef(null);
   const { reduceMotion, viewport, ease } = useMotionPrefs();
+  const capitalize = useCapitalizeHeadingText();
   const isHome = variant === "home";
 
   const handleToggle = (id) => {
@@ -139,7 +140,7 @@ export default function FaqAccordion({ items, className = "", variant = "guide" 
           const buttonId = `${prefix}-button-${item.id}`;
           const panelId = `${prefix}-panel-${item.id}`;
           const number = String(index + 1).padStart(2, "0");
-          const question = capitalizeHeadingText(item.question);
+          const question = capitalize(item.question);
 
           const answerWrapClass = [
             isHome ? "faq-answer-wrap" : "guide-accordion-answer-wrap",
